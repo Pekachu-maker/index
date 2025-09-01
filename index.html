@@ -1,15 +1,394 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>トップページ</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FE武器暗記（ギブアップ追加・スクロール対応）</title>
+<style>
+:root{--bg:#fdf4f4;--card:#fff;--accent:#a7f3d0;--button:#34d399;--button-text:#fff;}
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;background:var(--bg);color:#1f2937;}
+.wrap{max-width:960px;margin:8px auto;padding:8px;}
+.card{
+  background: var(--card);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  display: flex;
+  flex-direction: column;
+  max-height:720px;
+}
+h1{margin:0 0 6px;font-size:20px;}
+.meta{color:#475569;font-size:13px;margin-bottom:8px;}
+.tabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.tabs button{flex:1;padding:8px;border:0;background:#64748b;color:white;cursor:pointer;border-radius:12px;}
+.tabs button.active{background:var(--accent); color:#065f46;}
+.controls{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+input[type=text]{flex:1;padding:8px 10px;border-radius:12px;border:1px solid #e2e8f0;font-size:15px;min-width:160px;}
+button.sendBtn{background:var(--button);color:var(--button-text);border-radius:12px;border:0;}
+button.secondary{background:#64748b;border-radius:12px;border:0;color:white;}
+button.hintBtn{background:#fcd34d;border-radius:12px;border:0;color:#92400e;}
+button.giveupBtn{background:#f87171;border-radius:12px;border:0;color:white;}
+.hint{margin-bottom:6px;background:#fefce8;padding:6px;border-radius:8px;border:1px solid #fde68a;color:#92400e;}
+.status{margin-bottom:6px;color:#334155;}
+.list-container{flex:1;overflow-y:auto;}
+.list{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px;border-radius:8px;background:#f8fafc;}
+.item{padding:8px;border-radius:8px;text-align:center;border:1px dashed #e6edf2;background:#f8fafc;font-size:15px;}
+.item.hit{background:linear-gradient(90deg,#d1fae5,#a7f3d0);border:1px solid #6ee7b7;}
+.item.giveup{background:#fde2e2;border:1px solid #fca5a5;}
+.footer{margin-top:12px;font-size:13px;color:#64748b;}
+</style>
 </head>
 <body>
-    <h1>トップページ</h1>
-    <p>ようこそ！ここはサンプルサイトです。</p>
-    <ul>
-        <li><a href="about.html">Aboutページへ</a></li>
-        <li><a href="quiz.html">クイズページへ</a></li>
-    </ul>
+<div class="wrap">
+  <div class="card">
+    <h1>FE武器暗記（ギブアップ追加・スクロール対応）</h1>
+    <div class="meta">日本語表記のみ対応。回答はひらがなまたはカタカナで入力。</div>
+
+    <div class="tabs">
+      <button data-cat="剣" class="active">剣</button>
+      <button data-cat="槍">槍</button>
+      <button data-cat="斧">斧</button>
+      <button data-cat="弓">弓</button>
+      <button data-cat="短剣・暗器">短剣・暗器</button>
+      <button data-cat="体術">体術</button>
+      <button data-cat="魔導書">魔導書</button>
+      <button data-cat="杖">杖</button>
+      <button data-cat="その他">その他</button>
+    </div>
+
+    <div class="controls">
+      <input id="nameInput" type="text" placeholder="ここに入力 → Enter または 送信" autocomplete="off" />
+      <button id="sendBtn" class="sendBtn">送信</button>
+      <button id="resetBtn" class="secondary">リセット</button>
+      <button id="showHintBtn" class="hintBtn">ヒントを見る</button>
+      <button id="giveupBtn" class="giveupBtn">ギブアップ</button>
+    </div>
+
+    <div class="hint" id="hintArea">ヒントは非表示です。「ヒントを見る」ボタンを押してください。</div>
+    <div class="status" id="status">正解: 0 / 0 ｜ ヒント使用回数: 0</div>
+
+    <div class="list-container">
+      <div class="list" id="list"></div>
+    </div>
+
+    <div class="footer">使い方: 回答はひらがなもしくはカタカナで入力。ギブアップすると残りがすべて公開されます（ピンク色）。</div>
+  </div>
+</div>
+
+<script>
+// --- 武器データと関数 ---
+const WEAPON_CATEGORIES = {
+  "剣":{targets:[],aliases:{},guessed:new Set(),giveup:new Set()},
+  "槍":{targets:[],aliases:{},guessed:new Set(),giveup:new Set()},
+  "斧":{targets:[],aliases:{},guessed:new Set(),giveup:new Set()},
+  "弓":{targets:[],aliases:{},guessed:new Set(),giveup:new Set()},
+  "短剣・暗器":{targets:[],aliases:{},guessed:new Set(),giveup:new Set()},
+  "体術":{targets:[],aliases:{},guessed:new Set(),giveup:new Set()},
+  "魔導書":{targets:[],aliases:{},guessed:new Set(),giveup:new Set()},
+  "杖":{targets:[],aliases:{},guessed:new Set(),giveup:new Set()},
+  "その他":{targets:[],aliases:{},guessed:new Set(),giveup:new Set()},
+};
+
+function hiraToKana(s){return s.replace(/[ぁ-ん]/g,ch=>String.fromCharCode(ch.charCodeAt(0)+0x60));}
+function kanaToHira(s){return s.replace(/[ァ-ン]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0x60));}
+function normalize(s){if(!s)return""; s=s.trim().replace(/　/g,'').replace(/\s+/g,''); s=hiraToKana(s); return s;}
+function addWeapon(catName, weaponName, aliasList=[]){
+  const cat = WEAPON_CATEGORIES[catName];
+  if(!cat) return;
+  if(!cat.targets.includes(weaponName)) cat.targets.push(weaponName);
+  if(!cat.aliases[weaponName]) cat.aliases[weaponName] = aliasList;
+  cat.targets.sort((a,b)=>{
+    const keyA = cat.aliases[a] && cat.aliases[a][0] ? kanaToHira(normalize(cat.aliases[a][0])) : kanaToHira(normalize(a));
+    const keyB = cat.aliases[b] && cat.aliases[b][0] ? kanaToHira(normalize(cat.aliases[b][0])) : kanaToHira(normalize(b));
+    return keyA.localeCompare(keyB,"ja");
+  });
+}
+
+// --- 例として少し登録 ---
+addWeapon("剣","倭刀",["わとう"]);
+addWeapon("剣","和傘",["わがさ"]);
+addWeapon("剣","ロプトの剣",["ろぷとのけん"]);
+addWeapon("剣","ロイの硬剣",["ろいのこうけん"]);
+addWeapon("剣","烈風の剣",["れっぷうのけん"]);
+addWeapon("剣","レオンの冷剣",["れおんのれいけん"]);
+addWeapon("剣","霊刀",["れいとう"]);
+addWeapon("剣","ルキナの模擬剣",["るきなのもぎけん"]);
+addWeapon("剣","ルーナの鋭剣",["るーなのえいけん"]);
+addWeapon("剣","流星",["りゅうせい"]);
+addWeapon("剣","裏剣ファルシオン",["りけんふぁるしおん"]);
+addWeapon("剣","リーフの宝剣",["りーふのほうけん"]);
+addWeapon("剣","ラズワルドの舞剣",["らずわるどのぶけん"]);
+addWeapon("剣","雷霆",["らいてい"]);
+addWeapon("剣","雷神刀",["らいじんとう"]);
+addWeapon("剣","妖刀アシユラ",["ようとうあしゅら"]);
+addWeapon("剣","洋傘",["ようがさ"]);
+addWeapon("剣","勇者の剣",["ゆうしゃのけん"]);
+addWeapon("剣","夜刀神・白夜",["やとのかみびゃくや"]);
+addWeapon("剣","夜刀神・長夜",["やとのかみちょうや"]);
+addWeapon("剣","夜刀神・終夜",["やとのかみしゅうや"]);
+addWeapon("剣","夜刀神・幻夜",["やとのかみげんや"]);
+addWeapon("剣","夜刀神・空夜",["やとのかみくうや"]);
+addWeapon("剣","夜刀神・暗夜",["やとのかみあんや"]);
+addWeapon("剣","夜刀神",["やとのかみ"]);
+addWeapon("剣","モラルタの剣",["もらるたのけん"]);
+addWeapon("剣","武者の刀",["むしゃのかたな"]);
+addWeapon("剣","マルスの模擬剣",["まるすのもぎけん"]);
+addWeapon("剣","マリータの剣",["まりーたのけん"]);
+addWeapon("剣","守りの剣",["まもりのけん"]);
+addWeapon("剣","魔剣ガングレリ",["まけんがんぐれり"]);
+addWeapon("剣","炎の剣",["ほのおのけん"]);
+addWeapon("剣","細身の剣",["ほそみのけん"]);
+addWeapon("剣","宝剣ソフィア",["ほうけんそふぃあ"]);
+addWeapon("剣","ベガルタの剣",["べがるたのけん"]);
+addWeapon("剣","ベオの剣",["べおのけん"]);
+addWeapon("剣","ブラギの剣",["ぶらぎのけん"]);
+addWeapon("剣","武人の剣",["ぶじんのけん"]);
+addWeapon("剣","封剣ファルシオン",["ふうけんふぁるしおん"]);
+addWeapon("剣","封印の剣",["ふういんのつるぎ"]);
+addWeapon("剣","ヒナタの猛刀",["ひなたのもうとう"]);
+addWeapon("剣","飛刀",["ひとう"]);
+addWeapon("剣","光の剣",["ひかりのけん"]);
+addWeapon("剣","バリアの剣",["ばりあのけん"]);
+addWeapon("剣","バサークの剣",["ばさーくのけん"]);
+addWeapon("剣","鋼の大剣",["はがねのたいけん"]);
+addWeapon("剣","鋼の剣",["はがねのけん"]);
+addWeapon("剣","鋼の刀",["はがねのかたな"]);
+addWeapon("剣","葉隠",["はがくれ"]);
+addWeapon("剣","長柄刀",["ながえとう"]);
+addWeapon("剣","毒の剣",["どくのけん"]);
+addWeapon("剣","盗賊の剣",["とうぞくのけん"]);
+addWeapon("剣","天帝の覇剣",["てんていのはけん"]);
+addWeapon("剣","天帝の剣",["てんていのけん"]);
+addWeapon("剣","鉄の大剣",["てつのたいけん"]);
+addWeapon("剣","鉄の剣",["てつのけん"]);
+addWeapon("剣","鉄の刀",["てつのかたな"]);
+addWeapon("剣","燕がえし",["つばめがえし"]);
+addWeapon("剣","タクミの竹刀",["たくみのしない"]);
+addWeapon("剣","太陽",["たいよう"]);
+addWeapon("剣","大地の剣",["だいちのけん"]);
+addWeapon("剣","大根",["だいこん"]);
+addWeapon("剣","ゾルタンの剣",["ぞるたんのけん"]);
+addWeapon("剣","セリスの神剣",["せりすのしんけん"]);
+addWeapon("剣","聖なる剣",["せいなるけん"]);
+addWeapon("剣","青銅の剣",["せいどうのけん"]);
+addWeapon("剣","スリープの剣",["すりーぷのけん"]);
+addWeapon("剣","神剣ファルシオン",["しんけんふぁるしおん"]);
+addWeapon("剣","旋風の剣",["しっぷうのけん"]);
+addWeapon("剣","斬馬刀",["ざんばとう"]);
+addWeapon("剣","斬鉄の剣",["ざんてつのけん"]);
+addWeapon("剣","錆びた剣",["さびたけん"]);
+addWeapon("剣","壊れた剣",["こわれたけん"]);
+addWeapon("剣","小太刀",["こだち"]);
+addWeapon("剣","剣殺しの剣",["けんごろしのけん"]);
+addWeapon("剣","剣",["けん"]);
+addWeapon("剣","訓練用の剣",["くんれんようのけん"]);
+addWeapon("剣","銀の大剣",["ぎんのたいけん"]);
+addWeapon("剣","銀の剣",["ぎんのけん"]);
+addWeapon("剣","銀の刀",["ぎんのかたな"]);
+addWeapon("剣","巨刃ジャマダハル",["きょじんじゃまだはる"]);
+addWeapon("剣","白夜の霞刀",["ぎゃくやのかすみとう"]);
+addWeapon("剣","逆刀",["ぎゃくとう"]);
+addWeapon("剣","木の枝",["きのえだ"]);
+addWeapon("剣","ガラスの剣",["がらすのけん"]);
+addWeapon("剣","風の剣",["かぜのけん"]);
+addWeapon("剣","カザハナの麗刀",["かざはなのうるわしがたな"]);
+addWeapon("剣","風切りの剣",["かざきりのけん"]);
+addWeapon("剣","斧切りの刀",["おのぎりのかたな"]);
+addWeapon("剣","王者の剣",["おうじゃのけん"]);
+addWeapon("剣","黄金の短剣",["おうごんのたんけん"]);
+addWeapon("剣","王家の剣",["おうけのけん"]);
+addWeapon("剣","追い剥ぎの刀",["おいはぎのかたな"]);
+addWeapon("剣","エリウッドの鋼剣",["えりうっどのこうけん"]);
+addWeapon("剣","エリートの剣",["えりーとのけん"]);
+addWeapon("剣","エイリークの疾剣",["えいりーくのしっけん"]);
+addWeapon("剣","癒される剣",["いやされるけん"]);
+addWeapon("剣","祈りの剣",["いのりのけん"]);
+addWeapon("剣","雷の剣",["いかづちのけん"]);
+addWeapon("剣","居合刀",["いあいとう"]);
+addWeapon("剣","暗夜の漆黒剣",["あんやのしっこくけん"]);
+addWeapon("剣","暗黒の剣",["あんこくのけん"]);
+addWeapon("剣","アルムの覇剣",["あるむのはけん"]);
+addWeapon("剣","アルの剣",["あるのけん"]);
+addWeapon("剣","アイクの模擬剣",["あいくのもぎけん"]);
+
+addWeapon("剣","ワインボトル",["わいんぼとる"]);
+addWeapon("剣","ロングソード",["ろんぐそーど"]);
+addWeapon("剣","レディソード",["れでぃそーど"]);
+addWeapon("剣","レイピア",["れいぴあ"]);
+addWeapon("剣","ルーンソード",["るーんそーど"]);
+addWeapon("剣","リベラシオン",["りべらしおん"]);
+addWeapon("剣","リガルブレイド",["りがるぶれいど"]);
+addWeapon("剣","リガルソード",["りがるそーど"]);
+addWeapon("剣","ランスバスター",["らんすばすたー"]);
+addWeapon("剣","ラグネル",["らぐねる"]);
+addWeapon("剣","ラグズソード",["らぐずそーど"]);
+addWeapon("剣","ライラシオン",["らいらしおん"]);
+addWeapon("剣","メリクル",["めりくる"]);
+addWeapon("剣","ミストルティン",["みすとるてぃん"]);
+addWeapon("剣","ミステルトィン",["みすてるとぃん"]);
+addWeapon("剣","マスターソード",["ますたーそーど"]);
+addWeapon("剣","マーニ・カティ",["まーにかてぃ"]);
+addWeapon("剣","フロレート",["ふろれーと"]);
+addWeapon("剣","ブルトガング",["ぶるとがんぐ"]);
+addWeapon("剣","フォルクヴァング",["ふぉるくヴぁんぐ"]);
+addWeapon("剣","ファルシオン",["ふぁるしおん"]);
+addWeapon("剣","バルムンク",["ばるむんく"]);
+addWeapon("剣","ノーブルレイピア",["のーぶるれいぴあ"]);
+addWeapon("剣","ドラゴンキラー",["どらごんきらー"]);
+addWeapon("剣","デュランダル",["でゅらんだる"]);
+addWeapon("剣","デビルソード",["でびるそーど"]);
+addWeapon("剣","ティルフィング",["てぃるふぃんぐ"]);
+addWeapon("剣","ツヴァイハンダー",["つヴぁいはんだー"]);
+addWeapon("剣","ソニックソード",["そにっくそーど"]);
+addWeapon("剣","ソール・カティ",["そーるかてぃ"]);
+addWeapon("剣","ソードキラー",["そーどきらー"]);
+addWeapon("剣","セブンソード",["せぶんそーど"]);
+addWeapon("剣","ショートソード",["しょーとそーど"]);
+addWeapon("剣","シャムシール",["しゃむしーる"]);
+addWeapon("剣","ジークリンデ",["じーくりんで"]);
+addWeapon("剣","ジークフリート",["じーくふりーと"]);
+addWeapon("剣","サンダーソード",["さんだーそーど"]);
+addWeapon("剣","ゲオルギオス",["げおるぎおす"]);
+addWeapon("剣","グレートソード",["ぐれーとそーど"]);
+addWeapon("剣","グルグラント",["ぐるぐらんと"]);
+addWeapon("剣","クラドホルグ",["くらどほるぐ"]);
+addWeapon("剣","キルソード",["きるそーど"]);
+addWeapon("剣","ガングレリ",["がんぐれり"]);
+addWeapon("剣","オリゴルディア",["おりごるでぃあ"]);
+addWeapon("剣","エッケザックス",["えっけざっくす"]);
+addWeapon("剣","エタルド",["えたるど"]);
+addWeapon("剣","ヴィレグランツ",["ゔぃれぐらんつ"]);
+addWeapon("剣","ヴァーグ・カティ",["ゔぁーぐかてぃ"]);
+addWeapon("剣","イルウーン",["いるうーん"]);
+addWeapon("剣","アロンダイト",["あろんだいと"]);
+addWeapon("剣","アミーテ",["あみーて"]);
+addWeapon("剣","アマツ",["あまつ"]);
+addWeapon("剣","アウドムラ",["あうどむら"]);
+addWeapon("剣","アーマーキラー",["あーまーきらー"]);
+addWeapon("槍","手槍",["てやり"]);
+addWeapon("槍","銀のやり",["ぎんのやり"]);
+
+let currentCat="剣";
+let hintCount=0;
+const input=document.getElementById('nameInput');
+const sendBtn=document.getElementById('sendBtn');
+const resetBtn=document.getElementById('resetBtn');
+const showHintBtn=document.getElementById('showHintBtn');
+const giveupBtn=document.getElementById('giveupBtn');
+const status=document.getElementById('status');
+const list=document.getElementById('list');
+const hintArea=document.getElementById('hintArea');
+const tabs=document.querySelectorAll('.tabs button');
+
+function renderList(){
+  list.innerHTML='';
+  const cat=WEAPON_CATEGORIES[currentCat];
+  cat.targets.forEach(t=>{
+    const div=document.createElement('div');
+    let cls='item';
+    if(cat.guessed.has(t)) cls+=' hit';
+    else if(cat.giveup.has(t)) cls+=' giveup';
+    div.className=cls;
+    div.textContent = (cat.guessed.has(t) || cat.giveup.has(t))?t:'???';
+    list.appendChild(div);
+  });
+  status.textContent=`正解: ${cat.guessed.size} / ${cat.targets.length} ｜ ヒント使用回数: ${hintCount}`;
+}
+
+// --- 正解判定＆スクロール ---
+function submitName(raw){
+  const n=normalize(raw);
+  if(!n) return;
+  let found=false;
+  for(const [catName, cat] of Object.entries(WEAPON_CATEGORIES)){
+    const ACCEPT=new Map();
+    cat.targets.forEach(t=>{
+      const al=cat.aliases[t]||[];
+      al.forEach(a=>ACCEPT.set(normalize(a), t));
+    });
+    if(ACCEPT.has(n)){
+      const matched=ACCEPT.get(n);
+      if(!cat.guessed.has(matched)){
+        cat.guessed.add(matched);
+        hintArea.textContent=`${matched} を ${catName} カテゴリで正解！`;
+
+        renderList(); // 描画更新
+        const items = list.querySelectorAll('.item');
+        const targetItem = Array.from(items).find(el => el.textContent === matched);
+        if(targetItem){
+          const rect = targetItem.getBoundingClientRect();
+          if(rect.top < 0 || rect.bottom > window.innerHeight){
+            targetItem.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
+
+      } else {
+        hintArea.textContent=`${matched} はすでに正解済みです。`;
+        renderList();
+      }
+      found=true;
+      break;
+    }
+  }
+  if(!found){
+    hintArea.textContent='不正解です。';
+    renderList();
+  }
+  input.value='';
+  input.focus();
+}
+
+// --- ヒント ---
+function showHint(){
+  const unguessed=[];
+  for(const [catName, cat] of Object.entries(WEAPON_CATEGORIES)){
+    cat.targets.forEach(t=>{
+      if(!cat.guessed.has(t) && !cat.giveup.has(t)){
+        unguessed.push({cat:catName, name:t});
+      }
+    });
+  }
+  if(unguessed.length===0){
+    hintArea.textContent="すべて回答済み！";
+    return;
+  }
+  const choice=unguessed[Math.floor(Math.random()*unguessed.length)];
+  const firstChar=choice.name[0];
+  hintArea.textContent=`ヒント: 未回答の${choice.cat}の一つ（最初の文字は「${firstChar}」）`;
+  hintCount++;
+  renderList();
+}
+
+// --- ギブアップ ---
+function giveup(){
+  const cat=WEAPON_CATEGORIES[currentCat];
+  cat.targets.forEach(t=>{
+    if(!cat.guessed.has(t)){
+      cat.giveup.add(t);
+    }
+  });
+  hintArea.textContent="ギブアップ！未回答をすべて公開しました。";
+  renderList();
+}
+
+// --- イベント ---
+sendBtn.addEventListener('click',()=>submitName(input.value));
+input.addEventListener('keydown',e=>{if(e.key==='Enter') submitName(input.value);});
+resetBtn.addEventListener('click',()=>{
+  Object.values(WEAPON_CATEGORIES).forEach(c=>{c.guessed.clear(); c.giveup.clear();});
+  hintCount=0; renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.focus();
+});
+showHintBtn.addEventListener('click',showHint);
+giveupBtn.addEventListener('click',giveup);
+tabs.forEach(btn=>btn.addEventListener('click',()=>{
+  tabs.forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat=btn.dataset.cat;
+  renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.focus();
+}));
+
+renderList();
+input.focus();
+</script>
 </body>
 </html>
