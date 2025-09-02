@@ -1,16 +1,197 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>クイズページ</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ぽけもんいえるかな</title>
+<style>
+:root{--bg:#fdf4f4;--card:#fff;--accent:#a7f3d0;--button:#34d399;--button-text:#fff;}
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;background:var(--bg);color:#1f2937;}
+.wrap{max-width:960px;margin:8px auto;padding:8px;}
+.card{background: var(--card); border-radius: 12px; padding: 12px; box-shadow: 0 6px 18px rgba(2,6,23,0.06); display: flex; flex-direction: column; max-height: 720px;}
+h1{margin:0 0 6px;font-size:20px;}
+.meta{color:#475569;font-size:13px;margin-bottom:8px;}
+.tabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.tabs button{flex:1;padding:8px;border:0;background:#64748b;color:white;cursor:pointer;border-radius:12px;}
+.tabs button.active{background:var(--accent); color:#065f46;}
+.controls{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+input[type=text]{flex:1;padding:8px 10px;border-radius:12px;border:1px solid #e2e8f0;font-size:15px;min-width:160px;}
+button.sendBtn{background:var(--button);color:var(--button-text);border-radius:12px;border:0;}
+button.secondary{background:#64748b;border-radius:12px;border:0;color:white;}
+button.hintBtn{background:#fcd34d;border-radius:12px;border:0;color:#92400e;}
+button.giveupBtn{background:#f87171;border-radius:12px;border:0;color:white;}
+.hint{margin-bottom:6px;background:#fefce8;padding:6px;border-radius:8px;border:1px solid #fde68a;color:#92400e;}
+.status{margin-bottom:6px;color:#334155;}
+.list-container{flex:1;overflow-y:auto;}
+.list{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px;border-radius:8px;background:#f8fafc;}
+.item{padding:8px;border-radius:8px;text-align:center;border:1px dashed #e6edf2;background:#f8fafc;font-size:15px;}
+.item.hit{background:linear-gradient(90deg,#d1fae5,#a7f3d0);border:1px solid #6ee7b7;}
+.item.last-hit{box-shadow:0 0 6px 2px #34d399;}
+.item.giveup{background:#fde2e2;border:1px solid #fca5a5;}
+.item img{vertical-align: middle; margin-left: 6px; width: 40px; height: 40px;}
+.footer{margin-top:12px;font-size:13px;color:#64748b;}
+</style>
 </head>
 <body>
-    <h1>クイズページ</h1>
-    <p>簡単なサンプルクイズです！</p>
-    <ul>
-        <li>問題1: 1+1=？</li>
-        <li>答え: 2</li>
-    </ul>
-    <a href="index.html">トップページに戻る</a>
+<div class="wrap">
+  <div class="card">
+    <h1>ぽけもんいえるかな</h1>
+    <div class="meta">日本語表記のみ対応。回答は登録名と完全一致が必要です。</div>
+
+    <div class="tabs">
+      <button data-cat="クリスタル" class="active">クリスタル</button>
+      <button data-cat="エメラルド">エメラルド</button>
+      <button data-cat="プラチナ">プラチナ</button>
+      <button data-cat="ＢＷ">ＢＷ</button>
+    </div>
+
+    <div class="controls">
+      <input id="nameInput" type="text" placeholder="ここに入力 → Enter または 送信" autocomplete="off" />
+      <button id="sendBtn" class="sendBtn">送信</button>
+      <button id="resetBtn" class="secondary">リセット</button>
+      <button id="showHintBtn" class="hintBtn">ヒントを見る</button>
+      <button id="giveupBtn" class="giveupBtn">ギブアップ</button>
+    </div>
+
+    <div class="hint" id="hintArea">ヒントは非表示です。「ヒントを見る」ボタンを押してください。</div>
+    <div class="status" id="status">正解: 0 / 0 ｜ ヒント使用回数: 0</div>
+
+    <div class="list-container">
+      <div class="list" id="list"></div>
+    </div>
+
+    <div class="footer">使い方: 回答は登録名と完全一致で入力。ギブアップすると残りがすべて公開されます（ピンク色）。</div>
+  </div>
+</div>
+
+<script>
+// --- データ構造 ---
+const WEAPON_CATEGORIES = {
+  "クリスタル": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
+  "エメラルド": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
+  "プラチナ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
+  "ＢＷ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
+};
+
+// --- addWeapon 関数 ---
+function addWeapon(catName, weaponName, imgPath="") {
+  const cat = WEAPON_CATEGORIES[catName];
+  if (!cat) return;
+  if (!cat.targets.includes(weaponName)) cat.targets.push(weaponName);
+  if (imgPath) cat.images[weaponName] = imgPath;
+}
+
+// --- サンプル登録 ---
+addWeapon("クリスタル", "ピカチュウ", "images/25.png");
+
+// --- グローバル変数 ---
+let currentCat = "クリスタル";
+let hintCount = 0;
+let lastHitName = null;
+
+const input = document.getElementById('nameInput');
+const sendBtn = document.getElementById('sendBtn');
+const resetBtn = document.getElementById('resetBtn');
+const showHintBtn = document.getElementById('showHintBtn');
+const giveupBtn = document.getElementById('giveupBtn');
+const status = document.getElementById('status');
+const list = document.getElementById('list');
+const hintArea = document.getElementById('hintArea');
+const tabs = document.querySelectorAll('.tabs button');
+
+// --- renderList ---
+function renderList(){
+  list.innerHTML='';
+  const cat = WEAPON_CATEGORIES[currentCat];
+  cat.targets.forEach(t=>{
+    const div = document.createElement('div');
+    let cls='item';
+    if(cat.guessed.has(t)) cls+=' hit';
+    else if(cat.giveup.has(t)) cls+=' giveup';
+    if(t===lastHitName && cat.guessed.has(t)) cls+=' last-hit';
+    div.className = cls;
+
+    if(cat.guessed.has(t) || cat.giveup.has(t)){
+      div.textContent = t;
+      if(cat.images && cat.images[t]){
+        const img = document.createElement('img');
+        img.src = cat.images[t];
+        div.appendChild(img);
+      }
+    } else {
+      div.textContent='???';
+    }
+    list.appendChild(div);
+  });
+
+  const lastDiv = document.querySelector('.last-hit');
+  if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth', block:'center'});
+
+  status.textContent=`正解: ${cat.guessed.size} / ${cat.targets.length} ｜ ヒント使用回数: ${hintCount}`;
+}
+
+// --- submitName ---
+function submitName(raw){
+  const n = raw.trim();
+  if(!n) return;
+  const cat = WEAPON_CATEGORIES[currentCat];
+  if(cat.targets.includes(n)){
+    if(!cat.guessed.has(n)){
+      cat.guessed.add(n);
+      lastHitName = n;
+      hintArea.textContent=`${n} を ${currentCat} カテゴリで正解！`;
+    } else {
+      hintArea.textContent=`${n} はすでに正解済みです。`;
+    }
+  } else {
+    hintArea.textContent='不正解です。';
+  }
+  renderList();
+  input.value=''; input.focus();
+}
+
+// --- showHint ---
+function showHint(){
+  const cat = WEAPON_CATEGORIES[currentCat];
+  const unguessed = cat.targets.filter(t=>!cat.guessed.has(t) && !cat.giveup.has(t));
+  if(unguessed.length===0){
+    hintArea.textContent="すべて回答済み！";
+    return;
+  }
+  const choice = unguessed[Math.floor(Math.random()*unguessed.length)];
+  hintArea.textContent=`ヒント: 未回答の${currentCat}の一つ（最初の文字は「${choice[0]}」）`;
+  hintCount++;
+  renderList();
+}
+
+// --- giveup ---
+function giveup(){
+  const cat = WEAPON_CATEGORIES[currentCat];
+  cat.targets.forEach(t=>{ if(!cat.guessed.has(t)) cat.giveup.add(t); });
+  hintArea.textContent="ギブアップ！未回答をすべて公開しました。";
+  lastHitName = null;
+  renderList();
+}
+
+// --- イベント ---
+sendBtn.addEventListener('click',()=>submitName(input.value));
+input.addEventListener('keydown',e=>{if(e.key==='Enter') submitName(input.value);});
+resetBtn.addEventListener('click',()=>{
+  Object.values(WEAPON_CATEGORIES).forEach(c=>{ c.guessed.clear(); c.giveup.clear(); });
+  hintCount=0; lastHitName=null;
+  renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.focus();
+});
+showHintBtn.addEventListener('click', showHint);
+giveupBtn.addEventListener('click', giveup);
+tabs.forEach(btn=>btn.addEventListener('click', ()=>{
+  tabs.forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat = btn.dataset.cat;
+  renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.focus();
+}));
+
+renderList();
+input.focus();
+</script>
 </body>
 </html>
