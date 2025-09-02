@@ -163,7 +163,7 @@ function showHint(){
     return;
   }
   const choice = unguessed[Math.floor(Math.random()*unguessed.length)];
-  hintArea.textContent=`ヒント: 未回答の${currentCat}の一つ（最初の文字は「${choice[0]}」）`;
+  hintArea.textContent=`ヒント: 未回答の${currentCat}の一つ 最初の文字は「${choice[0]}」`;
   hintCount++;
   renderList();
 }
@@ -199,4 +199,5 @@ input.focus();
 </script>
 </body>
 </html>
+
 
