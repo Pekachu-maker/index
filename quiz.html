@@ -14,7 +14,7 @@ h1{margin:0 0 6px;font-size:20px;}
 .tabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
 .tabs button{flex:1;padding:8px;border:0;background:#64748b;color:white;cursor:pointer;border-radius:12px;}
 .tabs button.active{background:var(--accent); color:#065f46;}
-.controls{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.controls{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;align-items:center;}
 input[type=text]{flex:1;padding:8px 10px;border-radius:12px;border:1px solid #e2e8f0;font-size:15px;min-width:160px;}
 button.sendBtn{background:var(--button);color:var(--button-text);border-radius:12px;border:0;}
 button.secondary{background:#64748b;border-radius:12px;border:0;color:white;}
@@ -30,6 +30,7 @@ button.giveupBtn{background:#f87171;border-radius:12px;border:0;color:white;}
 .item.giveup{background:#fde2e2;border:1px solid #fca5a5;}
 .item img{vertical-align: middle; margin-left: 6px; width: 40px; height: 40px;}
 .footer{margin-top:12px;font-size:13px;color:#64748b;}
+#timer{margin-left:8px;font-weight:bold;}
 </style>
 </head>
 <body>
@@ -38,6 +39,13 @@ button.giveupBtn{background:#f87171;border-radius:12px;border:0;color:white;}
     <h1>ゆるすぎポケモンいえるかな</h1>
     <div class="meta">回答はニックネームと完全一致で入力。ギブアップすると残りがすべて公開されます</div>
 
+    <!-- 開始ボタンとタイマー -->
+    <div class="controls">
+      <button id="startBtn" class="sendBtn">開始</button>
+      <span id="timer">00:00</span>
+    </div>
+
+    <!-- タブ -->
     <div class="tabs">
       <button data-cat="クリスタル" class="active">クリスタル</button>
       <button data-cat="エメラルド">エメラルド</button>
@@ -45,6 +53,7 @@ button.giveupBtn{background:#f87171;border-radius:12px;border:0;color:white;}
       <button data-cat="ＢＷ">ＢＷ</button>
     </div>
 
+    <!-- 入力・操作ボタン -->
     <div class="controls">
       <input id="nameInput" type="text" placeholder="ここに入力 → Enter または 送信" autocomplete="off" />
       <button id="sendBtn" class="sendBtn">送信</button>
@@ -73,7 +82,7 @@ const WEAPON_CATEGORIES = {
   "ＢＷ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
 };
 
-// --- addWeapon 関数 ---
+// --- addWeapon 関数（サンプル） ---
 function addWeapon(catName, weaponName, imgPath="") {
   const cat = WEAPON_CATEGORIES[catName];
   if (!cat) return;
@@ -81,7 +90,7 @@ function addWeapon(catName, weaponName, imgPath="") {
   if (imgPath) cat.images[weaponName] = imgPath;
 }
 
-// --- サンプル登録 ---
+// 必要に応じて追加
 addWeapon("クリスタル", "あいぼう", "images/n23.png");
 addWeapon("クリスタル", "あかつゆ", "images/n218.png");
 addWeapon("クリスタル", "アシタカ", "images/n87.png");
@@ -290,11 +299,79 @@ addWeapon("プラチナ", "ゃ", "images/n41.png");
 addWeapon("プラチナ", "ゆきのこ", "images/n478.png");
 addWeapon("プラチナ", "レジドミラ", "images/n436.png");
 addWeapon("プラチナ", "ローポリ", "images/n233.png");
-  
+
+addWeapon("ＢＷ", "ＫＭＲ", "images/n573.png");
+addWeapon("ＢＷ", "あけぼの", "images/n626.png");
+addWeapon("ＢＷ", "アパレル", "images/n541.png");
+addWeapon("ＢＷ", "イーアル", "images/n619.png");
+addWeapon("ＢＷ", "ええやつ", "images/n516.png");
+addWeapon("ＢＷ", "エボシさま", "images/n593.png");
+addWeapon("ＢＷ", "エモンゴ", "images/n587.png");
+addWeapon("ＢＷ", "おいも", "images/n618.png");
+addWeapon("ＢＷ", "おうじ", "images/n631.png");
+addWeapon("ＢＷ", "おじさん", "images/n642.png");
+addWeapon("ＢＷ", "おじゃる", "images/n535.png");
+addWeapon("ＢＷ", "おひめ♪", "images/n549.png");
+addWeapon("ＢＷ", "おひる", "images/n581.png");
+addWeapon("ＢＷ", "おまっか", "images/n621.png");
+addWeapon("ＢＷ", "かんな", "images/n509.png");
+addWeapon("ＢＷ", "ギロチン", "images/n632.png");
+addWeapon("ＢＷ", "きんたまお", "images/n524.png");
+addWeapon("ＢＷ", "クレミア", "images/n583.png");
+addWeapon("ＢＷ", "くろこ", "images/n551.png");
+addWeapon("ＢＷ", "こころ", "images/n527.png");
+addWeapon("ＢＷ", "コスモス", "images/n606.png");
+addWeapon("ＢＷ", "ことのは", "images/n497.png");
+addWeapon("ＢＷ", "ゴミタイプ", "images/n569.png");
+addWeapon("ＢＷ", "ゴンぞう", "images/n622.png");
+addWeapon("ＢＷ", "ザワールド", "images/n634.png");
+addWeapon("ＢＷ", "ししおう", "images/n514.png");
+addWeapon("ＢＷ", "したうけ", "images/n624.png");
+addWeapon("ＢＷ", "しゅんか", "images/n586.png");
+addWeapon("ＢＷ", "しょういち", "images/n532.png");
+addWeapon("ＢＷ", "しょくパン", "images/n506.png");
+addWeapon("ＢＷ", "シンジロー", "images/n531.png");
+addWeapon("ＢＷ", "だいスター", "images/n512.png");
+addWeapon("ＢＷ", "タケミカ", "images/n522.png");
+addWeapon("ＢＷ", "たける", "images/n590.png");
+addWeapon("ＢＷ", "たろう", "images/n596.png");
+addWeapon("ＢＷ", "ちょんぼ", "images/n616.png");
+addWeapon("ＢＷ", "ちりめん", "images/n602.png");
+addWeapon("ＢＷ", "つくも", "images/n539.png");
+addWeapon("ＢＷ", "デスアイス", "images/n615.png");
+addWeapon("ＢＷ", "ドレアム", "images/n518.png");
+addWeapon("ＢＷ", "どんぐり", "images/n598.png");
+addWeapon("ＢＷ", "ナスカ", "images/n561.png");
+addWeapon("ＢＷ", "ナックル", "images/n613.png");
+addWeapon("ＢＷ", "バイク", "images/n599.png");
+addWeapon("ＢＷ", "はりこみＤ", "images/n504.png");
+addWeapon("ＢＷ", "バリッシュ", "images/n644.png");
+addWeapon("ＢＷ", "ひのたま", "images/n555.png");
+addWeapon("ＢＷ", "ひふみ", "images/n538.png");
+addWeapon("ＢＷ", "ファラオ", "images/n562.png");
+addWeapon("ＢＷ", "ふりてん", "images/n588.png");
+addWeapon("ＢＷ", "ベジータ", "images/n627.png");
+addWeapon("ＢＷ", "ボンバイエ", "images/n556.png");
+addWeapon("ＢＷ", "まっちゃ", "images/n578.png");
+addWeapon("ＢＷ", "マママンマ", "images/n594.png");
+addWeapon("ＢＷ", "みずさき", "images/n607.png");
+addWeapon("ＢＷ", "ミネルバ", "images/n636.png");
+addWeapon("ＢＷ", "ムカムカ", "images/n543.png");
+addWeapon("ＢＷ", "もののけ", "images/n550.png");
+addWeapon("ＢＷ", "モンモン", "images/n547.png");
+addWeapon("ＢＷ", "やから", "images/n560.png");
+addWeapon("ＢＷ", "ヤニカス", "images/n566.png");
+addWeapon("ＢＷ", "ユルノクス", "images/n612.png");
+addWeapon("ＢＷ", "リッパー", "images/n530.png");
+addWeapon("ＢＷ", "レオ", "images/n558.png");
+addWeapon("ＢＷ", "ろうがん", "images/n519.png");
+
 // --- グローバル変数 ---
 let currentCat = "クリスタル";
 let hintCount = 0;
 let lastHitName = null;
+let timerInterval = null;
+let timeElapsed = 0; // 経過時間秒
 
 const input = document.getElementById('nameInput');
 const sendBtn = document.getElementById('sendBtn');
@@ -305,6 +382,8 @@ const status = document.getElementById('status');
 const list = document.getElementById('list');
 const hintArea = document.getElementById('hintArea');
 const tabs = document.querySelectorAll('.tabs button');
+const startBtn = document.getElementById('startBtn');
+const timerDisplay = document.getElementById('timer');
 
 // --- renderList ---
 function renderList(){
@@ -334,7 +413,7 @@ function renderList(){
   const lastDiv = document.querySelector('.last-hit');
   if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth', block:'center'});
 
-  status.textContent=`正解: ${cat.guessed.size} / ${cat.targets.length} ｜ ヒント使用回数: ${hintCount}`;
+  status.textContent=`正解: ${WEAPON_CATEGORIES[currentCat].guessed.size} / ${WEAPON_CATEGORIES[currentCat].targets.length} ｜ ヒント使用回数: ${hintCount}`;
 }
 
 // --- submitName ---
@@ -371,45 +450,91 @@ function showHint(){
   renderList();
 }
 
-// --- giveup ---
-function giveup(){
-  const cat = WEAPON_CATEGORIES[currentCat];
-  cat.targets.forEach(t=>{ if(!cat.guessed.has(t)) cat.giveup.add(t); });
-  hintArea.textContent="ギブアップ！未回答をすべて公開しました。";
-  lastHitName = null;
-  renderList();
+// --- タイマー ---
+function updateTimerDisplay(){
+  const min = String(Math.floor(timeElapsed/60)).padStart(2,'0');
+  const sec = String(timeElapsed%60).padStart(2,'0');
+  timerDisplay.textContent = `${min}:${sec}`;
+}
+
+function startGame(){
+  if(timerInterval) clearInterval(timerInterval);
+  timeElapsed = 0;
+  updateTimerDisplay();
+
+  input.disabled=false;
+  sendBtn.disabled=false;
+  resetBtn.disabled=false;
+  showHintBtn.disabled=false;
+  giveupBtn.disabled=false;
+  startBtn.disabled=true;
+
+  timerInterval = setInterval(()=>{
+    timeElapsed++;
+    updateTimerDisplay();
+
+    // 全カテゴリ全問正解で停止
+    const allCleared = Object.values(WEAPON_CATEGORIES)
+      .every(cat => cat.guessed.size === cat.targets.length);
+    if(allCleared){
+      hintArea.textContent="全カテゴリ全問正解！おめでとう！";
+      input.disabled=true;
+      sendBtn.disabled=true;
+      clearInterval(timerInterval);
+    }
+  },1000);
+}
+
+function stopTimer(){
+  if(timerInterval) clearInterval(timerInterval);
 }
 
 // --- イベント ---
 sendBtn.addEventListener('click',()=>submitName(input.value));
 input.addEventListener('keydown',e=>{if(e.key==='Enter') submitName(input.value);});
-resetBtn.addEventListener('click',()=>{
-  Object.values(WEAPON_CATEGORIES).forEach(c=>{ c.guessed.clear(); c.giveup.clear(); });
-  hintCount=0; lastHitName=null;
-  renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.focus();
-});
 showHintBtn.addEventListener('click', showHint);
-giveupBtn.addEventListener('click', giveup);
+startBtn.addEventListener('click', startGame);
+
 tabs.forEach(btn=>btn.addEventListener('click', ()=>{
   tabs.forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   currentCat = btn.dataset.cat;
-  renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.focus();
+  renderList(); 
+  hintArea.textContent='ヒントは非表示です。'; 
+  input.value=''; 
 }));
 
+// ギブアップ：全カテゴリ未回答を公開
+giveupBtn.addEventListener('click',()=>{
+  Object.values(WEAPON_CATEGORIES).forEach(cat=>{
+    cat.targets.forEach(t=>{
+      if(!cat.guessed.has(t)) cat.giveup.add(t);
+    });
+  });
+  hintArea.textContent="ギブアップ！すべてのカテゴリの未回答を公開しました。";
+  lastHitName = null;
+  renderList();
+  input.disabled=true;
+  sendBtn.disabled=true;
+  stopTimer();
+});
+
+// リセット
+resetBtn.addEventListener('click',()=>{
+  Object.values(WEAPON_CATEGORIES).forEach(c=>{ c.guessed.clear(); c.giveup.clear(); });
+  hintCount=0; lastHitName=null;
+  renderList(); hintArea.textContent='ヒントは非表示です。'; input.value='';
+  input.disabled=true;
+  sendBtn.disabled=true;
+  startBtn.disabled=false;
+  stopTimer();
+  timeElapsed=0;
+  updateTimerDisplay();
+});
+
 renderList();
-input.focus();
+input.disabled=true;
+sendBtn.disabled=true;
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
