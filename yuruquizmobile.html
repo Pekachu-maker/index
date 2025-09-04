@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ゆるすぎポケモンいえるかな</title>
+<style>
+:root{
+  --bg:#fdf4f4;
+  --card:#fff;
+  --accent:#a7f3d0;
+  --button:#34d399;
+  --button-text:#fff;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  background: var(--bg);
+  color: #1f2937;
+  overflow: hidden; /* 全体スクロールを消す */
+}
+
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 8px;
+  height: 94%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.list-container {
+  flex: 1;
+  overflow-y: hidden; /* 内部スクロールを消す */
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 6px;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+h1{margin:2px 0;font-size:18px;}
+.meta{color:#475569;font-size:13px;margin-bottom:6px;}
+.tabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.tabs button{flex:1;padding:6px;border:0;background:#64748b;color:white;cursor:pointer;border-radius:12px;}
+.tabs button.active{background:var(--accent); color:#065f46;}
+.controls{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;align-items:center;}
+input[type=text]{flex:1;padding:6px 8px;border-radius:12px;border:1px solid #e2e8f0;font-size:14px;min-width:160px;}
+button{padding:6px 12px;font-size:14px;height:36px;cursor:pointer;border-radius:12px;border:0;transition:background 0.2s;}
+button.sendBtn{background:var(--button);color:var(--button-text);}
+button.sendBtn:hover{background:#10b981;}
+button.secondary{background:#64748b;color:white;}
+button.secondary:hover{background:#475569;}
+button.hintBtn{background:#fcd34d;color:#92400e;}
+button.hintBtn:hover{background:#fbbf24;}
+button#startBtn{background:#3b82f6;color:white;}
+button#startBtn:hover{background:#2563eb;}
+button.giveupBtn{background:#f87171;color:white;}
+button.giveupBtn:hover{animation: dangerFlash 0.6s infinite alternate;}
+@keyframes dangerFlash {0% { background:#f87171; color:white; }100% { background:#dc2626; color:#ffe4e6; }}
+.hint{margin-bottom:6px;background:#fefce8;padding:6px;border-radius:8px;border:1px solid #fde68a;color:#92400e;}
+.status{margin-bottom:6px;color:#334155;}
+.list-container{flex:1;overflow-y:auto;}
+.list{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px;border-radius:8px;background:#f8fafc;}
+.item{padding:6px;border-radius:8px;text-align:center;border:1px dashed #e6edf2;background:#f8fafc;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.item.hit{background:linear-gradient(90deg,#d1fae5,#a7f3d0);border:1px solid #6ee7b7;}
+.item.last-hit{box-shadow:0 0 6px 2px #34d399;}
+.item.giveup{background:#fde2e2;border:1px solid #fca5a5;}
+.item img{margin-left:6px;width:40px;height:40px;}
+.footer{margin-top:12px;font-size:13px;color:#64748b;}
+#timer{margin-left:8px;font-weight:bold;}
+
+/* --- モバイル用レスポンシブ --- */
+@media (max-width: 640px) {
+  .list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .controls button,
+  .controls input[type=text] {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tabs button {
+    flex: 1 1 auto;
+  }
+
+  .item img {
+    width: 30px;
+    height: 30px;
+    margin-left: 4px;
+  }
+
+  .card {
+    padding: 8px;
+  }
+
+  h1 {
+    font-size: 16px;
+  }
+
+  .meta {
+    font-size: 12px;
+  }
+
+  .status {
+    font-size: 12px;
+  }
+
+  .footer {
+    font-size: 12px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>ゆるすぎポケモンいえるかな</h1>
+    <div class="meta">回答はニックネームと完全一致で入力。ギブアップすると残りがすべて表示されます</div>
+
+    <!-- 開始ボタンとタイマー -->
+    <div class="controls">
+      <button id="startBtn" class="sendBtn">開始</button>
+      <span id="timer">00:00</span>
+    </div>
+
+    <!-- タブ -->
+    <div class="tabs">
+      <button data-cat="クリスタル" class="active">クリスタル</button>
+      <button data-cat="エメラルド">エメラルド</button>
+      <button data-cat="プラチナ">プラチナ</button>
+      <button data-cat="ＢＷ">ＢＷ</button>
+    </div>
+
+    <!-- 入力・操作ボタン -->
+    <div class="controls">
+      <input id="nameInput" type="text" placeholder="ここに入力 → Enter または 送信" autocomplete="off" />
+      <button id="sendBtn" class="sendBtn">送信</button>
+      <button id="resetBtn" class="secondary">リセット</button>
+      <button id="showHintBtn" class="hintBtn">ヒント</button>
+      <button id="showHint2Btn" class="hintBtn">ヒント2</button>
+      <button id="giveupBtn" class="giveupBtn">ギブアップ</button>
+    </div>
+
+    <div class="hint" id="hintArea">ヒントは非表示です。「ヒントを見る」ボタンを押してください。</div>
+    <div class="status" id="status">正解: 0 / 0 ｜ ヒント使用回数: 0</div>
+
+    <div class="list-container">
+      <div class="list" id="list"></div>
+    </div>
+
+    <div class="footer">木の実は熟成する</div>
+  </div>
+</div>
+
+<script>
+// --- データ ---
+const WEAPON_CATEGORIES = {
+  "クリスタル": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
+  "エメラルド": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
+  "プラチナ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
+  "ＢＷ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
+};
+function addWeapon(catName, weaponName, imgPath="") {
+  const cat = WEAPON_CATEGORIES[catName];
+  if(!cat) return;
+  if(!cat.targets.includes(weaponName)) cat.targets.push(weaponName);
+  if(imgPath) cat.images[weaponName] = imgPath;
+}
+// （ここに addWeapon で各カテゴリのポケモンを追加する部分を省略しています。元のコードの通りです）
+
+addWeapon("クリスタル", "あいぼう", "images/n23.png");
+addWeapon("クリスタル", "あかつゆ", "images/n218.png");
+addWeapon("クリスタル", "アシタカ", "images/n87.png");
+addWeapon("クリスタル", "あみタイツ", "images/n73.png");
+addWeapon("クリスタル", "アンカルジ", "images/n78.png");
+addWeapon("クリスタル", "アンタレス", "images/n166.png");
+addWeapon("クリスタル", "いがわけい", "images/n126.png");
+addWeapon("クリスタル", "いやしんぼ", "images/n12.png");
+addWeapon("クリスタル", "いんじゃ", "images/n114.png");
+addWeapon("クリスタル", "インドラ", "images/n178.png");
+addWeapon("クリスタル", "うぱあああ", "images/n194.png");
+addWeapon("クリスタル", "エドガー", "images/n109.png");
+addWeapon("クリスタル", "エロめマン", "images/n97.png");
+addWeapon("クリスタル", "オシャパマ", "images/n200.png");
+addWeapon("クリスタル", "おやじ", "images/n201.png");
+addWeapon("クリスタル", "カイケツ", "images/n41.png");
+addWeapon("クリスタル", "カオリン", "images/n31.png");
+addWeapon("クリスタル", "カニ！！！", "images/n99.png");
+addWeapon("クリスタル", "カバビンゴ", "images/n143.png");
+addWeapon("クリスタル", "がんだら", "images/n229.png");
+addWeapon("クリスタル", "ぎゅうた", "images/n128.png");
+addWeapon("クリスタル", "きょうこ", "images/n122.png");
+addWeapon("クリスタル", "きんたまお", "images/n185.png");
+addWeapon("クリスタル", "きんたまこ", "images/n102.png");
+addWeapon("クリスタル", "きんにく", "images/n66.png");
+addWeapon("クリスタル", "クールー", "images/n215.png");
+addWeapon("クリスタル", "グラーニャ", "images/n51.png");
+addWeapon("クリスタル", "くろマル", "images/n167.png");
+addWeapon("クリスタル", "げっこう", "images/n43.png");
+addWeapon("クリスタル", "ゴゴーゴゴ", "images/n112.png");
+addWeapon("クリスタル", "こしあん", "images/n171.png");
+addWeapon("クリスタル", "コッペパン", "images/n48.png");
+addWeapon("クリスタル", "ことね", "images/n92.png");
+addWeapon("クリスタル", "さいきょう", "images/n247.png");
+addWeapon("クリスタル", "さくらこ", "images/n241.png");
+addWeapon("クリスタル", "さだはる", "images/n130.png");
+addWeapon("クリスタル", "さるこさん", "images/n190.png");
+addWeapon("クリスタル", "ジョーカー", "images/n132.png");
+addWeapon("クリスタル", "しょりはん", "images/n95.png");
+addWeapon("クリスタル", "セイリュウ", "images/n119.png");
+addWeapon("クリスタル", "ゼロスリー", "images/n85.png");
+addWeapon("クリスタル", "たくろう", "images/n175.png");
+addWeapon("クリスタル", "ダディ", "images/n54.png");
+addWeapon("クリスタル", "タルメガイ", "images/n90.png");
+addWeapon("クリスタル", "だんな", "images/n207.png");
+addWeapon("クリスタル", "チャンプ", "images/n17.png");
+addWeapon("クリスタル", "チュンこ", "images/n21.png");
+addWeapon("クリスタル", "ていとく", "images/n232.png");
+addWeapon("クリスタル", "とこやみ", "images/n198.png");
+addWeapon("クリスタル", "ながぶち", "images/n193.png");
+addWeapon("クリスタル", "なるかみ", "images/n125.png");
+addWeapon("クリスタル", "ねここ", "images/n53.png");
+addWeapon("クリスタル", "ネッシー", "images/n213.png");
+addWeapon("クリスタル", "ネリネリ", "images/n46.png");
+addWeapon("クリスタル", "はこびや", "images/n225.png");
+addWeapon("クリスタル", "ハングリー", "images/n39.png");
+addWeapon("クリスタル", "ビートバン", "images/n131.png");
+addWeapon("クリスタル", "ビクトリー", "images/n197.png");
+addWeapon("クリスタル", "フーディン", "images/n64.png");
+addWeapon("クリスタル", "ブタたん", "images/n108.png");
+addWeapon("クリスタル", "ヘドロこ", "images/n89.png");
+addWeapon("クリスタル", "ほーけい", "images/n69.png");
+addWeapon("クリスタル", "ホープ", "images/n104.png");
+addWeapon("クリスタル", "ポコリータ", "images/n153.png");
+addWeapon("クリスタル", "ボンバー！", "images/n205.png");
+addWeapon("クリスタル", "ムラマサ", "images/n123.png");
+addWeapon("クリスタル", "メシア", "images/n188.png");
+addWeapon("クリスタル", "もうええわ", "images/n148.png");
+addWeapon("クリスタル", "ヤバいヤツ", "images/n192.png");
+addWeapon("クリスタル", "ララひめ", "images/n19.png");
+addWeapon("クリスタル", "リンダ", "images/n210.png");
+addWeapon("クリスタル", "ロジャー", "images/n226.png");
+addWeapon("クリスタル", "ロモやん", "images/n60.png");
+
+addWeapon("エメラルド", "Ｒ・Ｔ", "images/n280.png");
+addWeapon("エメラルド", "アーティス", "images/n314.png");
+addWeapon("エメラルド", "いぶしぎん", "images/n352.png");
+addWeapon("エメラルド", "いみご", "images/n266.png");
+addWeapon("エメラルド", "おおあな", "images/n346.png");
+addWeapon("エメラルド", "おてんと", "images/n338.png");
+addWeapon("エメラルド", "おむすび", "images/n322.png");
+addWeapon("エメラルド", "かくしご", "images/n268.png");
+addWeapon("エメラルド", "ギガゾンビ", "images/n344.png");
+addWeapon("エメラルド", "きんたまお", "images/n299.png");
+addWeapon("エメラルド", "くりのすけ", "images/n274.png");
+addWeapon("エメラルド", "くわまん", "images/n312.png");
+addWeapon("エメラルド", "こうてい", "images/n202.png");
+addWeapon("エメラルド", "ココ", "images/n301.png");
+addWeapon("エメラルド", "ゴソソソ", "images/n316.png");
+addWeapon("エメラルド", "ゴロゴロ", "images/n258.png");
+addWeapon("エメラルド", "サイカ", "images/n359.png");
+addWeapon("エメラルド", "サスケ", "images/n290.png");
+addWeapon("エメラルド", "サツキング", "images/n289.png");
+addWeapon("エメラルド", "さみだれ", "images/n227.png");
+addWeapon("エメラルド", "サムライ", "images/n309.png");
+addWeapon("エメラルド", "さやっち", "images/n351.png");
+addWeapon("エメラルド", "サラサ", "images/n28.png");
+addWeapon("エメラルド", "シェルル", "images/n366.png");
+addWeapon("エメラルド", "ジミヘン", "images/n74.png");
+addWeapon("エメラルド", "ジャック", "images/n302.png");
+addWeapon("エメラルド", "シュシュ", "images/n285.png");
+addWeapon("エメラルド", "しょうぐん", "images/n304.png");
+addWeapon("エメラルド", "ジョニー", "images/n340.png");
+addWeapon("エメラルド", "すけべえ", "images/n271.png");
+addWeapon("エメラルド", "ストリーム", "images/n278.png");
+addWeapon("エメラルド", "スブタン", "images/n325.png");
+addWeapon("エメラルド", "スムージー", "images/n357.png");
+addWeapon("エメラルド", "ソラシド", "images/n276.png");
+addWeapon("エメラルド", "たかどこ", "images/n183.png");
+addWeapon("エメラルド", "たしろ", "images/n311.png");
+addWeapon("エメラルド", "ツッパリ", "images/n296.png");
+addWeapon("エメラルド", "ツバサ", "images/n127.png");
+addWeapon("エメラルド", "でっかち", "images/n369.png");
+addWeapon("エメラルド", "てるてる", "images/n354.png");
+addWeapon("エメラルド", "トドドとど", "images/n365.png");
+addWeapon("エメラルド", "なむあび", "images/n355.png");
+addWeapon("エメラルド", "ノア", "images/n333.png");
+addWeapon("エメラルド", "ハコワレ", "images/n330.png");
+addWeapon("エメラルド", "ババボバボ", "images/n100.png");
+addWeapon("エメラルド", "バビデブー", "images/n313.png");
+addWeapon("エメラルド", "ひそひそ", "images/n294.png");
+addWeapon("エメラルド", "ひよりさん", "images/n263.png");
+addWeapon("エメラルド", "ふーさん", "images/n358.png");
+addWeapon("エメラルド", "プラマイナ", "images/n82.png");
+addWeapon("エメラルド", "ポカチョウ", "images/n25.png");
+addWeapon("エメラルド", "ポチ", "images/n262.png");
+addWeapon("エメラルド", "ポニー", "images/n303.png");
+addWeapon("エメラルド", "ぽんぽん", "images/n331.png");
+addWeapon("エメラルド", "ミスター", "images/n203.png");
+addWeapon("エメラルド", "メガロニア", "images/n319.png");
+addWeapon("エメラルド", "やまだ", "images/n327.png");
+addWeapon("エメラルド", "ユバーバ", "images/n324.png");
+addWeapon("エメラルド", "よしはる", "images/n336.png");
+addWeapon("エメラルド", "ラオウ", "images/n321.png");
+addWeapon("エメラルド", "リンリン", "images/n253.png");
+
+addWeapon("プラチナ", "ＧＡＣＫＴ", "images/n334.png");
+addWeapon("プラチナ", "ＬＥＤ", "images/n457.png");
+addWeapon("プラチナ", "ＹＡＧＯ", "images/n307.png");
+addWeapon("プラチナ", "あごだし", "images/n224.png");
+addWeapon("プラチナ", "アザゼル", "images/n229.png");
+addWeapon("プラチナ", "あっかんべ", "images/n108.png");
+addWeapon("プラチナ", "アマツカミ", "images/n418.png");
+addWeapon("プラチナ", "アリエル", "images/n427.png");
+addWeapon("プラチナ", "いっぺい", "images/n73.png");
+addWeapon("プラチナ", "うりぼう", "images/n221.png");
+addWeapon("プラチナ", "おおあたり", "images/n214.png");
+addWeapon("プラチナ", "おおたに", "images/n448.png");
+addWeapon("プラチナ", "おくさり", "images/n455.png");
+addWeapon("プラチナ", "おっさん", "images/n112.png");
+addWeapon("プラチナ", "おナベ", "images/n279.png");
+addWeapon("プラチナ", "おばば", "images/n111.png");
+addWeapon("プラチナ", "おんみょう", "images/n465.png");
+addWeapon("プラチナ", "ガオー", "images/n195.png");
+addWeapon("プラチナ", "かげろう", "images/n193.png");
+addWeapon("プラチナ", "かちょう", "images/n26.png");
+addWeapon("プラチナ", "ガフエル", "images/n64.png");
+addWeapon("プラチナ", "かまくら", "images/n460.png");
+addWeapon("プラチナ", "ガラドシ", "images/n130.png");
+addWeapon("プラチナ", "ギグガＧＧ", "images/n487.png");
+addWeapon("プラチナ", "キラー", "images/n403.png");
+addWeapon("プラチナ", "きりまる", "images/n123.png");
+addWeapon("プラチナ", "きんたまお", "images/n408.png");
+addWeapon("プラチナ", "くさぁ！！", "images/n414.png");
+addWeapon("プラチナ", "グラライガ", "images/n207.png");
+addWeapon("プラチナ", "クロノバス", "images/n118.png");
+addWeapon("プラチナ", "こたつ", "images/n215.png");
+addWeapon("プラチナ", "ことぶき", "images/n433.png");
+addWeapon("プラチナ", "コモン", "images/n74.png");
+addWeapon("プラチナ", "サツキ", "images/n359.png");
+addWeapon("プラチナ", "さるお", "images/n424.png");
+addWeapon("プラチナ", "サルヒコ", "images/n390.png");
+addWeapon("プラチナ", "しそ", "images/n185.png");
+addWeapon("プラチナ", "したまつげ", "images/n458.png");
+addWeapon("プラチナ", "すけばん", "images/n443.png");
+addWeapon("プラチナ", "スココルピ", "images/n452.png");
+addWeapon("プラチナ", "スロカス", "images/n36.png");
+addWeapon("プラチナ", "ゼロ", "images/n92.png");
+addWeapon("プラチナ", "ダーティー", "images/n441.png");
+addWeapon("プラチナ", "ダイナソー", "images/n203.png");
+addWeapon("プラチナ", "だいひょう", "images/n125.png");
+addWeapon("プラチナ", "だいふく", "images/n242.png");
+addWeapon("プラチナ", "たくろう", "images/n175.png");
+addWeapon("プラチナ", "だにょーら", "images/n269.png");
+addWeapon("プラチナ", "タマーキン", "images/n476.png");
+addWeapon("プラチナ", "ツーリスト", "images/n77.png");
+addWeapon("プラチナ", "トコナッツ", "images/n357.png");
+addWeapon("プラチナ", "にしなり", "images/n454.png");
+addWeapon("プラチナ", "にしまつや", "images/n315.png");
+addWeapon("プラチナ", "ヌッシ", "images/n340.png");
+addWeapon("プラチナ", "パーシバル", "images/n282.png");
+addWeapon("プラチナ", "ハチみつこ", "images/n416.png");
+addWeapon("プラチナ", "パパス", "images/n54.png");
+addWeapon("プラチナ", "バビブベボ", "images/n126.png");
+addWeapon("プラチナ", "ピース", "images/n184.png");
+addWeapon("プラチナ", "ビバディ", "images/n399.png");
+addWeapon("プラチナ", "ひびき", "images/n421.png");
+addWeapon("プラチナ", "ヒョワーク", "images/n95.png");
+addWeapon("プラチナ", "ビル", "images/n66.png");
+addWeapon("プラチナ", "ぴるぷぷ", "images/n396.png");
+addWeapon("プラチナ", "ファー", "images/n136.png");
+addWeapon("プラチナ", "ぶちょう", "images/n417.png");
+addWeapon("プラチナ", "プラズム", "images/n479.png");
+addWeapon("プラチナ", "みかさん", "images/n122.png");
+addWeapon("プラチナ", "ミスト", "images/n355.png");
+addWeapon("プラチナ", "みゆき", "images/n402.png");
+addWeapon("プラチナ", "むこうみず", "images/n82.png");
+addWeapon("プラチナ", "ももつむり", "images/n422.png");
+addWeapon("プラチナ", "ゃ", "images/n41.png");
+addWeapon("プラチナ", "ゆきのこ", "images/n478.png");
+addWeapon("プラチナ", "レジドミラ", "images/n436.png");
+addWeapon("プラチナ", "ローポリ", "images/n233.png");
+
+addWeapon("ＢＷ", "ＫＭＲ", "images/n573.png");
+addWeapon("ＢＷ", "あけぼの", "images/n626.png");
+addWeapon("ＢＷ", "アパレル", "images/n541.png");
+addWeapon("ＢＷ", "イーアル", "images/n619.png");
+addWeapon("ＢＷ", "ええやつ", "images/n516.png");
+addWeapon("ＢＷ", "エボシさま", "images/n593.png");
+addWeapon("ＢＷ", "エモンゴ", "images/n587.png");
+addWeapon("ＢＷ", "おいも", "images/n618.png");
+addWeapon("ＢＷ", "おうじ", "images/n631.png");
+addWeapon("ＢＷ", "おじさん", "images/n642.png");
+addWeapon("ＢＷ", "おじゃる", "images/n535.png");
+addWeapon("ＢＷ", "おひめ♪", "images/n549.png");
+addWeapon("ＢＷ", "おひる", "images/n581.png");
+addWeapon("ＢＷ", "おまっか", "images/n621.png");
+addWeapon("ＢＷ", "かんな", "images/n509.png");
+addWeapon("ＢＷ", "ギロチン", "images/n632.png");
+addWeapon("ＢＷ", "きんたまお", "images/n524.png");
+addWeapon("ＢＷ", "クレミア", "images/n583.png");
+addWeapon("ＢＷ", "くろこ", "images/n551.png");
+addWeapon("ＢＷ", "こころ", "images/n527.png");
+addWeapon("ＢＷ", "コスモス", "images/n606.png");
+addWeapon("ＢＷ", "ことのは", "images/n497.png");
+addWeapon("ＢＷ", "ゴミタイプ", "images/n569.png");
+addWeapon("ＢＷ", "ゴンぞう", "images/n622.png");
+addWeapon("ＢＷ", "ザワールド", "images/n634.png");
+addWeapon("ＢＷ", "ししおう", "images/n514.png");
+addWeapon("ＢＷ", "したうけ", "images/n624.png");
+addWeapon("ＢＷ", "しゅんか", "images/n586.png");
+addWeapon("ＢＷ", "しょういち", "images/n532.png");
+addWeapon("ＢＷ", "しょくパン", "images/n506.png");
+addWeapon("ＢＷ", "シンジロー", "images/n531.png");
+addWeapon("ＢＷ", "だいスター", "images/n512.png");
+addWeapon("ＢＷ", "タケミカ", "images/n522.png");
+addWeapon("ＢＷ", "たける", "images/n590.png");
+addWeapon("ＢＷ", "たろう", "images/n596.png");
+addWeapon("ＢＷ", "ちょんぼ", "images/n616.png");
+addWeapon("ＢＷ", "ちりめん", "images/n602.png");
+addWeapon("ＢＷ", "つくも", "images/n539.png");
+addWeapon("ＢＷ", "デスアイス", "images/n615.png");
+addWeapon("ＢＷ", "ドレアム", "images/n518.png");
+addWeapon("ＢＷ", "どんぐり", "images/n598.png");
+addWeapon("ＢＷ", "ナスカ", "images/n561.png");
+addWeapon("ＢＷ", "ナックル", "images/n613.png");
+addWeapon("ＢＷ", "バイク", "images/n599.png");
+addWeapon("ＢＷ", "はりこみＤ", "images/n504.png");
+addWeapon("ＢＷ", "バリッシュ", "images/n644.png");
+addWeapon("ＢＷ", "ひのたま", "images/n555.png");
+addWeapon("ＢＷ", "ひふみ", "images/n538.png");
+addWeapon("ＢＷ", "ファラオ", "images/n562.png");
+addWeapon("ＢＷ", "ふりてん", "images/n588.png");
+addWeapon("ＢＷ", "ベジータ", "images/n627.png");
+addWeapon("ＢＷ", "ボンバイエ", "images/n556.png");
+addWeapon("ＢＷ", "まっちゃ", "images/n578.png");
+addWeapon("ＢＷ", "マママンマ", "images/n594.png");
+addWeapon("ＢＷ", "みずさき", "images/n607.png");
+addWeapon("ＢＷ", "ミネルバ", "images/n636.png");
+addWeapon("ＢＷ", "ムカムカ", "images/n543.png");
+addWeapon("ＢＷ", "もののけ", "images/n550.png");
+addWeapon("ＢＷ", "モンモン", "images/n547.png");
+addWeapon("ＢＷ", "やから", "images/n560.png");
+addWeapon("ＢＷ", "ヤニカス", "images/n566.png");
+addWeapon("ＢＷ", "ユルノクス", "images/n612.png");
+addWeapon("ＢＷ", "リッパー", "images/n530.png");
+addWeapon("ＢＷ", "レオ", "images/n558.png");
+addWeapon("ＢＷ", "ろうがん", "images/n519.png");
+
+// --- グローバル ---
+let currentCat="クリスタル", hintCount=0, lastHitName=null;
+let timerInterval=null, timeElapsed=0;
+const input=document.getElementById('nameInput');
+const sendBtn=document.getElementById('sendBtn');
+const resetBtn=document.getElementById('resetBtn');
+const showHintBtn=document.getElementById('showHintBtn');
+const showHint2Btn=document.getElementById('showHint2Btn');
+const giveupBtn=document.getElementById('giveupBtn');
+const status=document.getElementById('status');
+const list=document.getElementById('list');
+const hintArea=document.getElementById('hintArea');
+const tabs=document.querySelectorAll('.tabs button');
+const startBtn=document.getElementById('startBtn');
+const timerDisplay=document.getElementById('timer');
+
+// --- タイマー ---
+function updateTimerDisplay(){
+  const min=String(Math.floor(timeElapsed/60)).padStart(2,'0');
+  const sec=String(timeElapsed%60).padStart(2,'0');
+  timerDisplay.textContent=`${min}:${sec}`;
+}
+function startTimer(){
+  stopTimer();
+  timerInterval=setInterval(()=>{
+    timeElapsed++;
+    updateTimerDisplay();
+    const allCleared=Object.values(WEAPON_CATEGORIES)
+      .every(cat=>cat.guessed.size===cat.targets.length);
+    if(allCleared){
+      hintArea.textContent="全カテゴリ全問正解！おめでとう！";
+      input.disabled=true; sendBtn.disabled=true; stopTimer();
+    }
+  },1000);
+}
+function stopTimer(){if(timerInterval) clearInterval(timerInterval); timerInterval=null;}
+
+// --- renderList ---
+function renderList(){
+  list.innerHTML='';
+  const cat=WEAPON_CATEGORIES[currentCat];
+  cat.targets.forEach(t=>{
+    const div=document.createElement('div');
+    let cls='item';
+    if(cat.guessed.has(t)) cls+=' hit';
+    else if(cat.giveup.has(t)) cls+=' giveup';
+    if(t===lastHitName && cat.guessed.has(t)) cls+=' last-hit';
+    div.className=cls;
+    div.style.justifyContent='center';
+    div.innerHTML=(cat.guessed.has(t)||cat.giveup.has(t))?t+'<img src="'+(cat.images[t]||'')+'">' : '???';
+    list.appendChild(div);
+  });
+  const lastDiv=document.querySelector('.last-hit');
+  if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth',block:'center'});
+  status.textContent=`正解: ${cat.guessed.size} / ${cat.targets.length} ｜ ヒント使用回数: ${hintCount}`;
+}
+
+// --- submitName ---
+function submitName(raw){
+  const n=raw.trim(); if(!n) return;
+  const cat=WEAPON_CATEGORIES[currentCat];
+  if(cat.targets.includes(n)){
+    if(!cat.guessed.has(n)){cat.guessed.add(n); lastHitName=n; hintArea.textContent=`${n} を ${currentCat} カテゴリで正解！`;}
+    else hintArea.textContent=`${n} はすでに正解済みです。`;
+  } else hintArea.textContent='不正解です。';
+  renderList(); input.value=''; input.focus();
+}
+
+// --- ヒント ---
+function showHint(){
+  const cat=WEAPON_CATEGORIES[currentCat];
+  const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t));
+  if(unguessed.length===0){ hintArea.textContent="すべて回答済み！"; return; }
+  const choice=unguessed[Math.floor(Math.random()*unguessed.length)];
+  hintArea.textContent=`ヒント: 未回答の${currentCat}の一つ 最初の文字は「${choice[0]}」`;
+  hintCount++; renderList();
+}
+
+// --- ヒント2（シルエット画像） ---
+function showHint2(){
+  const cat=WEAPON_CATEGORIES[currentCat];
+  const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t));
+  if(unguessed.length===0){ hintArea.textContent="すべて回答済み！"; return; }
+  const choice=unguessed[Math.floor(Math.random()*unguessed.length)];
+  const imgSrc=cat.images[choice];
+  if(!imgSrc){ hintArea.textContent=`ヒント2: 未回答の${currentCat}の一つ`; return; }
+  hintArea.innerHTML=`ヒント2: 未回答の${currentCat}の一つ<br>
+  <img src="${imgSrc}" style="filter: brightness(0) saturate(100%); width:60px; height:60px;">`;
+  hintCount++; renderList();
+}
+
+// --- ギブアップ ---
+giveupBtn.addEventListener('click',()=>{
+  if(!confirm("本当にギブアップしますか？")) return;
+  Object.values(WEAPON_CATEGORIES).forEach(cat=>{
+    cat.targets.forEach(t=>{ if(!cat.guessed.has(t)) cat.giveup.add(t); });
+  });
+  hintArea.textContent="ギブアップ！すべてのカテゴリの未回答を公開しました。";
+  lastHitName=null;
+  renderList();
+  input.disabled=true; sendBtn.disabled=true;
+  stopTimer();
+});
+
+// --- イベント ---
+sendBtn.addEventListener('click',()=>submitName(input.value));
+input.addEventListener('keydown',e=>{if(e.key==='Enter') submitName(input.value);});
+resetBtn.addEventListener('click',()=>{
+  if(!confirm("リセットしますか？")) return;
+  Object.values(WEAPON_CATEGORIES).forEach(c=>{
+    c.guessed.clear();
+    c.giveup.clear();
+  });
+  hintCount=0; 
+  lastHitName=null;
+  renderList(); 
+  hintArea.textContent='ヒントは非表示です。'; 
+  input.value='';
+  input.disabled=true; 
+  sendBtn.disabled=true; 
+  startBtn.disabled=false;
+  stopTimer(); 
+  timeElapsed=0; 
+  updateTimerDisplay();
+});
+showHintBtn.addEventListener('click',showHint);
+showHint2Btn.addEventListener('click',showHint2);
+tabs.forEach(btn=>btn.addEventListener('click',()=>{
+  tabs.forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat=btn.dataset.cat;
+  renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.focus();
+}));
+startBtn.addEventListener('click',()=>{
+  input.disabled=false; sendBtn.disabled=false; resetBtn.disabled=false;
+  showHintBtn.disabled=false; showHint2Btn.disabled=false; giveupBtn.disabled=false;
+  startBtn.disabled=true; timeElapsed=0; updateTimerDisplay(); startTimer();
+});
+
+renderList();
+input.disabled=true; sendBtn.disabled=true;
+</script>
+</body>
+</html>
