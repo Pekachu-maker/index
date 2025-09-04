@@ -528,11 +528,23 @@ giveupBtn.addEventListener('click',()=>{
 sendBtn.addEventListener('click',()=>submitName(input.value));
 input.addEventListener('keydown',e=>{if(e.key==='Enter') submitName(input.value);});
 resetBtn.addEventListener('click',()=>{
-  Object.values(WEAPON_CATEGORIES).forEach(c=>{c.guessed.clear(); c.giveup.clear();});
-  hintCount=0; lastHitName=null;
-  renderList(); hintArea.textContent='ヒントは非表示です。'; input.value='';
-  input.disabled=true; sendBtn.disabled=true; startBtn.disabled=false;
-  stopTimer(); timeElapsed=0; updateTimerDisplay();
+  if(!confirm("リセットしますか？")) return;  // ←確認ダイアログ追加
+
+  Object.values(WEAPON_CATEGORIES).forEach(c=>{
+    c.guessed.clear();
+    c.giveup.clear();
+  });
+  hintCount=0; 
+  lastHitName=null;
+  renderList(); 
+  hintArea.textContent='ヒントは非表示です。'; 
+  input.value='';
+  input.disabled=true; 
+  sendBtn.disabled=true; 
+  startBtn.disabled=false;
+  stopTimer(); 
+  timeElapsed=0; 
+  updateTimerDisplay();
 });
 showHintBtn.addEventListener('click',showHint);
 showHint2Btn.addEventListener('click',showHint2);
@@ -553,4 +565,3 @@ input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
-
