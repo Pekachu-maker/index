@@ -115,7 +115,7 @@ button.giveupBtn:hover{animation: dangerFlash 0.6s infinite alternate;}
       <button id="giveupBtn" class="giveupBtn">ギブアップ</button>
     </div>
 
-    <div class="hint" id="hintArea">ヒントは非表示です。「ヒントを見る」ボタンを押してください。</div>
+    <div class="hint" id="hintArea">ヒントは非表示です。「ヒント」ボタンを押してください。</div>
     <div class="status" id="status">正解: 0 / 0 ｜ ヒント使用回数: 0</div>
 
     <div class="list-container">
@@ -140,7 +140,7 @@ function addWeapon(catName, weaponName, imgPath="") {
   if(!cat.targets.includes(weaponName)) cat.targets.push(weaponName);
   if(imgPath) cat.images[weaponName] = imgPath;
 }
-// サンプル
+// めんどい入力
 addWeapon("クリスタル", "あいぼう", "images/n23.png");
 addWeapon("クリスタル", "あかつゆ", "images/n218.png");
 addWeapon("クリスタル", "アシタカ", "images/n87.png");
@@ -507,22 +507,21 @@ function submitName(raw){
       hintArea.textContent=`${n} を ${currentCat} カテゴリで正解！`;
       renderList();
 
-      // ★ 特別演出（ひびき）
+      // ひびき
       if(n==="ひびき"){
         const specialImg = document.querySelector(`.item.hit img[src*="n421.png"]`);
         if(specialImg){
           // 1秒後にアニメーション開始
           setTimeout(()=>{
             specialImg.style.transition = "filter 2s linear, opacity 2s linear";
-            specialImg.style.filter = "brightness(300%)"; // 白く飛ばす
-            specialImg.style.opacity = "1"; // 不透明のままでもOK
-
-            // 2秒後に完全切替
+            specialImg.style.filter = "brightness(300%)"; 
+            specialImg.style.opacity = "1";
+            
 setTimeout(()=>{
   specialImg.src = "images/n421S.png";
   specialImg.style.transition = "none";
   specialImg.style.filter = "brightness(100%)";
-  specialChanged = true; // ←ここでフラグをオン
+  specialChanged = true; // フラグをオン
 }, 2000);
           },1000);
         }
@@ -586,7 +585,7 @@ resetBtn.addEventListener('click', () => {
   hintCount = 0; 
   lastHitName = null;
 
-  // ★ 特別フラグもリセット
+  // ひびきリセット
   specialChanged = false;
 
   renderList(); 
@@ -618,3 +617,4 @@ input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
+
