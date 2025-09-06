@@ -450,15 +450,14 @@ const tabs=document.querySelectorAll('.tabs button');
 const startBtn=document.getElementById('startBtn');
 const timerDisplay=document.getElementById('timer');
 
-// --- ここに追加 --- 
 function normalizeInput(str){
   if(!str) return "";
   return str
-    .replace(/[・\.]/g, "")     // 中黒・ドットを削除
-    .replace(/[Ａ-Ｚ]/g, s =>   // 全角英字を半角に変換
+    .replace(/[・\.]/g, "") 
+    .replace(/[Ａ-Ｚ]/g, s =>
         String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
     )
-    .trim();                    // 前後の空白を削除
+    .trim();
 }
 
 // --- タイマー ---
@@ -526,7 +525,6 @@ function submitName(raw){
   if(!n) return;
   const cat = WEAPON_CATEGORIES[currentCat];
 
-  // 正解の元の答えを取得
   const answer = cat.targets.find(t => normalizeInput(t) === n);
 
   if(answer){
@@ -648,3 +646,4 @@ input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
+
