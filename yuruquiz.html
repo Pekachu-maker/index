@@ -18,7 +18,7 @@ html, body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
   background: var(--bg);
   color: #1f2937;
-  overflow: hidden; /* 全体スクロールを消す */
+  overflow: hidden; /* スクロールを消す */
 }
 
 .wrap {
@@ -83,6 +83,17 @@ button.giveupBtn:hover{animation: dangerFlash 0.6s infinite alternate;}
 .item img{margin-left:6px;width:40px;height:40px;}
 .footer{margin-top:12px;font-size:13px;color:#64748b;}
 #timer{margin-left:8px;font-weight:bold;}
+
+// ボタン押し込み
+button {
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+button:active {
+  transform: scale(0.95);
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.4);
+}
+
 </style>
 </head>
 <body>
@@ -140,7 +151,7 @@ function addWeapon(catName, weaponName, imgPath="") {
   if(!cat.targets.includes(weaponName)) cat.targets.push(weaponName);
   if(imgPath) cat.images[weaponName] = imgPath;
 }
-// めんどい入力
+// めんどいやつ
 addWeapon("クリスタル", "あいぼう", "images/n23.png");
 addWeapon("クリスタル", "あかつゆ", "images/n218.png");
 addWeapon("クリスタル", "アシタカ", "images/n87.png");
@@ -476,7 +487,7 @@ function renderList(){
     div.className = cls;
     div.style.justifyContent = 'center';
 
-    // ★ ここで「ひびき」の場合はフラグに応じて画像切り替え
+    // ひびきフラグ替え
     if(cat.guessed.has(t) || cat.giveup.has(t)){
       if(t === "ひびき" && specialChanged){
         div.innerHTML = t + '<img src="images/n421S.png">';
@@ -508,24 +519,30 @@ function submitName(raw){
       renderList();
 
       // ひびき
-      if(n==="ひびき"){
-        const specialImg = document.querySelector(`.item.hit img[src*="n421.png"]`);
-        if(specialImg){
-          // 1秒後にアニメーション開始
-          setTimeout(()=>{
-            specialImg.style.transition = "filter 2s linear, opacity 2s linear";
-            specialImg.style.filter = "brightness(300%)"; 
-            specialImg.style.opacity = "1";
-            
-setTimeout(()=>{
-  specialImg.src = "images/n421S.png";
-  specialImg.style.transition = "none";
-  specialImg.style.filter = "brightness(100%)";
-  specialChanged = true; // フラグをオン
-}, 2000);
-          },1000);
-        }
-      }
+if(n==="ひびき"){
+  const specialImg = document.querySelector(`.item.hit img[src*="n421.png"]`);
+  if(specialImg){
+
+    const nextImg = new Image();
+    nextImg.src = "images/n421S.png";
+
+    setTimeout(()=>{
+      specialImg.style.transition = "filter 2s linear";
+      specialImg.style.filter = "brightness(300%)";
+
+      specialImg.addEventListener("transitionend", ()=>{
+        specialImg.src = nextImg.src;
+
+        specialImg.style.transition = "none";
+        specialImg.style.filter = "brightness(100%)";
+
+        specialChanged = true;
+      }, { once:true });
+
+    }, 2000);
+  }
+}
+
 
     } else {
       hintArea.textContent=`${n} はすでに正解済みです。`;
@@ -545,7 +562,7 @@ function showHint(){
   hintCount++; renderList();
 }
 
-// --- ヒント2（シルエット画像） ---
+// --- ヒント2  ---
 function showHint2(){
   const cat=WEAPON_CATEGORIES[currentCat];
   const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t));
@@ -585,7 +602,7 @@ resetBtn.addEventListener('click', () => {
   hintCount = 0; 
   lastHitName = null;
 
-  // ひびきリセット
+  // ひびきフラグもリセット
   specialChanged = false;
 
   renderList(); 
@@ -617,4 +634,3 @@ input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
-
