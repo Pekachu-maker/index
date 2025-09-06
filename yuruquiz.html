@@ -450,6 +450,17 @@ const tabs=document.querySelectorAll('.tabs button');
 const startBtn=document.getElementById('startBtn');
 const timerDisplay=document.getElementById('timer');
 
+// --- ここに追加 --- 
+function normalizeInput(str){
+  if(!str) return "";
+  return str
+    .replace(/[・\.]/g, "")     // 中黒・ドットを削除
+    .replace(/[Ａ-Ｚ]/g, s =>   // 全角英字を半角に変換
+        String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
+    )
+    .trim();                    // 前後の空白を削除
+}
+
 // --- タイマー ---
 function updateTimerDisplay(){
   const min=String(Math.floor(timeElapsed/60)).padStart(2,'0');
@@ -470,6 +481,8 @@ function startTimer(){
   },1000);
 }
 function stopTimer(){if(timerInterval) clearInterval(timerInterval); timerInterval=null;}
+
+
 
 // --- renderList ---
 function renderList(){
@@ -509,49 +522,50 @@ function renderList(){
 
 // --- submitName ---
 function submitName(raw){
-  const n=raw.trim(); if(!n) return;
-  const cat=WEAPON_CATEGORIES[currentCat];
-  if(cat.targets.includes(n)){
-    if(!cat.guessed.has(n)){
-      cat.guessed.add(n); 
-      lastHitName=n; 
-      hintArea.textContent=`${n} を ${currentCat} カテゴリで正解！`;
+  const n = normalizeInput(raw); // 入力を正規化
+  if(!n) return;
+  const cat = WEAPON_CATEGORIES[currentCat];
+
+  // 正解の元の答えを取得
+  const answer = cat.targets.find(t => normalizeInput(t) === n);
+
+  if(answer){
+    if(!cat.guessed.has(answer)){
+      cat.guessed.add(answer); 
+      lastHitName = answer; 
+      hintArea.textContent = `${answer} を ${currentCat} カテゴリで正解！`;
       renderList();
 
-      // ひびき
-if(n==="ひびき"){
-  const specialImg = document.querySelector(`.item.hit img[src*="n421.png"]`);
-  if(specialImg){
+      // ひびき用処理
+      if(answer === "ひびき"){
+        const specialImg = document.querySelector(`.item.hit img[src*="n421.png"]`);
+        if(specialImg){
+          const nextImg = new Image();
+          nextImg.src = "images/n421S.png";
 
-    const nextImg = new Image();
-    nextImg.src = "images/n421S.png";
+          setTimeout(()=>{
+            specialImg.style.transition = "filter 2s linear";
+            specialImg.style.filter = "brightness(300%)";
 
-    setTimeout(()=>{
-      specialImg.style.transition = "filter 2s linear";
-      specialImg.style.filter = "brightness(300%)";
-
-      specialImg.addEventListener("transitionend", ()=>{
-        specialImg.src = nextImg.src;
-
-        specialImg.style.transition = "none";
-        specialImg.style.filter = "brightness(100%)";
-
-        specialChanged = true;
-      }, { once:true });
-
-    }, 1500);
-  }
-}
-
+            specialImg.addEventListener("transitionend", ()=>{
+              specialImg.src = nextImg.src;
+              specialImg.style.transition = "none";
+              specialImg.style.filter = "brightness(100%)";
+              specialChanged = true;
+            }, { once:true });
+          }, 2000);
+        }
+      }
 
     } else {
-      hintArea.textContent=`${n} はすでに正解済みです。`;
+      hintArea.textContent = `${answer} はすでに正解済みです。`;
     }
   } else {
-    hintArea.textContent='不正解です。';
+    hintArea.textContent = '不正解です。';
   }
-  input.value=''; input.focus();
+  input.value = ''; input.focus();
 }
+
 // --- ヒント ---
 function showHint(){
   const cat=WEAPON_CATEGORIES[currentCat];
@@ -634,4 +648,3 @@ input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
-
