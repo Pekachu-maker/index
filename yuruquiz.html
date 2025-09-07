@@ -566,26 +566,50 @@ function submitName(raw){
 
 // --- ヒント ---
 function showHint(){
-  const cat=WEAPON_CATEGORIES[currentCat];
-  const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t));
-  if(unguessed.length===0){ hintArea.textContent="すべて回答済み！"; return; }
-  const choice=unguessed[Math.floor(Math.random()*unguessed.length)];
-  hintArea.textContent=`ヒント: 未回答の${currentCat}の一つ 最初の文字は「${choice[0]}」`;
-  hintCount++; renderList();
+  const cat = WEAPON_CATEGORIES[currentCat];
+  const unguessed = cat.targets.filter(t => !cat.guessed.has(t) && !cat.giveup.has(t));
+
+  if(unguessed.length === 0){ 
+    hintArea.textContent = "すべて回答済み！"; 
+    input.focus();
+    return; 
+  }
+
+  const choice = unguessed[Math.floor(Math.random() * unguessed.length)];
+  hintArea.textContent = `ヒント: 未回答の${currentCat}の一つ 最初の文字は「${choice[0]}」`;
+  hintCount++; 
+  renderList();
+  input.focus();
 }
 
 // --- ヒント2  ---
 function showHint2(){
-  const cat=WEAPON_CATEGORIES[currentCat];
-  const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t));
-  if(unguessed.length===0){ hintArea.textContent="すべて回答済み！"; return; }
-  const choice=unguessed[Math.floor(Math.random()*unguessed.length)];
-  const imgSrc=cat.images[choice];
-  if(!imgSrc){ hintArea.textContent=`ヒント2: 未回答の${currentCat}の一つ`; return; }
-  hintArea.innerHTML=`ヒント2: 未回答の${currentCat}の一つ<br>
+  const cat = WEAPON_CATEGORIES[currentCat];
+  const unguessed = cat.targets.filter(t => !cat.guessed.has(t) && !cat.giveup.has(t));
+
+  if(unguessed.length === 0){ 
+    hintArea.textContent = "すべて回答済み！"; 
+    input.focus();
+    return; 
+  }
+
+  const choice = unguessed[Math.floor(Math.random() * unguessed.length)];
+  const imgSrc = cat.images[choice];
+
+  if(!imgSrc){ 
+    hintArea.textContent = `ヒント2: 未回答の${currentCat}の一つ`; 
+    input.focus();
+    return; 
+  }
+
+  hintArea.innerHTML = `ヒント2: 未回答の${currentCat}の一つ<br>
   <img src="${imgSrc}" style="filter: brightness(0) saturate(100%); width:60px; height:60px;">`;
-  hintCount++; renderList();
+
+  hintCount++; 
+  renderList();
+  input.focus();
 }
+
 
 // --- ギブアップ ---
 giveupBtn.addEventListener('click',()=>{
@@ -646,5 +670,6 @@ input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
+
 
 
