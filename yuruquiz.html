@@ -94,6 +94,15 @@ button:active {
   box-shadow: inset 2px 2px 5px rgba(0,0,0,0.4);
 }
 
+.fade-switch {
+  transition: opacity 0.8s ease-in-out;
+  opacity: 1;
+}
+.fade-switch.hidden {
+  opacity: 0;
+}
+
+
 </style>
 </head>
 <body>
@@ -450,10 +459,11 @@ const tabs=document.querySelectorAll('.tabs button');
 const startBtn=document.getElementById('startBtn');
 const timerDisplay=document.getElementById('timer');
 
+// --- 英字記号にやさしい仕様 --- 
 function normalizeInput(str){
   if(!str) return "";
   return str
-    .replace(/[・\.]/g, "") 
+    .replace(/[・\.]/g, "")
     .replace(/[Ａ-Ｚ]/g, s =>
         String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
     )
@@ -491,15 +501,12 @@ function renderList(){
   cat.targets.forEach(t => {
     const div = document.createElement('div');
     let cls = 'item';
-
     if(cat.guessed.has(t)) cls += ' hit';
     else if(cat.giveup.has(t)) cls += ' giveup';
     if(t === lastHitName && cat.guessed.has(t)) cls += ' last-hit';
-
     div.className = cls;
     div.style.justifyContent = 'center';
 
-    // ひびきフラグ替え
     if(cat.guessed.has(t) || cat.giveup.has(t)){
       if(t === "ひびき" && specialChanged){
         div.innerHTML = t + '<img src="images/n421S.png">';
@@ -513,56 +520,84 @@ function renderList(){
     list.appendChild(div);
   });
 
-  const lastDiv = document.querySelector('.last-hit');
-  if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth', block:'center'});
+  // ステータス表示
+  const totalGuessed = Object.values(WEAPON_CATEGORIES).reduce((sum, c) => sum + c.guessed.size, 0);
+  const totalTargets = Object.values(WEAPON_CATEGORIES).reduce((sum, c) => sum + c.targets.length, 0);
+  status.textContent = `正解: ${cat.guessed.size} / ${cat.targets.length} 【全体: ${totalGuessed} / ${totalTargets}】｜ヒント使用回数: ${hintCount}`;
 
-  status.textContent = `正解: ${cat.guessed.size} / ${cat.targets.length} ｜ ヒント使用回数: ${hintCount}`;
+  // 正解にスクロール
+  const lastDiv = Array.from(list.children).find(div => div.classList.contains('last-hit'));
+  if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth', block:'center'});
 }
+
 
 // --- submitName ---
 function submitName(raw){
-  const n = normalizeInput(raw); // 入力を正規化
+  const n = normalizeInput(raw);
   if(!n) return;
   const cat = WEAPON_CATEGORIES[currentCat];
 
   const answer = cat.targets.find(t => normalizeInput(t) === n);
-
-  if(answer){
-    if(!cat.guessed.has(answer)){
-      cat.guessed.add(answer); 
-      lastHitName = answer; 
-      hintArea.textContent = `${answer} を ${currentCat} カテゴリで正解！`;
-      renderList();
-
-      // ひびき用処理
-      if(answer === "ひびき"){
-        const specialImg = document.querySelector(`.item.hit img[src*="n421.png"]`);
-        if(specialImg){
-          const nextImg = new Image();
-          nextImg.src = "images/n421S.png";
-
-          setTimeout(()=>{
-            specialImg.style.transition = "filter 2s linear";
-            specialImg.style.filter = "brightness(300%)";
-
-            specialImg.addEventListener("transitionend", ()=>{
-              specialImg.src = nextImg.src;
-              specialImg.style.transition = "none";
-              specialImg.style.filter = "brightness(100%)";
-              specialChanged = true;
-            }, { once:true });
-          }, 1500);
-        }
-      }
-
-    } else {
-      hintArea.textContent = `${answer} はすでに正解済みです。`;
-    }
-  } else {
+  if(!answer){
     hintArea.textContent = '不正解です。';
+    input.value = ''; input.focus();
+    return;
   }
+
+  if(cat.guessed.has(answer)){
+    hintArea.textContent = `${answer} はすでに正解済みです。`;
+    input.value = ''; input.focus();
+    return;
+  }
+
+  // 正解処理
+  cat.guessed.add(answer);
+  lastHitName = answer;
+  hintArea.textContent = `${answer} を ${currentCat} カテゴリで正解！`;
+
+  renderList(); // まずリストを描画
+
+  // ひびき用
+if(answer === "ひびき" && !specialChanged){
+  const specialImg = document.querySelector(`.item.hit img[src*="n421.png"]`);
+  if(specialImg){
+    const nextImg = new Image();
+    nextImg.src = "images/n421S.png";
+
+    setTimeout(() => {
+      specialImg.style.transition = "filter 2s linear";
+      specialImg.style.filter = "brightness(400%)";
+
+      specialImg.addEventListener("transitionend", () => {
+        specialImg.src = nextImg.src;
+        specialImg.style.transition = "none";
+        specialImg.style.filter = "brightness(100%)";
+
+        // 少し遅延して回転開始（ブラウザが認識しやすい）
+        setTimeout(() => {
+          specialImg.style.transition = "transform 1.5s ease-in-out";
+          specialImg.style.transform = "rotate(360deg)";
+
+          specialImg.addEventListener("transitionend", () => {
+            // 回転リセット
+            specialImg.style.transition = "none";
+            specialImg.style.transform = "rotate(0deg)";
+          }, { once: true });
+        }, 50);
+
+        specialChanged = true;
+      }, { once: true });
+    }, 1500);
+  }
+}
   input.value = ''; input.focus();
 }
+
+// 最後に正解した要素にスクロール
+const lastDiv = Array.from(list.children)
+  .find(div => div.classList.contains('last-hit'));
+if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth', block:'center'});
+
 
 // --- ヒント ---
 function showHint(){
@@ -571,7 +606,7 @@ function showHint(){
 
   if(unguessed.length === 0){ 
     hintArea.textContent = "すべて回答済み！"; 
-    input.focus();
+    input.focus(); // ← フォーカス戻す
     return; 
   }
 
@@ -666,10 +701,10 @@ startBtn.addEventListener('click',()=>{
 });
 
 renderList();
+
+
+
 input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
-
-
-
