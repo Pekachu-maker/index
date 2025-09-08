@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ゆるすぎポケモンいえるかな</title>
+<title>ゆるすぎポケモンいえるかな 完全版</title>
 <style>
 :root{
   --bg:#fdf4f4;
@@ -18,9 +18,8 @@ html, body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
   background: var(--bg);
   color: #1f2937;
-  overflow: hidden; /* スクロールを消す */
+  overflow: hidden;
 }
-
 .wrap {
   max-width: 960px;
   margin: 0 auto;
@@ -29,7 +28,6 @@ html, body {
   display: flex;
   flex-direction: column;
 }
-
 .card {
   background: var(--card);
   border-radius: 12px;
@@ -39,12 +37,10 @@ html, body {
   flex-direction: column;
   height: 100%;
 }
-
 .list-container {
   flex: 1;
-  overflow-y: hidden; /* 内部スクロールを消す */
+  overflow-y: auto;
 }
-
 .list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -60,7 +56,8 @@ h1{margin:2px 0;font-size:18px;}
 .tabs button.active{background:var(--accent); color:#065f46;}
 .controls{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;align-items:center;}
 input[type=text]{flex:1;padding:6px 8px;border-radius:12px;border:1px solid #e2e8f0;font-size:14px;min-width:160px;}
-button{padding:6px 12px;font-size:14px;height:36px;cursor:pointer;border-radius:12px;border:0;transition:background 0.2s;}
+button{padding:6px 12px;font-size:14px;height:36px;cursor:pointer;border-radius:12px;border:0;transition:background 0.2s, transform 0.1s ease, box-shadow 0.1s ease;}
+button:active{transform: scale(0.95); box-shadow: inset 2px 2px 5px rgba(0,0,0,0.4);}
 button.sendBtn{background:var(--button);color:var(--button-text);}
 button.sendBtn:hover{background:#10b981;}
 button.secondary{background:#64748b;color:white;}
@@ -74,8 +71,6 @@ button.giveupBtn:hover{animation: dangerFlash 0.6s infinite alternate;}
 @keyframes dangerFlash {0% { background:#f87171; color:white; }100% { background:#dc2626; color:#ffe4e6; }}
 .hint{margin-bottom:6px;background:#fefce8;padding:6px;border-radius:8px;border:1px solid #fde68a;color:#92400e;}
 .status{margin-bottom:6px;color:#334155;}
-.list-container{flex:1;overflow-y:auto;}
-.list{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px;border-radius:8px;background:#f8fafc;}
 .item{padding:6px;border-radius:8px;text-align:center;border:1px dashed #e6edf2;background:#f8fafc;font-size:14px;display:flex;align-items:center;justify-content:center;}
 .item.hit{background:linear-gradient(90deg,#d1fae5,#a7f3d0);border:1px solid #6ee7b7;}
 .item.last-hit{box-shadow:0 0 6px 2px #34d399;}
@@ -83,26 +78,72 @@ button.giveupBtn:hover{animation: dangerFlash 0.6s infinite alternate;}
 .item img{margin-left:6px;width:40px;height:40px;}
 .footer{margin-top:12px;font-size:13px;color:#64748b;}
 #timer{margin-left:8px;font-weight:bold;}
-
-// ボタン押し込み
-button {
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+.fade-switch {transition: opacity 0.8s ease-in-out; opacity: 1;}
+.fade-switch.hidden {opacity: 0;}
+/* モーダル全体 */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.25s ease forwards;
 }
 
-button:active {
-  transform: scale(0.95);
-  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.4);
+/* モーダルコンテンツ */
+.modal-content {
+  background: #fff;
+  padding: 14px 10px;
+  border-radius: 12px;
+  text-align: center;
+  width: 60s%;
+  max-width: 400px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  transform: translateY(-60px);
+  opacity: 220;
+  animation: slideDown 0.3s forwards;
+  font-family: system-ui, sans-serif;
 }
 
-.fade-switch {
-  transition: opacity 0.8s ease-in-out;
-  opacity: 1;
-}
-.fade-switch.hidden {
-  opacity: 0;
-}
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+@keyframes slideDown { to {transform: translateY(0); opacity:1;} }
 
+#modalText { font-size: 16px; margin-bottom: 24px; color: #1f2937; }
 
+.modal-buttons button {
+  padding: 10px 22px;
+  margin: 0 6px;
+  font-size: 14px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.2s, background 0.2s;
+
+  min-width: 120px;
+  text-align: center;
+}
+.modal-ok {
+  background: linear-gradient(90deg, #34d399, #10b981);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+}
+.modal-ok:hover {
+  background: linear-gradient(90deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16,185,129,0.4);
+}
+.modal-cancel {
+  background: #f3f4f6;
+  color: #374151;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.modal-cancel:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
 </style>
 </head>
 <body>
@@ -110,22 +151,16 @@ button:active {
   <div class="card">
     <h1>ゆるすぎポケモンいえるかな</h1>
     <div class="meta">回答はニックネームと完全一致で入力。ギブアップすると残りがすべて表示されます</div>
-
-    <!-- 開始ボタンとタイマー -->
     <div class="controls">
       <button id="startBtn" class="sendBtn">開始</button>
       <span id="timer">00:00</span>
     </div>
-
-    <!-- タブ -->
     <div class="tabs">
       <button data-cat="クリスタル" class="active">クリスタル</button>
       <button data-cat="エメラルド">エメラルド</button>
       <button data-cat="プラチナ">プラチナ</button>
       <button data-cat="ＢＷ">ＢＷ</button>
     </div>
-
-    <!-- 入力・操作ボタン -->
     <div class="controls">
       <input id="nameInput" type="text" placeholder="ここに入力 → Enter または 送信" autocomplete="off" />
       <button id="sendBtn" class="sendBtn">送信</button>
@@ -134,18 +169,22 @@ button:active {
       <button id="showHint2Btn" class="hintBtn">ヒント2</button>
       <button id="giveupBtn" class="giveupBtn">ギブアップ</button>
     </div>
-
     <div class="hint" id="hintArea">ヒントは非表示です。「ヒント」ボタンを押してください。</div>
     <div class="status" id="status">正解: 0 / 0 ｜ ヒント使用回数: 0</div>
-
-    <div class="list-container">
-      <div class="list" id="list"></div>
-    </div>
-
+    <div class="list-container"><div class="list" id="list"></div></div>
     <div class="footer">木の実は熟成する</div>
   </div>
 </div>
-
+<!-- モーダル -->
+<div id="customModal" class="modal">
+  <div class="modal-content">
+    <p id="modalText"></p>
+    <div class="modal-buttons">
+      <button id="modalOk" class="modal-ok">はい</button>
+      <button id="modalCancel" class="modal-cancel">キャンセル</button>
+    </div>
+  </div>
+</div>
 <script>
 // --- データ ---
 const WEAPON_CATEGORIES = {
@@ -441,11 +480,8 @@ addWeapon("ＢＷ", "レオ", "images/n558.png");
 addWeapon("ＢＷ", "ろうがん", "images/n519.png");
 
 // --- グローバル ---
-let currentCat="クリスタル", hintCount=0, lastHitName=null;
+let currentCat="クリスタル", hintCount=0, lastHitName=null, specialChanged=false;
 let timerInterval=null, timeElapsed=0;
-
-let specialChanged = false; // ひびき用
-
 const input=document.getElementById('nameInput');
 const sendBtn=document.getElementById('sendBtn');
 const resetBtn=document.getElementById('resetBtn');
@@ -458,261 +494,74 @@ const hintArea=document.getElementById('hintArea');
 const tabs=document.querySelectorAll('.tabs button');
 const startBtn=document.getElementById('startBtn');
 const timerDisplay=document.getElementById('timer');
+const modal=document.getElementById('customModal');
+const modalText=document.getElementById('modalText');
+const modalOk=document.getElementById('modalOk');
+const modalCancel=document.getElementById('modalCancel');
 
-// --- 英字記号にやさしい仕様 --- 
-function normalizeInput(str){
-  if(!str) return "";
-  return str
-    .replace(/[・\.]/g, "")
-    .replace(/[Ａ-Ｚ]/g, s =>
-        String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
-    )
-    .trim();
-}
-
-// --- タイマー ---
-function updateTimerDisplay(){
-  const min=String(Math.floor(timeElapsed/60)).padStart(2,'0');
-  const sec=String(timeElapsed%60).padStart(2,'0');
-  timerDisplay.textContent=`${min}:${sec}`;
-}
-function startTimer(){
-  stopTimer();
-  timerInterval=setInterval(()=>{
-    timeElapsed++;
-    updateTimerDisplay();
-    const allCleared=Object.values(WEAPON_CATEGORIES)
-      .every(cat=>cat.guessed.size===cat.targets.length);
-    if(allCleared){
-      hintArea.textContent="全カテゴリ全問正解！おめでとう！";
-      input.disabled=true; sendBtn.disabled=true; stopTimer();
-    }
-  },1000);
-}
+function showModal(message,onOk){ modalText.textContent=message; modal.style.display='flex'; const cleanup=()=>{modal.style.display='none'; modalOk.removeEventListener('click',okHandler); modalCancel.removeEventListener('click',cancelHandler);}; const okHandler=()=>{cleanup(); if(onOk) onOk();}; const cancelHandler=()=>{cleanup();}; modalOk.addEventListener('click',okHandler); modalCancel.addEventListener('click',cancelHandler);}
+function normalizeInput(str){if(!str) return ""; return str.replace(/[・\.]/g,"").replace(/[Ａ-Ｚ]/g,s=>String.fromCharCode(s.charCodeAt(0)-0xFEE0)).trim();}
+function updateTimerDisplay(){const min=String(Math.floor(timeElapsed/60)).padStart(2,'0'); const sec=String(timeElapsed%60).padStart(2,'0'); timerDisplay.textContent=`${min}:${sec}`;}
+function startTimer(){stopTimer(); timerInterval=setInterval(()=>{timeElapsed++; updateTimerDisplay(); const allCleared=Object.values(WEAPON_CATEGORIES).every(cat=>cat.guessed.size===cat.targets.length); if(allCleared){hintArea.textContent="全カテゴリ全問正解！おめでとう！"; input.disabled=true; sendBtn.disabled=true; stopTimer();}},1000);}
 function stopTimer(){if(timerInterval) clearInterval(timerInterval); timerInterval=null;}
 
-
-
-// --- renderList ---
 function renderList(){
-  list.innerHTML='';
-  const cat = WEAPON_CATEGORIES[currentCat];
-
-  cat.targets.forEach(t => {
-    const div = document.createElement('div');
-    let cls = 'item';
-    if(cat.guessed.has(t)) cls += ' hit';
-    else if(cat.giveup.has(t)) cls += ' giveup';
-    if(t === lastHitName && cat.guessed.has(t)) cls += ' last-hit';
-    div.className = cls;
-    div.style.justifyContent = 'center';
-
-    if(cat.guessed.has(t) || cat.giveup.has(t)){
-      if(t === "ひびき" && specialChanged){
-        div.innerHTML = t + '<img src="images/n421S.png">';
-      } else {
-        div.innerHTML = t + '<img src="' + (cat.images[t] || '') + '">';
-      }
-    } else {
-      div.textContent = '???';
-    }
-
-    list.appendChild(div);
-  });
-
-  // ステータス表示
-  const totalGuessed = Object.values(WEAPON_CATEGORIES).reduce((sum, c) => sum + c.guessed.size, 0);
-  const totalTargets = Object.values(WEAPON_CATEGORIES).reduce((sum, c) => sum + c.targets.length, 0);
-  status.textContent = `正解: ${cat.guessed.size} / ${cat.targets.length} 【全体: ${totalGuessed} / ${totalTargets}】｜ヒント使用回数: ${hintCount}`;
-
-  // 正解にスクロール
-  const lastDiv = Array.from(list.children).find(div => div.classList.contains('last-hit'));
-  if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth', block:'center'});
+  list.innerHTML=''; const cat=WEAPON_CATEGORIES[currentCat];
+  cat.targets.forEach(t=>{ const div=document.createElement('div'); let cls='item'; if(cat.guessed.has(t)) cls+=' hit'; else if(cat.giveup.has(t)) cls+=' giveup'; if(t===lastHitName && cat.guessed.has(t)) cls+=' last-hit'; div.className=cls; div.style.justifyContent='center';
+  if(cat.guessed.has(t)||cat.giveup.has(t)){ if(t==="ひびき"&&specialChanged){ div.innerHTML=t+'<img src="images/n421S.png">'; } else { div.innerHTML=t+'<img src="'+(cat.images[t]||'')+'">'; } } else { div.textContent='???'; } list.appendChild(div); });
+  const totalGuessed=Object.values(WEAPON_CATEGORIES).reduce((sum,c)=>sum+c.guessed.size,0); const totalTargets=Object.values(WEAPON_CATEGORIES).reduce((sum,c)=>sum+c.targets.length,0);
+  status.textContent=`正解: ${cat.guessed.size} / ${cat.targets.length} 【全体: ${totalGuessed} / ${totalTargets}】｜ヒント使用回数: ${hintCount}`;
+  const lastDiv=Array.from(list.children).find(div=>div.classList.contains('last-hit')); if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
-
-// --- submitName ---
 function submitName(raw){
-  const n = normalizeInput(raw);
-  if(!n) return;
-  const cat = WEAPON_CATEGORIES[currentCat];
-
-  const answer = cat.targets.find(t => normalizeInput(t) === n);
-  if(!answer){
-    hintArea.textContent = '不正解です。';
-    input.value = ''; input.focus();
-    return;
-  }
-
-  if(cat.guessed.has(answer)){
-    hintArea.textContent = `${answer} はすでに正解済みです。`;
-    input.value = ''; input.focus();
-    return;
-  }
-
-  // 正解処理
-  cat.guessed.add(answer);
-  lastHitName = answer;
-  hintArea.textContent = `${answer} を ${currentCat} カテゴリで正解！`;
-
-  renderList(); // まずリストを描画
-
-  // ひびき用
-if(answer === "ひびき" && !specialChanged){
-  const specialImg = document.querySelector(`.item.hit img[src*="n421.png"]`);
-  if(specialImg){
-    const nextImg = new Image();
-    nextImg.src = "images/n421S.png";
-
-    setTimeout(() => {
-      specialImg.style.transition = "filter 2s linear";
-      specialImg.style.filter = "brightness(400%)";
-
-      specialImg.addEventListener("transitionend", () => {
-        specialImg.src = nextImg.src;
-        specialImg.style.transition = "none";
-        specialImg.style.filter = "brightness(100%)";
-
-        // 少し遅延して回転開始（ブラウザが認識しやすい）
-        setTimeout(() => {
-          specialImg.style.transition = "transform 1.5s ease-in-out";
-          specialImg.style.transform = "rotate(360deg)";
-
-          specialImg.addEventListener("transitionend", () => {
-            // 回転リセット
-            specialImg.style.transition = "none";
-            specialImg.style.transform = "rotate(0deg)";
-          }, { once: true });
-        }, 50);
-
-        specialChanged = true;
-      }, { once: true });
-    }, 1500);
-  }
-}
-  input.value = ''; input.focus();
+  const n=normalizeInput(raw); if(!n) return; const cat=WEAPON_CATEGORIES[currentCat];
+  const answer=cat.targets.find(t=>normalizeInput(t)===n); if(!answer){ hintArea.textContent='不正解です。'; input.value=''; input.focus(); return; }
+  if(cat.guessed.has(answer)){ hintArea.textContent=`${answer} はすでに正解済みです。`; input.value=''; input.focus(); return; }
+  cat.guessed.add(answer); lastHitName=answer; hintArea.textContent=`${answer} を ${currentCat} カテゴリで正解！`; renderList();
+  // ひびき
+  if(answer==="ひびき"&&!specialChanged){ const specialImg=document.querySelector(`.item.hit img[src*="n421.png"]`); if(specialImg){ const nextImg=new Image(); nextImg.src="images/n421S.png"; setTimeout(()=>{specialImg.style.transition="filter 2s linear"; specialImg.style.filter="brightness(400%)"; specialImg.addEventListener("transitionend",()=>{specialImg.src=nextImg.src; specialImg.style.transition="none"; specialImg.style.filter="brightness(100%)"; setTimeout(()=>{specialImg.style.transition="transform 1.5s ease-in-out"; specialImg.style.transform="rotate(360deg)"; specialImg.addEventListener("transitionend",()=>{specialImg.style.transition="none"; specialImg.style.transform="rotate(0deg)";},{once:true});},50); specialChanged=true;},{once:true});},1500); } }
+  input.value=''; input.focus();
 }
 
-// 最後に正解した要素にスクロール
-const lastDiv = Array.from(list.children)
-  .find(div => div.classList.contains('last-hit'));
-if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth', block:'center'});
-
-
-// --- ヒント ---
-function showHint(){
-  const cat = WEAPON_CATEGORIES[currentCat];
-  const unguessed = cat.targets.filter(t => !cat.guessed.has(t) && !cat.giveup.has(t));
-
-  if(unguessed.length === 0){ 
-    hintArea.textContent = "すべて回答済み！"; 
-    input.focus(); // ← フォーカス戻す
-    return; 
-  }
-
-  const choice = unguessed[Math.floor(Math.random() * unguessed.length)];
-  hintArea.textContent = `ヒント: 未回答の${currentCat}の一つ 最初の文字は「${choice[0]}」`;
-  hintCount++; 
-  renderList();
-  input.focus();
-}
-
-// --- ヒント2  ---
-function showHint2(){
-  const cat = WEAPON_CATEGORIES[currentCat];
-  const unguessed = cat.targets.filter(t => !cat.guessed.has(t) && !cat.giveup.has(t));
-
-  if(unguessed.length === 0){ 
-    hintArea.textContent = "すべて回答済み！"; 
-    input.focus();
-    return; 
-  }
-
-  const choice = unguessed[Math.floor(Math.random() * unguessed.length)];
-  const imgSrc = cat.images[choice];
-
-  if(!imgSrc){ 
-    hintArea.textContent = `ヒント2: 未回答の${currentCat}の一つ`; 
-    input.focus();
-    return; 
-  }
-
-  hintArea.innerHTML = `ヒント2: 未回答の${currentCat}の一つ<br>
-  <img src="${imgSrc}" style="filter: brightness(0) saturate(100%); width:60px; height:60px;">`;
-
-  hintCount++; 
-  renderList();
-  input.focus();
-}
-
+function showHint(){ const cat=WEAPON_CATEGORIES[currentCat]; const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t)); if(unguessed.length===0){hintArea.textContent="すべて回答済み！"; input.focus(); return;} const choice=unguessed[Math.floor(Math.random()*unguessed.length)]; hintArea.textContent=`ヒント: 未回答の${currentCat}の一つ 最初の文字は「${choice[0]}」`; hintCount++; renderList(); input.focus(); }
+function showHint2(){ const cat=WEAPON_CATEGORIES[currentCat]; const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t)); if(unguessed.length===0){hintArea.textContent="すべて回答済み！"; input.focus(); return;} const choice=unguessed[Math.floor(Math.random()*unguessed.length)]; const imgSrc=cat.images[choice]; if(!imgSrc){hintArea.textContent=`ヒント2: 未回答の${currentCat}の一つ`; input.focus(); return;} hintArea.innerHTML=`ヒント2: 未回答の${currentCat}の一つ<br><img src="${imgSrc}" style="filter: brightness(0) saturate(100%); width:60px; height:60px;">`; hintCount++; renderList(); input.focus(); }
 
 // --- ギブアップ ---
-giveupBtn.addEventListener('click',()=>{
-  if(!confirm("本当にギブアップしますか？")) return;
-  Object.values(WEAPON_CATEGORIES).forEach(cat=>{
-    cat.targets.forEach(t=>{ if(!cat.guessed.has(t)) cat.giveup.add(t); });
+giveupBtn.addEventListener('click', () => {
+  showModal("本当にギブアップしますか？", () => {
+    Object.values(WEAPON_CATEGORIES).forEach(cat => {
+      cat.targets.forEach(t => { 
+        if(!cat.guessed.has(t)) cat.giveup.add(t); 
+      });
+    });
+    hintArea.textContent = "ギブアップ！すべてのカテゴリの未回答を公開しました。";
+    lastHitName = null;
+    renderList();
+
+    input.disabled = true;
+    sendBtn.disabled = true;
+    startBtn.disabled = true;
+    stopTimer();
+    giveupBtn.disabled = true;
   });
-  hintArea.textContent="ギブアップ！すべてのカテゴリの未回答を公開しました。";
-  lastHitName=null;
-  renderList();
-  input.disabled=true; sendBtn.disabled=true;
-  stopTimer();
 });
 
 // --- イベント ---
 sendBtn.addEventListener('click',()=>submitName(input.value));
 input.addEventListener('keydown',e=>{if(e.key==='Enter') submitName(input.value);});
-resetBtn.addEventListener('click', () => {
-  if(!confirm("リセットしますか？")) return;
-
-  Object.values(WEAPON_CATEGORIES).forEach(c => {
-    c.guessed.clear();
-    c.giveup.clear();
-  });
-
-  hintCount = 0; 
-  lastHitName = null;
-
-  // ひびきフラグもリセット
-  specialChanged = false;
-
-  renderList(); 
-  hintArea.textContent = 'ヒントは非表示です。'; 
-  input.value = '';
-  input.disabled = true; 
-  sendBtn.disabled = true; 
-  startBtn.disabled = false;
-  stopTimer(); 
-  timeElapsed = 0; 
-  updateTimerDisplay();
-});
 showHintBtn.addEventListener('click',showHint);
 showHint2Btn.addEventListener('click',showHint2);
-tabs.forEach(btn=>btn.addEventListener('click',()=>{
-  tabs.forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  currentCat=btn.dataset.cat;
-  renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.focus();
-}));
-startBtn.addEventListener('click', () => {
-  input.disabled = false;
-  sendBtn.disabled = false;
-  resetBtn.disabled = false;
-  showHintBtn.disabled = false;
-  showHint2Btn.disabled = false;
-  giveupBtn.disabled = false;
-  startBtn.disabled = true;
-  timeElapsed = 0; 
-  updateTimerDisplay(); 
-  startTimer();
-  input.focus();
-});
+tabs.forEach(btn=>btn.addEventListener('click',()=>{ tabs.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentCat=btn.dataset.cat; renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; }));
+
+startBtn.addEventListener('click',()=>{ input.disabled=false; sendBtn.disabled=false; resetBtn.disabled=false; showHintBtn.disabled=false; showHint2Btn.disabled=false; giveupBtn.disabled=false; startBtn.disabled=true; timeElapsed=0; updateTimerDisplay(); startTimer(); input.focus(); });
+
+resetBtn.addEventListener('click',()=>{ showModal("リセットしますか？",()=>{ Object.values(WEAPON_CATEGORIES).forEach(c=>{ c.guessed.clear(); c.giveup.clear(); }); hintCount=0; lastHitName=null; specialChanged=false; renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.disabled=true; sendBtn.disabled=true; startBtn.disabled=false; stopTimer(); timeElapsed=0; updateTimerDisplay(); }); });
+
+modalCancel.addEventListener('click',()=>{ modal.style.display='none'; });
 
 renderList();
-
 input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
-
-
