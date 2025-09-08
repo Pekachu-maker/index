@@ -694,18 +694,25 @@ tabs.forEach(btn=>btn.addEventListener('click',()=>{
   currentCat=btn.dataset.cat;
   renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.focus();
 }));
-startBtn.addEventListener('click',()=>{
-  input.disabled=false; sendBtn.disabled=false; resetBtn.disabled=false;
-  showHintBtn.disabled=false; showHint2Btn.disabled=false; giveupBtn.disabled=false;
-  startBtn.disabled=true; timeElapsed=0; updateTimerDisplay(); startTimer();
+startBtn.addEventListener('click', () => {
+  input.disabled = false;
+  sendBtn.disabled = false;
+  resetBtn.disabled = false;
+  showHintBtn.disabled = false;
+  showHint2Btn.disabled = false;
+  giveupBtn.disabled = false;
+  startBtn.disabled = true;
+  timeElapsed = 0; 
+  updateTimerDisplay(); 
+  startTimer();
+  input.focus();
 });
 
 renderList();
-
-
 
 input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
+
 
