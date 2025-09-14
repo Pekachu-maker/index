@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ゆるすぎポケモンいえるかな</title>
+<title>ゆるすぎポケモンいえるかな 完全版</title>
+<link rel="icon" href="images/n421S.png" type="image/png">
+
 <style>
 :root{
   --bg:#fdf4f4;
@@ -80,7 +82,7 @@ button.giveupBtn:hover{animation: dangerFlash 0.6s infinite alternate;}
 #timer{margin-left:8px;font-weight:bold;}
 .fade-switch {transition: opacity 0.8s ease-in-out; opacity: 1;}
 .fade-switch.hidden {opacity: 0;}
-/* モーダル */
+/* モーダル全体 */
 .modal {
   display: none;
   position: fixed;
@@ -92,6 +94,7 @@ button.giveupBtn:hover{animation: dangerFlash 0.6s infinite alternate;}
   animation: fadeIn 0.25s ease forwards;
 }
 
+/* モーダルコンテンツ */
 .modal-content {
   background: #fff;
   padding: 14px 10px;
@@ -100,7 +103,7 @@ button.giveupBtn:hover{animation: dangerFlash 0.6s infinite alternate;}
   max-width: 400px;
   box-shadow: 0 12px 30px rgba(0,0,0,0.25);
   transform: translateY(-60px);
-  opacity: 1;
+  opacity: 0;
   animation: slideDown 0.3s forwards;
   font-family: system-ui, sans-serif;
 }
@@ -479,8 +482,6 @@ addWeapon("ＢＷ", "ザワールド", "images/n634.png");
 addWeapon("ＢＷ", "だいスター", "images/n512.png");
 addWeapon("ＢＷ", "バリッシュ", "images/n644.png");
 
-addWeapon("ＢＷ２", "やしゃまる", "images/n502.png");
-
 // --- グローバル ---
 let currentCat="クリスタル", hintCount=0, lastHitName=null, specialChanged=false;
 let timerInterval=null, timeElapsed=0;
@@ -504,16 +505,40 @@ const modalCancel=document.getElementById('modalCancel');
 function showModal(message,onOk){ modalText.textContent=message; modal.style.display='flex'; const cleanup=()=>{modal.style.display='none'; modalOk.removeEventListener('click',okHandler); modalCancel.removeEventListener('click',cancelHandler);}; const okHandler=()=>{cleanup(); if(onOk) onOk();}; const cancelHandler=()=>{cleanup();}; modalOk.addEventListener('click',okHandler); modalCancel.addEventListener('click',cancelHandler);}
 function normalizeInput(str){if(!str) return ""; return str.replace(/[・\.]/g,"").replace(/[Ａ-Ｚ]/g,s=>String.fromCharCode(s.charCodeAt(0)-0xFEE0)).trim();}
 function updateTimerDisplay(){const min=String(Math.floor(timeElapsed/60)).padStart(2,'0'); const sec=String(timeElapsed%60).padStart(2,'0'); timerDisplay.textContent=`${min}:${sec}`;}
-function startTimer(){stopTimer(); timerInterval=setInterval(()=>{timeElapsed++; updateTimerDisplay(); const allCleared=Object.values(WEAPON_CATEGORIES).every(cat=>cat.guessed.size===cat.targets.length); if(allCleared){hintArea.textContent="全カテゴリ全問正解！おめでとう！"; input.disabled=true; sendBtn.disabled=true; stopTimer();}},1000);}
 function stopTimer(){if(timerInterval) clearInterval(timerInterval); timerInterval=null;}
 
 function renderList(){
-  list.innerHTML=''; const cat=WEAPON_CATEGORIES[currentCat];
-  cat.targets.forEach(t=>{ const div=document.createElement('div'); let cls='item'; if(cat.guessed.has(t)) cls+=' hit'; else if(cat.giveup.has(t)) cls+=' giveup'; if(t===lastHitName && cat.guessed.has(t)) cls+=' last-hit'; div.className=cls; div.style.justifyContent='center';
-  if(cat.guessed.has(t)||cat.giveup.has(t)){ if(t==="ひびき"&&specialChanged){ div.innerHTML=t+'<img src="images/n421S.png">'; } else { div.innerHTML=t+'<img src="'+(cat.images[t]||'')+'">'; } } else { div.textContent='???'; } list.appendChild(div); });
-  const totalGuessed=Object.values(WEAPON_CATEGORIES).reduce((sum,c)=>sum+c.guessed.size,0); const totalTargets=Object.values(WEAPON_CATEGORIES).reduce((sum,c)=>sum+c.targets.length,0);
-  status.textContent=`正解: ${cat.guessed.size} / ${cat.targets.length} 【全体: ${totalGuessed} / ${totalTargets}】｜ヒント使用回数: ${hintCount}`;
-  const lastDiv=Array.from(list.children).find(div=>div.classList.contains('last-hit')); if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth',block:'center'});
+  list.innerHTML='';
+  const cat=WEAPON_CATEGORIES[currentCat];
+  cat.targets.forEach(t=>{
+    const div=document.createElement('div');
+    let cls='item';
+    if(cat.guessed.has(t)) cls+=' hit';
+    else if(cat.giveup.has(t)) cls+=' giveup';
+    if(t===lastHitName && cat.guessed.has(t)) cls+=' last-hit';
+    div.className=cls;
+    if(cat.guessed.has(t)||cat.giveup.has(t)){
+      if(t==="ひびき"&&specialChanged){
+        div.innerHTML=t+'<img src="images/n421S.png">';
+      } else {
+        div.innerHTML=t+'<img src="'+(cat.images[t]||'')+'">';
+      }
+    } else { div.textContent='???'; }
+    list.appendChild(div);
+  });
+
+  const totalGuessed=Object.values(WEAPON_CATEGORIES).reduce((s,c)=>s+c.guessed.size,0);
+  const totalTargets=Object.values(WEAPON_CATEGORIES).reduce((s,c)=>s+c.targets.length,0);
+  const currentScore = calculateScore();
+
+  status.textContent =
+    `正解: ${cat.guessed.size}/${cat.targets.length} ` +
+    `【全体: ${totalGuessed}/${totalTargets}】｜` +
+    `ヒント使用回数: ${hintCount} ｜` +
+    `スコア: ${currentScore}`;
+
+  const lastDiv=Array.from(list.children).find(div=>div.classList.contains('last-hit'));
+  if(lastDiv) lastDiv.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
 function submitName(raw){
@@ -522,12 +547,47 @@ function submitName(raw){
   if(cat.guessed.has(answer)){ hintArea.textContent=`${answer} はすでに正解済みです。`; input.value=''; input.focus(); return; }
   cat.guessed.add(answer); lastHitName=answer; hintArea.textContent=`${answer} を ${currentCat} カテゴリで正解！`; renderList();
   // ひびき
-  if(answer==="ひびき"&&!specialChanged){ const specialImg=document.querySelector(`.item.hit img[src*="n421.png"]`); if(specialImg){ const nextImg=new Image(); nextImg.src="images/n421S.png"; setTimeout(()=>{specialImg.style.transition="filter 2s linear"; specialImg.style.filter="brightness(400%)"; specialImg.addEventListener("transitionend",()=>{specialImg.src=nextImg.src; specialImg.style.transition="none"; specialImg.style.filter="brightness(100%)"; setTimeout(()=>{specialImg.style.transition="transform 1.5s ease-in-out"; specialImg.style.transform="rotate(360deg)"; specialImg.addEventListener("transitionend",()=>{specialImg.style.transition="none"; specialImg.style.transform="rotate(0deg)";},{once:true});},50); specialChanged=true;},{once:true});},1500); } }
+  if(answer==="ひびき"&&!specialChanged){ const specialImg=document.querySelector(`.item.hit img[src*="n421.png"]`); if(specialImg){ const nextImg=new Image(); nextImg.src="images/n421S.png"; setTimeout(()=>{specialImg.style.transition="filter 2s linear"; specialImg.style.filter="brightness(400%)"; specialImg.addEventListener("transitionend",()=>{specialImg.src=nextImg.src; specialImg.style.transition="none"; specialImg.style.filter="brightness(100%)"; setTimeout(()=>{specialImg.style.transition="transform 2s ease-in-out"; specialImg.style.transform="rotate(-360deg)"; specialImg.addEventListener("transitionend",()=>{specialImg.style.transition="none"; specialImg.style.transform="rotate(0deg)";},{once:true});},50); specialChanged=true;},{once:true});},1500); } }
   input.value=''; input.focus();
 }
 
 function showHint(){ const cat=WEAPON_CATEGORIES[currentCat]; const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t)); if(unguessed.length===0){hintArea.textContent="すべて回答済み！"; input.focus(); return;} const choice=unguessed[Math.floor(Math.random()*unguessed.length)]; hintArea.textContent=`ヒント: 未回答の${currentCat}の一つ 最初の文字は「${choice[0]}」`; hintCount++; renderList(); input.focus(); }
 function showHint2(){ const cat=WEAPON_CATEGORIES[currentCat]; const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t)); if(unguessed.length===0){hintArea.textContent="すべて回答済み！"; input.focus(); return;} const choice=unguessed[Math.floor(Math.random()*unguessed.length)]; const imgSrc=cat.images[choice]; if(!imgSrc){hintArea.textContent=`ヒント2: 未回答の${currentCat}の一つ`; input.focus(); return;} hintArea.innerHTML=`ヒント2: 未回答の${currentCat}の一つ<br><img src="${imgSrc}" style="filter: brightness(0) saturate(100%); width:60px; height:60px;">`; hintCount++; renderList(); input.focus(); }
+
+// --- スコア計算 ---
+function calculateScore() {
+  const totalGuessed = Object.values(WEAPON_CATEGORIES)
+    .reduce((sum, cat) => sum + cat.guessed.size, 0);
+  const hints = hintCount;
+  const minutes = Math.floor(timeElapsed / 60);
+
+  const rawScore = (totalGuessed ** 2 - (hints / 2) ** 2) - (minutes ** 2);
+  const floored = Math.floor(rawScore); // 小数点以下切り捨て
+  return Math.max(floored, 0);
+}
+
+
+// --- タイマー ---
+function updateTimerDisplay(){
+  const min=String(Math.floor(timeElapsed/60)).padStart(2,'0');
+  const sec=String(timeElapsed%60).padStart(2,'0');
+  timerDisplay.textContent=`${min}:${sec}`;
+}
+function startTimer(){
+  stopTimer();
+  timerInterval=setInterval(()=>{
+    timeElapsed++;
+    updateTimerDisplay();
+    const allCleared=Object.values(WEAPON_CATEGORIES)
+      .every(cat=>cat.guessed.size===cat.targets.length);
+    if(allCleared){
+      const score = calculateScore();
+      hintArea.textContent=`全カテゴリ全問正解！おめでとう！ スコア: ${score}`;
+      input.disabled=true; sendBtn.disabled=true; stopTimer();
+    }
+  },1000);
+}
+function stopTimer(){if(timerInterval) clearInterval(timerInterval); timerInterval=null;}
 
 // --- ギブアップ ---
 giveupBtn.addEventListener('click', () => {
@@ -548,7 +608,6 @@ giveupBtn.addEventListener('click', () => {
     giveupBtn.disabled = true;
   });
 });
-
 // --- イベント ---
 sendBtn.addEventListener('click',()=>submitName(input.value));
 input.addEventListener('keydown',e=>{if(e.key==='Enter') submitName(input.value);});
