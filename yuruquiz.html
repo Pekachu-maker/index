@@ -160,7 +160,7 @@ button.giveupBtn:hover{animation: dangerFlash 0.6s infinite alternate;}
       <button data-cat="エメラルド">エメラルド</button>
       <button data-cat="プラチナ">プラチナ</button>
       <button data-cat="ＢＷ">ＢＷ</button>
-      <button data-cat="ＢＷ２">Coming soon...</button>
+      <button data-cat="ＨＧＳＳ">ＨＧＳＳ</button>
     </div>
     <div class="controls">
       <input id="nameInput" type="text" placeholder="ここに入力 → Enter または 送信" autocomplete="off" />
@@ -193,7 +193,7 @@ const WEAPON_CATEGORIES = {
   "エメラルド": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
   "プラチナ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
   "ＢＷ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
-  //"ＢＷ２": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
+  "ＨＧＳＳ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
 };
 function addWeapon(catName, weaponName, imgPath="") {
   const cat = WEAPON_CATEGORIES[catName];
@@ -481,6 +481,92 @@ addWeapon("ＢＷ", "ザワールド", "images/n634.png");
 addWeapon("ＢＷ", "だいスター", "images/n512.png");
 addWeapon("ＢＷ", "バリッシュ", "images/n644.png");
 
+addWeapon("ＨＧＳＳ", "くるる", "images/n160.gif");
+addWeapon("ＨＧＳＳ", "よいやみ", "images/n164.gif");
+addWeapon("ＨＧＳＳ", "ララひめ", "images/n20.gif");
+addWeapon("ＨＧＳＳ", "ベノム", "images/n24.gif");
+addWeapon("ＨＧＳＳ", "がおー", "images/n195.gif");
+addWeapon("ＨＧＳＳ", "ドナドナ", "images/n69.gif");
+addWeapon("ＨＧＳＳ", "あるは", "images/n92.gif");
+addWeapon("ＨＧＳＳ", "ランド", "images/n181.gif");
+addWeapon("ＨＧＳＳ", "らんちゅら", "images/n168.gif");
+addWeapon("ＨＧＳＳ", "たくろう", "images/n468.gif");
+addWeapon("ＨＧＳＳ", "ネムネム", "images/n206.gif");
+addWeapon("ＨＧＳＳ", "チャルメラ", "images/n17.gif");
+addWeapon("ＨＧＳＳ", "おたくさん", "images/n162.gif");
+addWeapon("ＨＧＳＳ", "アンタレス", "images/n166.gif");
+addWeapon("ＨＧＳＳ", "メシア", "images/n189.gif");
+addWeapon("ＨＧＳＳ", "チュンこ", "images/n22.gif");
+addWeapon("ＨＧＳＳ", "エロめマン", "images/n96.gif");
+addWeapon("ＨＧＳＳ", "ツバサ", "images/n127.gif");
+addWeapon("ＨＧＳＳ", "しそ", "images/n185.gif");
+addWeapon("ＨＧＳＳ", "おとこ", "images/n103.gif");
+addWeapon("ＨＧＳＳ", "かえで", "images/n204.gif");
+addWeapon("ＨＧＳＳ", "フィアンセ", "images/n470.gif");
+addWeapon("ＨＧＳＳ", "ししがみ", "images/n234.gif");
+addWeapon("ＨＧＳＳ", "おまつり", "images/n38.gif");
+addWeapon("ＨＧＳＳ", "エドガー", "images/n109.gif");
+addWeapon("ＨＧＳＳ", "こばん", "images/n52.gif");
+addWeapon("ＨＧＳＳ", "サラサ", "images/n28.gif");
+addWeapon("ＨＧＳＳ", "ドラゴン", "images/n147.gif");
+addWeapon("ＨＧＳＳ", "ながぶち", "images/n469.gif");
+addWeapon("ＨＧＳＳ", "あさつゆ", "images/n192.gif");
+addWeapon("ＨＧＳＳ", "カニ！！！", "images/n98.gif");
+addWeapon("ＨＧＳＳ", "はなこ", "images/n182.gif");
+addWeapon("ＨＧＳＳ", "ネッシー", "images/n213.gif");
+addWeapon("ＨＧＳＳ", "ニョロノコ", "images/n61.gif");
+addWeapon("ＨＧＳＳ", "ぎゅうどん", "images/n199.gif");
+addWeapon("ＨＧＳＳ", "ファベル", "images/n128.gif");
+addWeapon("ＨＧＳＳ", "リンダ", "images/n209.gif");
+addWeapon("ＨＧＳＳ", "ゃ", "images/n42.gif");
+addWeapon("ＨＧＳＳ", "つじあやの", "images/n131.gif");
+addWeapon("ＨＧＳＳ", "ぼんぼぼん", "images/n211.gif");
+addWeapon("ＨＧＳＳ", "マーメイド", "images/n86.gif");
+addWeapon("ＨＧＳＳ", "こいし", "images/n75.gif");
+addWeapon("ＨＧＳＳ", "インドラ", "images/n177.gif");
+addWeapon("ＨＧＳＳ", "ビクトリー", "images/n197.gif");
+addWeapon("ＨＧＳＳ", "まじょこ", "images/n200.gif");
+addWeapon("ＨＧＳＳ", "ブバババン", "images/n467.gif");
+addWeapon("ＨＧＳＳ", "プープー", "images/n216.gif");
+addWeapon("ＨＧＳＳ", "さみだれ", "images/n227.gif");
+addWeapon("ＨＧＳＳ", "キューティ", "images/n124.gif");
+addWeapon("ＨＧＳＳ", "やまもと", "images/n107.gif");
+addWeapon("ＨＧＳＳ", "りゅうせい", "images/n121.gif");
+addWeapon("ＨＧＳＳ", "とくのう", "images/n241.gif");
+addWeapon("ＨＧＳＳ", "アンカルジ", "images/n77.gif");
+addWeapon("ＨＧＳＳ", "おんみょう", "images/n465.gif");
+addWeapon("ＨＧＳＳ", "イーター", "images/n70.gif");
+addWeapon("ＨＧＳＳ", "とこやみ", "images/n430.gif");
+addWeapon("ＨＧＳＳ", "わださちこ", "images/n235.gif");
+addWeapon("ＨＧＳＳ", "ハッピー", "images/n196.gif");
+addWeapon("ＨＧＳＳ", "きりまる", "images/n123.gif");
+addWeapon("ＨＧＳＳ", "もりたか", "images/n335.gif");
+addWeapon("ＨＧＳＳ", "がんだら", "images/n229.gif");
+addWeapon("ＨＧＳＳ", "しょうぐん", "images/n306.gif");
+addWeapon("ＨＧＳＳ", "おやゆび", "images/n50.gif");
+addWeapon("ＨＧＳＳ", "ハチみつこ", "images/n415.gif");
+addWeapon("ＨＧＳＳ", "くのいち", "images/n291.gif");
+addWeapon("ＨＧＳＳ", "キララ", "images/n403.gif");
+addWeapon("ＨＧＳＳ", "ぶちょう", "images/n417.gif");
+addWeapon("ＨＧＳＳ", "ビバディ", "images/n399.gif");
+addWeapon("ＨＧＳＳ", "みずたま", "images/n284.gif");
+addWeapon("ＨＧＳＳ", "あっかんべ", "images/n463.gif");
+addWeapon("ＨＧＳＳ", "ホープ", "images/n104.gif");
+addWeapon("ＨＧＳＳ", "ギャオーン", "images/n115.gif");
+addWeapon("ＨＧＳＳ", "カバビンゴ", "images/n143.gif");
+addWeapon("ＨＧＳＳ", "まもるよ", "images/n142.gif");
+addWeapon("ＨＧＳＳ", "たんぼ", "images/n140.gif");
+addWeapon("ＨＧＳＳ", "かちょう", "images/n25.gif");
+addWeapon("ＨＧＳＳ", "だいひょう", "images/n466.gif");
+addWeapon("ＨＧＳＳ", "うりぼう", "images/n221.gif");
+addWeapon("ＨＧＳＳ", "のこのこ", "images/n286.gif");
+addWeapon("ＨＧＳＳ", "みゆき", "images/n402.gif");
+addWeapon("ＨＧＳＳ", "エナ", "images/n261.gif");
+addWeapon("ＨＧＳＳ", "こたつ", "images/n215.gif");
+addWeapon("ＨＧＳＳ", "ひびき", "images/n420.gif");
+addWeapon("ＨＧＳＳ", "さいきょう", "images/n246.gif");
+
+
 // --- グローバル ---
 let currentCat="クリスタル", hintCount=0, lastHitName=null, specialChanged=false;
 let timerInterval=null, timeElapsed=0;
@@ -503,7 +589,6 @@ const modalCancel=document.getElementById('modalCancel');
 
 function showModal(message,onOk){ modalText.textContent=message; modal.style.display='flex'; const cleanup=()=>{modal.style.display='none'; modalOk.removeEventListener('click',okHandler); modalCancel.removeEventListener('click',cancelHandler);}; const okHandler=()=>{cleanup(); if(onOk) onOk();}; const cancelHandler=()=>{cleanup();}; modalOk.addEventListener('click',okHandler); modalCancel.addEventListener('click',cancelHandler);}
 function normalizeInput(str){if(!str) return ""; return str.replace(/[・\.]/g,"").replace(/[Ａ-Ｚ]/g,s=>String.fromCharCode(s.charCodeAt(0)-0xFEE0)).trim();}
-function updateTimerDisplay(){const min=String(Math.floor(timeElapsed/60)).padStart(2,'0'); const sec=String(timeElapsed%60).padStart(2,'0'); timerDisplay.textContent=`${min}:${sec}`;}
 function stopTimer(){if(timerInterval) clearInterval(timerInterval); timerInterval=null;}
 
 function renderList(){
@@ -625,6 +710,3 @@ input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
-
-
-
