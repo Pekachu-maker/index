@@ -198,9 +198,18 @@ const WEAPON_CATEGORIES = {
 function addWeapon(catName, weaponName, imgPath="") {
   const cat = WEAPON_CATEGORIES[catName];
   if(!cat) return;
-  if(!cat.targets.includes(weaponName)) cat.targets.push(weaponName);
-  if(imgPath) cat.images[weaponName] = imgPath;
+
+  if(!cat.targets.includes(weaponName)) {
+    cat.targets.push(weaponName);
+  }
+
+  const key = `${catName}:${weaponName}`;
+
+  if(imgPath) {
+    cat.images[key] = imgPath;
+  }
 }
+
 // めんどいやつ
 addWeapon("クリスタル", "ポコリータ", "images/n153.png");
 addWeapon("クリスタル", "ララひめ", "images/n19.png");
@@ -568,7 +577,8 @@ addWeapon("ＨＧＳＳ", "さいきょう", "images/n246.gif");
 
 
 // --- グローバル ---
-let currentCat="クリスタル", hintCount=0, lastHitName=null, specialChanged=false;
+let currentCat="クリスタル", hintCount=0, lastHitName=null;
+let specialChanged = {}; 
 let timerInterval=null, timeElapsed=0;
 const input=document.getElementById('nameInput');
 const sendBtn=document.getElementById('sendBtn');
@@ -589,7 +599,6 @@ const modalCancel=document.getElementById('modalCancel');
 
 function showModal(message,onOk){ modalText.textContent=message; modal.style.display='flex'; const cleanup=()=>{modal.style.display='none'; modalOk.removeEventListener('click',okHandler); modalCancel.removeEventListener('click',cancelHandler);}; const okHandler=()=>{cleanup(); if(onOk) onOk();}; const cancelHandler=()=>{cleanup();}; modalOk.addEventListener('click',okHandler); modalCancel.addEventListener('click',cancelHandler);}
 function normalizeInput(str){if(!str) return ""; return str.replace(/[・\.]/g,"").replace(/[Ａ-Ｚ]/g,s=>String.fromCharCode(s.charCodeAt(0)-0xFEE0)).trim();}
-function stopTimer(){if(timerInterval) clearInterval(timerInterval); timerInterval=null;}
 
 function renderList(){
   list.innerHTML='';
@@ -602,11 +611,13 @@ function renderList(){
     if(t===lastHitName && cat.guessed.has(t)) cls+=' last-hit';
     div.className=cls;
     if(cat.guessed.has(t)||cat.giveup.has(t)){
-      if(t==="ひびき"&&specialChanged){
-        div.innerHTML=t+'<img src="images/n421S.png">';
-      } else {
-        div.innerHTML=t+'<img src="'+(cat.images[t]||'')+'">';
-      }
+if (t === "ひびき" && specialChanged[currentCat] === true) {
+    div.innerHTML = t + '<img src="images/n421S.png">';
+} else {
+    const key = `${currentCat}:${t}`;
+    div.innerHTML = t + '<img src="' + (cat.images[key] || '') + '">';
+}
+
     } else { div.textContent='???'; }
     list.appendChild(div);
   });
@@ -630,13 +641,51 @@ function submitName(raw){
   const answer=cat.targets.find(t=>normalizeInput(t)===n); if(!answer){ hintArea.textContent='不正解です。'; input.value=''; input.focus(); return; }
   if(cat.guessed.has(answer)){ hintArea.textContent=`${answer} はすでに正解済みです。`; input.value=''; input.focus(); return; }
   cat.guessed.add(answer); lastHitName=answer; hintArea.textContent=`${answer} を ${currentCat} カテゴリで正解！`; renderList();
-  // ひびき
-  if(answer==="ひびき"&&!specialChanged){ const specialImg=document.querySelector(`.item.hit img[src*="n421.png"]`); if(specialImg){ const nextImg=new Image(); nextImg.src="images/n421S.png"; setTimeout(()=>{specialImg.style.transition="filter 2s linear"; specialImg.style.filter="brightness(400%)"; specialImg.addEventListener("transitionend",()=>{specialImg.src=nextImg.src; specialImg.style.transition="none"; specialImg.style.filter="brightness(100%)"; setTimeout(()=>{specialImg.style.transition="transform 2s ease-in-out"; specialImg.style.transform="rotate(-360deg)"; specialImg.addEventListener("transitionend",()=>{specialImg.style.transition="none"; specialImg.style.transform="rotate(0deg)";},{once:true});},50); specialChanged=true;},{once:true});},1500); } }
+// ひびき
+if(answer === "ひびき" && currentCat === "プラチナ" && !specialChanged["プラチナ"]) {
+  const key = `プラチナ:ひびき`;
+  const expectedFilename = cat.images[key].split('/').pop();
+
+  const imgElement = Array.from(document.querySelectorAll(".item.hit img"))
+    .find(img => img.src.endsWith(expectedFilename));
+
+  if(imgElement){
+    const nextImg = new Image();
+    nextImg.src = "images/n421S.png";
+
+    setTimeout(()=>{
+      imgElement.style.transition="filter 2s linear";
+      imgElement.style.filter="brightness(400%)";
+
+      imgElement.addEventListener("transitionend", ()=>{
+        imgElement.src = nextImg.src;
+        imgElement.style.transition="none";
+        imgElement.style.filter="brightness(100%)";
+
+        setTimeout(()=>{
+          imgElement.style.transition="transform 2s ease-in-out";
+          imgElement.style.transform="rotate(0deg)";
+          imgElement.addEventListener("transitionend", ()=>{
+            imgElement.style.transition="none";
+            imgElement.style.transform="rotate(0deg)";
+          }, {once:true});
+        }, 50);
+
+        specialChanged["プラチナ"] = true;
+      }, {once:true});
+    }, 800);
+  }
+}
+
+
   input.value=''; input.focus();
 }
 
 function showHint(){ const cat=WEAPON_CATEGORIES[currentCat]; const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t)); if(unguessed.length===0){hintArea.textContent="すべて回答済み！"; input.focus(); return;} const choice=unguessed[Math.floor(Math.random()*unguessed.length)]; hintArea.textContent=`ヒント: 未回答の${currentCat}の一つ 最初の文字は「${choice[0]}」`; hintCount++; renderList(); input.focus(); }
-function showHint2(){ const cat=WEAPON_CATEGORIES[currentCat]; const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t)); if(unguessed.length===0){hintArea.textContent="すべて回答済み！"; input.focus(); return;} const choice=unguessed[Math.floor(Math.random()*unguessed.length)]; const imgSrc=cat.images[choice]; if(!imgSrc){hintArea.textContent=`ヒント2: 未回答の${currentCat}の一つ`; input.focus(); return;} hintArea.innerHTML=`ヒント2: 未回答の${currentCat}の一つ<br><img src="${imgSrc}" style="filter: brightness(0) saturate(100%); width:60px; height:60px;">`; hintCount++; renderList(); input.focus(); }
+function showHint2(){ const cat=WEAPON_CATEGORIES[currentCat]; const unguessed=cat.targets.filter(t=>!cat.guessed.has(t)&&!cat.giveup.has(t)); if(unguessed.length===0){hintArea.textContent="すべて回答済み！"; input.focus(); return;} const choice=unguessed[Math.floor(Math.random()*unguessed.length)]; 
+const key = `${currentCat}:${choice}`;
+const imgSrc = cat.images[key];
+if(!imgSrc){hintArea.textContent=`ヒント2: 未回答の${currentCat}の一つ`; input.focus(); return;} hintArea.innerHTML=`ヒント2: 未回答の${currentCat}の一つ<br><img src="${imgSrc}" style="filter: brightness(0) saturate(100%); width:60px; height:60px;">`; hintCount++; renderList(); input.focus(); }
 
 // --- スコア計算 ---
 function calculateScore() {
@@ -697,11 +746,30 @@ sendBtn.addEventListener('click',()=>submitName(input.value));
 input.addEventListener('keydown',e=>{if(e.key==='Enter') submitName(input.value);});
 showHintBtn.addEventListener('click',showHint);
 showHint2Btn.addEventListener('click',showHint2);
-tabs.forEach(btn=>btn.addEventListener('click',()=>{ tabs.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentCat=btn.dataset.cat; renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; }));
+tabs.forEach(btn=>btn.addEventListener('click',()=>{ tabs.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentCat=btn.dataset.cat; renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.focus(); }));
 
 startBtn.addEventListener('click',()=>{ input.disabled=false; sendBtn.disabled=false; resetBtn.disabled=false; showHintBtn.disabled=false; showHint2Btn.disabled=false; giveupBtn.disabled=false; startBtn.disabled=true; timeElapsed=0; updateTimerDisplay(); startTimer(); input.focus(); });
 
-resetBtn.addEventListener('click',()=>{ showModal("リセットしますか？",()=>{ Object.values(WEAPON_CATEGORIES).forEach(c=>{ c.guessed.clear(); c.giveup.clear(); }); hintCount=0; lastHitName=null; specialChanged=false; renderList(); hintArea.textContent='ヒントは非表示です。'; input.value=''; input.disabled=true; sendBtn.disabled=true; startBtn.disabled=false; stopTimer(); timeElapsed=0; updateTimerDisplay(); }); });
+resetBtn.addEventListener('click',()=>{
+  showModal("リセットしますか？",()=>{
+    Object.values(WEAPON_CATEGORIES).forEach(c=>{ 
+      c.guessed.clear(); 
+      c.giveup.clear(); 
+    });
+    hintCount=0; 
+    lastHitName=null; 
+    specialChanged = {}; 
+    renderList();
+    hintArea.textContent='ヒントは非表示です。'; 
+    input.value=''; 
+    input.disabled=true; 
+    sendBtn.disabled=true; 
+    startBtn.disabled=false; 
+    stopTimer(); 
+    timeElapsed=0; 
+    updateTimerDisplay(); 
+  });
+});
 
 modalCancel.addEventListener('click',()=>{ modal.style.display='none'; });
 
