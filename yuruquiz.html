@@ -161,6 +161,7 @@ button.giveupBtn:hover{animation: dangerFlash 0.6s infinite alternate;}
       <button data-cat="プラチナ">プラチナ</button>
       <button data-cat="ＢＷ">ＢＷ</button>
       <button data-cat="ＨＧＳＳ">ＨＧＳＳ</button>
+      <button data-cat="ＦＲＬＧ">ＦＲＬＧ</button>
     </div>
     <div class="controls">
       <input id="nameInput" type="text" placeholder="ここに入力 → Enter または 送信" autocomplete="off" />
@@ -194,6 +195,7 @@ const WEAPON_CATEGORIES = {
   "プラチナ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
   "ＢＷ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
   "ＨＧＳＳ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
+  "ＦＲＬＧ": { targets: [], guessed: new Set(), giveup: new Set(), images: {} },
 };
 function addWeapon(catName, weaponName, imgPath="") {
   const cat = WEAPON_CATEGORIES[catName];
@@ -584,6 +586,124 @@ addWeapon("ＨＧＳＳ", "こたつ", "images/n215.gif");
 addWeapon("ＨＧＳＳ", "ひびき", "images/n420.gif");
 addWeapon("ＨＧＳＳ", "さいきょう", "images/n246.gif");
 
+addWeapon("ＦＲＬＧ", "ダネフシ", "images/n3.gif");
+addWeapon("ＦＲＬＧ", "ジッポ", "images/n6.gif");
+addWeapon("ＦＲＬＧ", "クスクス", "images/n9.gif");
+addWeapon("ＦＲＬＧ", "いわしんぼ", "images/n10.gif");
+addWeapon("ＦＲＬＧ", "カチカチン", "images/n12.gif");
+addWeapon("ＦＲＬＧ", "ザッパ", "images/n15.gif");
+addWeapon("ＦＲＬＧ", "はんぞう", "images/n16.gif");
+addWeapon("ＦＲＬＧ", "チャンプ", "images/n18.gif");
+addWeapon("ＦＲＬＧ", "デッパ", "images/n19.gif");
+addWeapon("ＦＲＬＧ", "チョビ", "images/n20.gif");
+addWeapon("ＦＲＬＧ", "チュンこ", "images/n21.gif");
+addWeapon("ＦＲＬＧ", "ドリルマン", "images/n22.gif");
+addWeapon("ＦＲＬＧ", "アーボ", "images/n23.gif");
+addWeapon("ＦＲＬＧ", "アーボック", "images/n24.gif");
+addWeapon("ＦＲＬＧ", "かちょう", "images/n26.gif");
+addWeapon("ＦＲＬＧ", "サラサ", "images/n27.gif");
+addWeapon("ＦＲＬＧ", "イッチ", "images/n28.gif");
+addWeapon("ＦＲＬＧ", "カオリん", "images/n29.gif");
+addWeapon("ＦＲＬＧ", "アジャ", "images/n31.gif");
+addWeapon("ＦＲＬＧ", "ニドくん", "images/n32.gif");
+addWeapon("ＦＲＬＧ", "でもどり", "images/n34.gif");
+addWeapon("ＦＲＬＧ", "スロカス", "images/n36.gif");
+addWeapon("ＦＲＬＧ", "おまつり", "images/n38.gif");
+addWeapon("ＦＲＬＧ", "ぷんぷく", "images/n40.gif");
+addWeapon("ＦＲＬＧ", "ゃ", "images/n41.gif");
+addWeapon("ＦＲＬＧ", "や", "images/n42.gif");
+addWeapon("ＦＲＬＧ", "げっこう", "images/n45.gif");
+addWeapon("ＦＲＬＧ", "りぼん", "images/n47.gif");
+addWeapon("ＦＲＬＧ", "コッペパン", "images/n48.gif");
+addWeapon("ＦＲＬＧ", "もんしろ", "images/n49.gif");
+addWeapon("ＦＲＬＧ", "おやゆび", "images/n50.gif");
+addWeapon("ＦＲＬＧ", "グラーニャ", "images/n51.gif");
+addWeapon("ＦＲＬＧ", "ねここ", "images/n53.gif");
+addWeapon("ＦＲＬＧ", "コダック", "images/n54.gif");
+addWeapon("ＦＲＬＧ", "ゴルダック", "images/n55.gif");
+addWeapon("ＦＲＬＧ", "ふんどし", "images/n56.gif");
+addWeapon("ＦＲＬＧ", "コリゴリラ", "images/n57.gif");
+addWeapon("ＦＲＬＧ", "ガーディ", "images/n58.gif");
+addWeapon("ＦＲＬＧ", "ウインディ", "images/n59.gif");
+addWeapon("ＦＲＬＧ", "おたま", "images/n60.gif");
+addWeapon("ＦＲＬＧ", "ニョロ", "images/n62.gif");
+addWeapon("ＦＲＬＧ", "チャンス", "images/n63.gif");
+addWeapon("ＦＲＬＧ", "フーディン", "images/n65.gif");
+addWeapon("ＦＲＬＧ", "ビル", "images/n66.gif");
+addWeapon("ＦＲＬＧ", "ヨネダ", "images/n68.gif");
+addWeapon("ＦＲＬＧ", "ほーけい", "images/n69.gif");
+addWeapon("ＦＲＬＧ", "イーター", "images/n71.gif");
+addWeapon("ＦＲＬＧ", "あみタイツ", "images/n72.gif");
+addWeapon("ＦＲＬＧ", "いっぺい", "images/n73.gif");
+addWeapon("ＦＲＬＧ", "シンディ", "images/n76.gif");
+addWeapon("ＦＲＬＧ", "アンカルジ", "images/n77.gif");
+addWeapon("ＦＲＬＧ", "カスケード", "images/n78.gif");
+addWeapon("ＦＲＬＧ", "ぎゅうどん", "images/n79.gif");
+addWeapon("ＦＲＬＧ", "たんこぶ", "images/n80.gif");
+addWeapon("ＦＲＬＧ", "プラマイナ", "images/n81.gif");
+addWeapon("ＦＲＬＧ", "むこうみず", "images/n82.gif");
+addWeapon("ＦＲＬＧ", "じんすけ", "images/n83.gif");
+addWeapon("ＦＲＬＧ", "ゼロスリー", "images/n84.gif");
+addWeapon("ＦＲＬＧ", "ドードリオ", "images/n85.gif");
+addWeapon("ＦＲＬＧ", "アシタカ", "images/n86.gif");
+addWeapon("ＦＲＬＧ", "サヤ", "images/n87.gif");
+addWeapon("ＦＲＬＧ", "ヘドロこ", "images/n88.gif");
+addWeapon("ＦＲＬＧ", "ベトベトン", "images/n89.gif");
+addWeapon("ＦＲＬＧ", "シェルダー", "images/n90.gif");
+addWeapon("ＦＲＬＧ", "パルシェン", "images/n91.gif");
+addWeapon("ＦＲＬＧ", "ことね", "images/n92.gif");
+addWeapon("ＦＲＬＧ", "あるは", "images/n94.gif");
+addWeapon("ＦＲＬＧ", "タツナガ", "images/n95.gif");
+addWeapon("ＦＲＬＧ", "エロめマン", "images/n97.gif");
+addWeapon("ＦＲＬＧ", "カニ！！！", "images/n98.gif");
+addWeapon("ＦＲＬＧ", "カニ！？！", "images/n99.gif");
+addWeapon("ＦＲＬＧ", "ババボバボ", "images/n100.gif");
+addWeapon("ＦＲＬＧ", "デンマル", "images/n101.gif");
+addWeapon("ＦＲＬＧ", "きんたま", "images/n103.gif");
+addWeapon("ＦＲＬＧ", "ホープ", "images/n104.gif");
+addWeapon("ＦＲＬＧ", "ママハハ", "images/n105.gif");
+addWeapon("ＦＲＬＧ", "いらぶ", "images/n106.gif");
+addWeapon("ＦＲＬＧ", "エビワラー", "images/n107.gif");
+addWeapon("ＦＲＬＧ", "なめぞう", "images/n108.gif");
+addWeapon("ＦＲＬＧ", "エドガー", "images/n109.gif");
+addWeapon("ＦＲＬＧ", "マタドガス", "images/n110.gif");
+addWeapon("ＦＲＬＧ", "おばさん", "images/n111.gif");
+addWeapon("ＦＲＬＧ", "サイドン", "images/n112.gif");
+addWeapon("ＦＲＬＧ", "だいふく", "images/n113.gif");
+addWeapon("ＦＲＬＧ", "いんじゃ", "images/n114.gif");
+addWeapon("ＦＲＬＧ", "ギャオーン", "images/n115.gif");
+addWeapon("ＦＲＬＧ", "タッツー", "images/n116.gif");
+addWeapon("ＦＲＬＧ", "シードラ", "images/n117.gif");
+addWeapon("ＦＲＬＧ", "クロノバス", "images/n118.gif");
+addWeapon("ＦＲＬＧ", "セイリュウ", "images/n119.gif");
+addWeapon("ＦＲＬＧ", "ヒトデマン", "images/n120.gif");
+addWeapon("ＦＲＬＧ", "スターミー", "images/n121.gif");
+addWeapon("ＦＲＬＧ", "バリヤン", "images/n122.gif");
+addWeapon("ＦＲＬＧ", "ねっけつ", "images/n123.gif");
+addWeapon("ＦＲＬＧ", "コリンダ", "images/n124.gif");
+addWeapon("ＦＲＬＧ", "エレブー", "images/n125.gif");
+addWeapon("ＦＲＬＧ", "バビブベボ", "images/n126.gif");
+addWeapon("ＦＲＬＧ", "ツバサ", "images/n127.gif");
+addWeapon("ＦＲＬＧ", "うんたろす", "images/n128.gif");
+addWeapon("ＦＲＬＧ", "ガラドシ", "images/n130.gif");
+addWeapon("ＦＲＬＧ", "つじあやの", "images/n131.gif");
+addWeapon("ＦＲＬＧ", "ジョーカー", "images/n132.gif");
+addWeapon("ＦＲＬＧ", "シャンプー", "images/n134.gif");
+addWeapon("ＦＲＬＧ", "サンダース", "images/n135.gif");
+addWeapon("ＦＲＬＧ", "ファー", "images/n136.gif");
+addWeapon("ＦＲＬＧ", "ローポリ", "images/n137.gif");
+addWeapon("ＦＲＬＧ", "オムナイト", "images/n138.gif");
+addWeapon("ＦＲＬＧ", "オムスター", "images/n139.gif");
+addWeapon("ＦＲＬＧ", "べにほね", "images/n141.gif");
+addWeapon("ＦＲＬＧ", "ジャル", "images/n142.gif");
+addWeapon("ＦＲＬＧ", "カバビンゴ", "images/n143.gif");
+addWeapon("ＦＲＬＧ", "れいしょう", "images/n144.gif");
+addWeapon("ＦＲＬＧ", "らいちょう", "images/n145.gif");
+addWeapon("ＦＲＬＧ", "やきとり", "images/n146.gif");
+addWeapon("ＦＲＬＧ", "ドラゴン", "images/n149.gif");
+addWeapon("ＦＲＬＧ", "ミュウツー", "images/n150.gif");
+
+
 // --- グローバル ---
 let currentCat="クリスタル", hintCount=0, lastHitName=null;
 let specialChanged = {}; 
@@ -786,7 +906,3 @@ input.disabled=true; sendBtn.disabled=true;
 </script>
 </body>
 </html>
-
-
-
-
