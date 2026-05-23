@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ルーレット抽選サイト</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: #f3f4f6;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 95vw;
+      max-width: 700px;
+      height: 95vh;
+      margin: auto;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .left-panel {
+      flex: 1;
+      background: white;
+      padding: 8px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      height: 100%;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .right-panel {
+      width: 190px;
+      background: white;
+      padding: 8px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      height: 100%;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    textarea,
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 8px;
+      margin-bottom: 14px;
+      padding: 8px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 12px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 200px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    button {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 12px;
+      background: black;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #roulette {
+      margin-top: 18px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111827;
+      color: white;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: bold;
+      overflow: hidden;
+    }
+
+    .results {
+      margin-top: 18px;
+    }
+
+    .result-item {
+      background: #f1f5f9;
+      padding: 8px;
+      border-radius: 12px;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="left-panel">
+    <h1>ルーレット抽選サイト</h1>
+
+    <label>候補を1行ずつ入力</label>
+    <textarea id="list" rows="10">
+ゆ
+る
+す
+ぎ
+</textarea>
+
+    <label>抽選する数</label>
+    <input type="number" id="count" value="4" min="1">
+
+    <button id="drawButton">抽選スタート</button>
+
+    <div id="roulette">抽選待ち</div>
+  </div>
+
+  <div class="right-panel">
+    <h2>抽選結果</h2>
+    <div class="results" id="results"></div>
+  </div>
+
+</div>
+
+<script>
+  const drawButton = document.getElementById('drawButton');
+  const roulette = document.getElementById('roulette');
+  const resultsDiv = document.getElementById('results');
+
+  function shuffle(array) {
+    return [...array].sort(() => Math.random() - 0.5);
+  }
+
+  let isDrawing = false;
+
+  drawButton.addEventListener('click', async () => {
+    if (isDrawing) return;
+    isDrawing = true;
+    drawButton.disabled = true;
+    drawButton.textContent = '抽選中...';
+    const text = document.getElementById('list').value;
+    const count = parseInt(document.getElementById('count').value);
+
+    let items = text
+      .split(/\r?\n/)
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
+
+    if (items.length === 0) {
+      alert('候補を入力してください');
+      return;
+    }
+
+    if (count > items.length) {
+      alert('抽選数が候補数を超えています');
+      return;
+    }
+
+    resultsDiv.innerHTML = '';
+
+    let selectedItems = [];
+
+    for (let i = 0; i < count; i++) {
+      const shuffled = shuffle(items);
+      const winner = shuffled[0];
+
+      await rouletteAnimation(items, winner);
+
+      selectedItems.push(winner);
+      items = items.filter(item => item !== winner);
+
+      const resultItem = document.createElement('div');
+      resultItem.className = 'result-item';
+      resultItem.textContent = winner;
+      resultsDiv.appendChild(resultItem);
+    }
+
+    drawButton.disabled = false;
+    drawButton.textContent = '抽選スタート';
+    isDrawing = false;
+  });
+
+  function rouletteAnimation(items, winner) {
+    return new Promise((resolve) => {
+      let count = 0;
+      const maxCount = 30;
+
+      const interval = setInterval(() => {
+        const randomItem = items[Math.floor(Math.random() * items.length)];
+        roulette.textContent = randomItem;
+
+        count++;
+
+        if (count >= maxCount) {
+          clearInterval(interval);
+          roulette.textContent = winner;
+          resolve();
+        }
+      }, 80);
+    });
+  }
+</script>
+
+</body>
+</html>
