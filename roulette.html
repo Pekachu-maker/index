@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>スロット抽選サイト</title>
+<title>ルーレット抽選</title>
 
 <style>
 body{
@@ -288,20 +288,17 @@ drawButton.addEventListener(
                 document.getElementById(
                     `slot-${i}`
                 );
-
             await spinSlot(
                 slot,
                 items,
                 winner
             );
-
             items =
                 items.filter(
                     item =>
                     item !== winner
                 );
         }
-
         resetButton();
     }
 );
@@ -356,10 +353,8 @@ function spinSlot(
 
             requestAnimationFrame(
                 () => {
-
                 requestAnimationFrame(
                     () => {
-
                     reel.style.transition =
                         "transform 6s cubic-bezier(.12,.82,.22,1)";
 
@@ -372,20 +367,14 @@ function spinSlot(
                             )
                         }px)`;
                 });
-
             });
-
             setTimeout(
                 () => {
-
                 slot.classList.add(
                     "finished"
                 );
-
                 resolve();
-
             },6000);
-
         }
     );
 }
