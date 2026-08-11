@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FE 成長率クイズ</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 30px 15px;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background: #fdf4f4;
+    color: #333;
+}
+
+
+/* ==============================
+   クイズ本体
+   ============================== */
+
+.quiz {
+    width: min(700px, 100%);
+    margin: 0 auto;
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ==============================
+   タイトル
+   ============================== */
+
+h1 {
+    text-align: center;
+
+    margin: 0 0 10px;
+
+    font-size: 26px;
+}
+
+
+/* ==============================
+   問題文
+   ============================== */
+
+.question {
+    text-align: center;
+
+    font-size: 18px;
+
+    margin: 20px 0;
+}
+
+
+/* ==============================
+   クラス
+   ============================== */
+
+.class-area {
+    text-align: center;
+
+    margin-bottom: 20px;
+
+    font-size: 17px;
+}
+
+.class-label {
+    color: #666;
+}
+
+.class-value {
+    font-weight: bold;
+}
+
+
+/* ==============================
+   成長率テーブル
+   ============================== */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+
+    min-width: 560px;
+
+    border-collapse: collapse;
+
+    margin: 20px 0 15px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+
+    text-align: center;
+
+    padding: 12px 6px;
+}
+
+th {
+    background: #f3f4f6;
+
+    font-weight: bold;
+}
+
+td {
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+
+/* ==============================
+   隠れている成長率
+   ============================== */
+
+.hidden-growth {
+    color: #999;
+}
+
+
+/* ==============================
+   ヒント
+   ============================== */
+
+.hint-area {
+    text-align: center;
+
+    margin-top: 15px;
+}
+
+.hint-button {
+    background: #6ee7b7;
+}
+
+.hint-button:hover {
+    background: #34d399;
+}
+
+.hint-count {
+    margin-top: 8px;
+
+    font-size: 14px;
+
+    color: #666;
+}
+
+
+/* ==============================
+   回答欄
+   ============================== */
+
+.answer-area {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+input {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    outline: none;
+}
+
+input:focus {
+    border-color: #34d399;
+}
+
+
+/* ==============================
+   ボタン
+   ============================== */
+
+button {
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 12px 20px;
+
+    background: #34d399;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+button:disabled {
+    background: #aaa;
+
+    cursor: default;
+
+    opacity: 1;
+}
+
+
+/* ==============================
+   結果
+   ============================== */
+
+.result {
+    min-height: 30px;
+
+    text-align: center;
+
+    margin: 20px 0 10px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+}
+
+
+/* ==============================
+   次の問題
+   ============================== */
+
+.next {
+    display: block;
+
+    margin: 15px auto 0;
+}
+
+
+/* ==============================
+   スコア
+   ============================== */
+
+.score {
+    text-align: center;
+
+    margin-top: 20px;
+
+    color: #666;
+
+    line-height: 1.8;
+}
+
+
+/* ==============================
+   読み込み中
+   ============================== */
+
+.loading {
+    text-align: center;
+
+    padding: 30px;
+
+    color: #666;
+}
+
+
+/* ==============================
+   エラー
+   ============================== */
+
+.error {
+    text-align: center;
+
+    padding: 20px;
+
+    color: #d33;
+
+    line-height: 1.8;
+}
+
+
+/* ==============================
+   スマホ対応
+   ============================== */
+
+@media (max-width: 600px) {
+
+    .quiz {
+        padding: 20px 15px;
+    }
+
+    th,
+    td {
+        padding: 10px 3px;
+    }
+
+    th {
+        font-size: 13px;
+    }
+
+    td {
+        font-size: 17px;
+    }
+
+    .answer-area {
+        flex-direction: column;
+    }
+
+    .answer-area button {
+        width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<div class="quiz">
+
+    <h1>
+        FE 成長率クイズ
+    </h1>
+
+
+    <div
+        class="loading"
+        id="loading"
+    >
+        データを読み込んでいます……
+    </div>
+
+
+    <div
+        id="game"
+        style="display:none;"
+    >
+
+
+        <!-- ==========================
+             問題
+             ========================== -->
+
+        <div class="question">
+            この成長率を持つキャラクターは誰？
+        </div>
+
+
+        <!-- ==========================
+             クラス
+             ========================== -->
+
+        <div class="class-area">
+
+            <span class="class-label">
+                クラス：
+            </span>
+
+            <span
+                class="class-value"
+                id="className"
+            >
+                ？？？
+            </span>
+
+        </div>
+
+
+        <!-- ==========================
+             成長率
+             ========================== -->
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>HP</th>
+                        <th>力</th>
+                        <th>魔力</th>
+                        <th>技</th>
+                        <th>速さ</th>
+                        <th>幸運</th>
+                        <th>守備</th>
+                        <th>魔防</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr id="growthRow"></tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- ==========================
+             ヒント
+             ========================== -->
+
+        <div class="hint-area">
+
+            <button
+                class="hint-button"
+                id="hintButton"
+                onclick="useHint()"
+            >
+                ヒント
+            </button>
+
+            <div
+                class="hint-count"
+                id="hintCount"
+            >
+                ヒント使用回数：0
+            </div>
+
+        </div>
+
+
+        <!-- ==========================
+             回答
+             ========================== -->
+
+        <div class="answer-area">
+
+            <input
+                type="text"
+                id="answer"
+                placeholder="キャラクター名を入力"
+                autocomplete="off"
+            >
+
+            <button
+                id="answerButton"
+                onclick="checkAnswer()"
+            >
+                回答
+            </button>
+
+        </div>
+
+
+        <!-- ==========================
+             結果
+             ========================== -->
+
+        <div
+            class="result"
+            id="result"
+        ></div>
+
+
+        <!-- ==========================
+             次の問題
+             ========================== -->
+
+        <button
+            class="next"
+            id="nextButton"
+            onclick="nextQuestion()"
+            style="display:none;"
+        >
+            次の問題
+        </button>
+
+
+        <!-- ==========================
+             スコア
+             ========================== -->
+
+        <div
+            class="score"
+            id="score"
+        >
+            正解：0 / 0<br>
+            不正解：0
+        </div>
+
+    </div>
+
+
+    <!-- エラー表示 -->
+
+    <div
+        class="error"
+        id="error"
+        style="display:none;"
+    ></div>
+
+</div>
+
+
+
+<script>
+
+
+/* ==================================================
+   キャラクターデータ
+   ================================================== */
+
+let characters = [];
+
+
+/* ==================================================
+   ゲーム状態
+   ================================================== */
+
+let currentCharacter = null;
+
+let correctCount = 0;
+
+let wrongCount = 0;
+
+let questionCount = 0;
+
+let answered = false;
+
+
+/*
+   成長率8項目の開示状態
+
+   true  = 開示済み
+   false = ？？？
+*/
+
+let revealed = [];
+
+
+/*
+   クラスの開示状態
+*/
+
+let classRevealed = false;
+
+
+/*
+   現在の問題で使用したヒント数
+*/
+
+let hintCount = 0;
+
+
+
+/* ==================================================
+   JSON読み込み
+   ================================================== */
+
+async function loadCharacters() {
+
+    try {
+
+        const response =
+            await fetch("characters.json");
+
+
+        /*
+           HTTPエラー確認
+        */
+
+        if (!response.ok) {
+
+            throw new Error(
+                "characters.json を読み込めませんでした。"
+            );
+
+        }
+
+
+        /*
+           JSONとして読み込む
+        */
+
+        const data =
+            await response.json();
+
+
+        /*
+           配列か確認
+        */
+
+        if (!Array.isArray(data)) {
+
+            throw new Error(
+                "characters.json の形式が正しくありません。"
+            );
+
+        }
+
+
+        /*
+           データを保存
+        */
+
+        characters = data;
+
+
+        /*
+           キャラクターが0件の場合
+        */
+
+        if (characters.length === 0) {
+
+            throw new Error(
+                "キャラクターデータがありません。"
+            );
+
+        }
+
+
+        /*
+           読み込み中を非表示
+        */
+
+        document.getElementById(
+            "loading"
+        ).style.display = "none";
+
+
+        /*
+           ゲームを表示
+        */
+
+        document.getElementById(
+            "game"
+        ).style.display = "block";
+
+
+        /*
+           最初の問題
+        */
+
+        nextQuestion();
+
+    }
+
+
+    catch (error) {
+
+        console.error(error);
+
+
+        document.getElementById(
+            "loading"
+        ).style.display = "none";
+
+
+        const errorElement =
+            document.getElementById(
+                "error"
+            );
+
+
+        errorElement.style.display =
+            "block";
+
+
+        errorElement.innerHTML =
+            "データを読み込めませんでした。<br>" +
+            "characters.json が index.html と同じフォルダにあるか確認してください。";
+
+    }
+
+}
+
+
+
+/* ==================================================
+   問題を出題
+   ================================================== */
+
+function nextQuestion() {
+
+
+    answered = false;
+
+
+    /*
+       JSONの中から
+       ランダムに1件選択
+    */
+
+    currentCharacter =
+        characters[
+            Math.floor(
+                Math.random() *
+                characters.length
+            )
+        ];
+
+
+    /*
+       成長率8項目を
+       すべて非表示
+    */
+
+    revealed =
+        Array(8).fill(false);
+
+
+    /*
+       クラスも非表示
+    */
+
+    classRevealed = false;
+
+
+    /*
+       ヒント回数リセット
+    */
+
+    hintCount = 0;
+
+
+    /*
+       最初の成長率を
+       ランダムで1項目開示
+    */
+
+    const firstIndex =
+        Math.floor(
+            Math.random() * 8
+        );
+
+
+    revealed[firstIndex] = true;
+
+
+    /*
+       クラス表示
+    */
+
+    updateClass();
+
+
+    /*
+       成長率表示
+    */
+
+    updateGrowthTable();
+
+
+    /*
+       ヒント回数表示
+    */
+
+    document.getElementById(
+        "hintCount"
+    ).textContent =
+        "ヒント使用回数：0";
+
+
+    /*
+       ヒントボタン有効
+    */
+
+    document.getElementById(
+        "hintButton"
+    ).disabled = false;
+
+
+    /*
+       回答ボタン有効
+    */
+
+    document.getElementById(
+        "answerButton"
+    ).disabled = false;
+
+
+    /*
+       次の問題ボタンを隠す
+    */
+
+    document.getElementById(
+        "nextButton"
+    ).style.display = "none";
+
+
+    /*
+       回答欄リセット
+    */
+
+    document.getElementById(
+        "answer"
+    ).value = "";
+
+
+    /*
+       結果リセット
+    */
+
+    document.getElementById(
+        "result"
+    ).textContent = "";
+
+
+    /*
+       回答欄にフォーカス
+    */
+
+    document.getElementById(
+        "answer"
+    ).focus();
+
+}
+
+
+
+/* ==================================================
+   クラス表示
+   ================================================== */
+
+function updateClass() {
+
+
+    const classElement =
+        document.getElementById(
+            "className"
+        );
+
+
+    if (classRevealed) {
+
+        classElement.textContent =
+            currentCharacter.className;
+
+    }
+
+    else {
+
+        classElement.textContent =
+            "？？？";
+
+    }
+
+}
+
+
+
+/* ==================================================
+   成長率表示
+   ================================================== */
+
+function updateGrowthTable() {
+
+
+    const row =
+        document.getElementById(
+            "growthRow"
+        );
+
+
+    /*
+       一度全部削除
+    */
+
+    row.innerHTML = "";
+
+
+    /*
+       成長率8項目を表示
+    */
+
+    currentCharacter.growth.forEach(
+        (value, index) => {
+
+
+            const td =
+                document.createElement(
+                    "td"
+                );
+
+
+            /*
+               開示済み
+            */
+
+            if (revealed[index]) {
+
+                td.textContent =
+                    value + "%";
+
+            }
+
+
+            /*
+               未開示
+            */
+
+            else {
+
+                td.textContent =
+                    "？？？";
+
+                td.classList.add(
+                    "hidden-growth"
+                );
+
+            }
+
+
+            row.appendChild(td);
+
+        }
+    );
+
+}
+
+
+
+/* ==================================================
+   ヒント
+   ================================================== */
+
+function useHint() {
+
+
+    /*
+       ヒント候補
+
+       growth
+       = 成長率
+
+       class
+       = クラス
+    */
+
+    const hintTargets = [];
+
+
+    /*
+       未開示の成長率を追加
+    */
+
+    revealed.forEach(
+        (isRevealed, index) => {
+
+            if (!isRevealed) {
+
+                hintTargets.push({
+                    type: "growth",
+                    index: index
+                });
+
+            }
+
+        }
+    );
+
+
+    /*
+       クラスが未開示なら
+       候補に追加
+    */
+
+    if (!classRevealed) {
+
+        hintTargets.push({
+            type: "class"
+        });
+
+    }
+
+
+    /*
+       すべて開示済み
+    */
+
+    if (hintTargets.length === 0) {
+
+        document.getElementById(
+            "hintButton"
+        ).disabled = true;
+
+        return;
+
+    }
+
+
+    /*
+       ランダムで1つ選択
+    */
+
+    const target =
+        hintTargets[
+            Math.floor(
+                Math.random() *
+                hintTargets.length
+            )
+        ];
+
+
+    /*
+       成長率だった場合
+    */
+
+    if (
+        target.type === "growth"
+    ) {
+
+        revealed[target.index] =
+            true;
+
+    }
+
+
+    /*
+       クラスだった場合
+    */
+
+    if (
+        target.type === "class"
+    ) {
+
+        classRevealed = true;
+
+        updateClass();
+
+    }
+
+
+    /*
+       ヒント回数を増やす
+    */
+
+    hintCount++;
+
+
+    /*
+       成長率を更新
+    */
+
+    updateGrowthTable();
+
+
+    /*
+       ヒント回数表示
+    */
+
+    document.getElementById(
+        "hintCount"
+    ).textContent =
+        "ヒント使用回数：" +
+        hintCount;
+
+
+    /*
+       残りを確認
+    */
+
+    const remainingGrowth =
+        revealed.some(
+            value => !value
+        );
+
+
+    /*
+       全部開示されたら
+       ヒント無効
+    */
+
+    if (
+        !remainingGrowth &&
+        classRevealed
+    ) {
+
+        document.getElementById(
+            "hintButton"
+        ).disabled = true;
+
+    }
+
+}
+
+
+
+/* ==================================================
+   ひらがな・カタカナ統一
+   ================================================== */
+
+function normalizeKana(text) {
+
+
+    return text
+
+        /*
+           前後の空白を削除
+        */
+
+        .trim()
+
+
+        /*
+           全角・半角などを統一
+        */
+
+        .normalize("NFKC")
+
+
+        /*
+           カタカナをひらがなに変換
+        */
+
+        .replace(
+            /[\u30A1-\u30F6]/g,
+
+            function(char) {
+
+                return String.fromCharCode(
+                    char.charCodeAt(0) - 0x60
+                );
+
+            }
+        );
+
+}
+
+
+
+/* ==================================================
+   回答
+   ================================================== */
+
+function checkAnswer() {
+
+
+    /*
+       回答済みなら終了
+    */
+
+    if (answered) return;
+
+
+    /*
+       入力取得
+    */
+
+    const input =
+        document.getElementById(
+            "answer"
+        ).value;
+
+
+    /*
+       空欄なら終了
+    */
+
+    if (input.trim() === "") return;
+
+
+    /*
+       回答済み
+    */
+
+    answered = true;
+
+
+    /*
+       出題数
+    */
+
+    questionCount++;
+
+
+    /*
+       入力を正規化
+    */
+
+    const normalizedInput =
+        normalizeKana(input);
+
+
+    const normalizedAnswer =
+        normalizeKana(
+            currentCharacter.name
+        );
+
+
+    /*
+       正解
+    */
+
+    if (
+        normalizedInput ===
+        normalizedAnswer
+    ) {
+
+        correctCount++;
+
+
+        document.getElementById(
+            "result"
+        ).textContent =
+            "○ 正解！ 「" +
+            currentCharacter.name +
+            "」";
+
+    }
+
+
+    /*
+       不正解
+    */
+
+    else {
+
+        wrongCount++;
+
+
+        document.getElementById(
+            "result"
+        ).textContent =
+            "× 不正解！ 正解は「" +
+            currentCharacter.name +
+            "」";
+
+    }
+
+
+    /*
+       スコア更新
+    */
+
+    document.getElementById(
+        "score"
+    ).innerHTML =
+
+        "正解：" +
+        correctCount +
+        " / " +
+        questionCount +
+
+        "<br>" +
+
+        "不正解：" +
+        wrongCount;
+
+
+    /*
+       回答後はヒント無効
+    */
+
+    document.getElementById(
+        "hintButton"
+    ).disabled = true;
+
+
+    /*
+       回答ボタン無効
+    */
+
+    document.getElementById(
+        "answerButton"
+    ).disabled = true;
+
+
+    /*
+       次の問題を表示
+    */
+
+    document.getElementById(
+        "nextButton"
+    ).style.display = "block";
+
+}
+
+
+
+/* ==================================================
+   Enterキー
+   ================================================== */
+
+document
+    .getElementById("answer")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                checkAnswer();
+
+            }
+
+        }
+    );
+
+
+
+/* ==================================================
+   JSON読み込み開始
+   ================================================== */
+
+loadCharacters();
+
+</script>
+
+</body>
+</html>
