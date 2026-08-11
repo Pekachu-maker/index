@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>FE 成長率クイズ</title>
 <style>
 *{box-sizing:border-box}
@@ -13,7 +13,7 @@ body{
     background:#fdf4f4;
     color:#333;
 }
-.quiz{
+.container{
     width:min(700px,100%);
     margin:0 auto;
     padding:30px;
@@ -21,8 +21,55 @@ body{
     border-radius:16px;
     box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
-h1{text-align:center;margin:0 0 20px;font-size:26px}
-.question{text-align:center;font-size:18px;margin:20px 0}
+h1{text-align:center;margin:0 0 25px;font-size:28px}
+h2{font-size:20px;margin:0 0 15px}
+#startScreen{text-align:center}
+.game-selection{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin:20px 0;
+    text-align:left;
+}
+.game-selection label{
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    cursor:pointer;
+    background:#fafafa;
+}
+.game-selection label:hover{background:#f0fdf4}
+.game-selection input{margin-right:7px}
+.select-buttons{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:20px;
+}
+button{
+    border:0;
+    border-radius:8px;
+    padding:11px 20px;
+    background:#34d399;
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+button:hover{opacity:.85}
+button:disabled{background:#aaa;cursor:default;opacity:1}
+.start-button{
+    min-width:180px;
+    margin-top:10px;
+    font-size:18px;
+}
+#error{
+    margin-top:15px;
+    color:#d33;
+    font-weight:bold;
+}
+#quizScreen{display:none}
+.question{text-align:center;font-size:18px;margin-bottom:20px}
 .info-area{text-align:center;margin-bottom:20px}
 .info-row{margin:8px 0;font-size:18px}
 .info-label{color:#666}
@@ -39,24 +86,16 @@ th,td{
     text-align:center;
     padding:12px 6px;
 }
-th{background:#f3f4f6;font-weight:bold}
+th{background:#f3f4f6;font-size:14px}
 td{font-size:20px;font-weight:bold}
 .hint-area{text-align:center;margin:20px 0}
-button{
-    border:0;
-    border-radius:8px;
-    padding:12px 20px;
-    background:#34d399;
-    color:#fff;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-}
-button:hover{opacity:.85}
-button:disabled{background:#aaa;cursor:default;opacity:1}
 .hint-count{margin-top:8px;font-size:14px;color:#666}
-.answer-area{display:flex;gap:10px;margin-top:20px}
-input{
+.answer-area{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+input[type="text"]{
     flex:1;
     min-width:0;
     padding:12px;
@@ -65,7 +104,8 @@ input{
     font-size:16px;
     outline:none;
 }
-input:focus{border-color:#34d399}
+input[type="text"]:focus{border-color:#34d399}
+.answer-area button{white-space:nowrap}
 .result{
     min-height:30px;
     margin:20px 0 10px;
@@ -73,33 +113,71 @@ input:focus{border-color:#34d399}
     font-size:18px;
     font-weight:bold;
 }
-.next{display:block;margin:15px auto 0}
+.next-area{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:15px;
+}
+.next-button{background:#6b7280}
 .score{
     margin-top:20px;
     text-align:center;
     color:#666;
     line-height:1.8;
 }
-.loading,.error{text-align:center;padding:30px}
-.error{color:#d33;line-height:1.8}
+.progress{
+    text-align:center;
+    margin-bottom:15px;
+    font-weight:bold;
+}
+#finishScreen{
+    display:none;
+    text-align:center;
+}
+.final-score{
+    margin:25px 0;
+    font-size:20px;
+    line-height:2;
+}
+.restart-button{margin-top:10px}
 @media(max-width:600px){
-    .quiz{padding:20px 15px}
-    th,td{padding:10px 3px}
-    th{font-size:13px}
-    td{font-size:17px}
+    .container{padding:20px 15px}
+    .game-selection{grid-template-columns:repeat(2,1fr)}
     .answer-area{flex-direction:column}
     .answer-area button{width:100%}
+    .next-area{flex-direction:column}
+    .next-area button{width:100%}
+    th{font-size:12px}
+    td{font-size:17px}
 }
 </style>
 </head>
 <body>
 
-<div class="quiz">
-    <h1>FE 成長率クイズ</h1>
+<div class="container">
+    <div id="loading">データを読み込んでいます……</div>
 
-    <div id="loading" class="loading">データを読み込んでいます……</div>
+    <div id="startScreen" style="display:none">
+        <h1>FE 成長率クイズ</h1>
+        <h2>出題する作品を選択</h2>
 
-    <div id="game" style="display:none">
+        <div class="select-buttons">
+            <button onclick="selectAll()">すべて選択</button>
+            <button onclick="selectNone()">すべて解除</button>
+        </div>
+
+        <div id="gameSelection" class="game-selection"></div>
+
+        <button class="start-button" onclick="startQuiz()">開始</button>
+        <div id="error"></div>
+    </div>
+
+    <div id="quizScreen">
+        <h1>FE 成長率クイズ</h1>
+
+        <div id="progress" class="progress">第1問 / 10問</div>
+
         <div class="question">この成長率を持つキャラクターは誰？</div>
 
         <div class="info-area">
@@ -145,49 +223,151 @@ input:focus{border-color:#34d399}
 
         <div id="result" class="result"></div>
 
-        <button id="nextButton" class="next" onclick="nextQuestion()" style="display:none">次の問題</button>
+        <div class="next-area">
+            <button id="nextButton" class="next-button" onclick="nextQuestion()">次の問題</button>
+        </div>
 
         <div id="score" class="score">
-            正解：0 / 0<br>
+            正解：0<br>
             不正解：0
         </div>
     </div>
 
-    <div id="error" class="error" style="display:none"></div>
+    <div id="finishScreen">
+        <h1>クイズ終了！</h1>
+        <div id="finalScore" class="final-score"></div>
+        <button class="restart-button" onclick="backToStart()">もう一度挑戦</button>
+    </div>
 </div>
 
 <script>
 let characters=[];
+let quizCharacters=[];
 let currentCharacter=null;
+let questionNumber=0;
 let correctCount=0;
 let wrongCount=0;
-let questionCount=0;
-let answered=false;
 let hintCount=0;
+let answered=false;
+
+const games=[
+    "紋章",
+    "聖戦",
+    "トラキア",
+    "封印",
+    "烈火",
+    "聖魔",
+    "蒼炎",
+    "暁",
+    "覚醒",
+    "if",
+    "新紋章",
+    "新暗黒",
+    "エコーズ",
+    "風花",
+    "エンゲージ"
+];
 
 async function loadCharacters(){
     try{
         const response=await fetch("characters.json");
-        if(!response.ok)throw new Error("characters.jsonを読み込めませんでした。");
-        const data=await response.json();
-        if(!Array.isArray(data)||data.length===0)throw new Error("キャラクターデータがありません。");
-        characters=data;
+        if(!response.ok)throw new Error("JSON読み込み失敗");
+        characters=await response.json();
+
+        if(!Array.isArray(characters)||characters.length===0){
+            throw new Error("キャラクターデータがありません");
+        }
+
+        createGameSelection();
+
         document.getElementById("loading").style.display="none";
-        document.getElementById("game").style.display="block";
-        nextQuestion();
+        document.getElementById("startScreen").style.display="block";
     }catch(error){
         console.error(error);
-        document.getElementById("loading").style.display="none";
-        const errorElement=document.getElementById("error");
-        errorElement.style.display="block";
-        errorElement.innerHTML="データを読み込めませんでした。<br>characters.jsonがindex.htmlと同じフォルダにあるか確認してください。";
+        document.getElementById("loading").textContent=
+            "characters.jsonを読み込めませんでした。";
     }
 }
 
+function createGameSelection(){
+    const area=document.getElementById("gameSelection");
+    area.innerHTML="";
+
+    games.forEach(game=>{
+        const label=document.createElement("label");
+        const checkbox=document.createElement("input");
+
+        checkbox.type="checkbox";
+        checkbox.value=game;
+        checkbox.checked=true;
+        checkbox.className="game-checkbox";
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(game));
+        area.appendChild(label);
+    });
+}
+
+function selectAll(){
+    document.querySelectorAll(".game-checkbox").forEach(checkbox=>{
+        checkbox.checked=true;
+    });
+}
+
+function selectNone(){
+    document.querySelectorAll(".game-checkbox").forEach(checkbox=>{
+        checkbox.checked=false;
+    });
+}
+
+function startQuiz(){
+    const selectedGames=[
+        ...document.querySelectorAll(".game-checkbox:checked")
+    ].map(checkbox=>checkbox.value);
+
+    if(selectedGames.length===0){
+        document.getElementById("error").textContent=
+            "少なくとも1作品を選択してください。";
+        return;
+    }
+
+    quizCharacters=characters.filter(character=>
+        selectedGames.includes(character.game)
+    );
+
+    if(quizCharacters.length===0){
+        document.getElementById("error").textContent=
+            "選択した作品のキャラクターデータがありません。";
+        return;
+    }
+
+    questionNumber=0;
+    correctCount=0;
+    wrongCount=0;
+
+    document.getElementById("error").textContent="";
+    document.getElementById("startScreen").style.display="none";
+    document.getElementById("finishScreen").style.display="none";
+    document.getElementById("quizScreen").style.display="block";
+
+    nextQuestion();
+}
+
 function nextQuestion(){
+    if(questionNumber>=10){
+        finishQuiz();
+        return;
+    }
+
     answered=false;
-    currentCharacter=characters[Math.floor(Math.random()*characters.length)];
     hintCount=0;
+    questionNumber++;
+
+    currentCharacter=
+        quizCharacters[Math.floor(Math.random()*quizCharacters.length)];
+
+    document.getElementById("progress").textContent=
+        "第"+questionNumber+"問 / 10問";
 
     document.getElementById("gameName").textContent="？？？";
     document.getElementById("className").textContent="？？？";
@@ -201,15 +381,21 @@ function nextQuestion(){
         row.appendChild(td);
     });
 
-    document.getElementById("hintCount").textContent="ヒント使用回数：0";
+    document.getElementById("hintCount").textContent=
+        "ヒント使用回数：0";
+
     document.getElementById("hintButton").disabled=false;
     document.getElementById("answerButton").disabled=false;
-    document.getElementById("nextButton").style.display="none";
     document.getElementById("result").textContent="";
 
     const answer=document.getElementById("answer");
     answer.value="";
+    answer.disabled=false;
     answer.focus();
+
+    document.getElementById("score").innerHTML=
+        "正解："+correctCount+
+        "<br>不正解："+wrongCount;
 }
 
 function useHint(){
@@ -218,13 +404,16 @@ function useHint(){
     hintCount++;
 
     if(hintCount===1){
-        document.getElementById("gameName").textContent=currentCharacter.game;
+        document.getElementById("gameName").textContent=
+            currentCharacter.game;
     }else if(hintCount===2){
-        document.getElementById("className").textContent=currentCharacter.className;
+        document.getElementById("className").textContent=
+            currentCharacter.className;
         document.getElementById("hintButton").disabled=true;
     }
 
-    document.getElementById("hintCount").textContent="ヒント使用回数："+hintCount;
+    document.getElementById("hintCount").textContent=
+        "ヒント使用回数："+hintCount;
 }
 
 function normalizeKana(text){
@@ -239,31 +428,58 @@ function normalizeKana(text){
 function checkAnswer(){
     if(answered)return;
 
-    const input=document.getElementById("answer").value;
-    if(input.trim()==="")return;
-
-    answered=true;
-    questionCount++;
+    const input=document.getElementById("answer").value.trim();
+    if(input==="")return;
 
     const normalizedInput=normalizeKana(input);
     const normalizedAnswer=normalizeKana(currentCharacter.name);
     const result=document.getElementById("result");
 
     if(normalizedInput===normalizedAnswer){
+        answered=true;
         correctCount++;
-        result.textContent="○ 正解！ 「"+currentCharacter.name+"」";
+
+        result.textContent=
+            "○ 正解！ 「"+currentCharacter.name+"」";
+
+        document.getElementById("answerButton").disabled=true;
+        document.getElementById("answer").disabled=true;
+        document.getElementById("hintButton").disabled=true;
+
+        document.getElementById("score").innerHTML=
+            "正解："+correctCount+
+            "<br>不正解："+wrongCount;
+
+        if(questionNumber>=10){
+            setTimeout(finishQuiz,500);
+        }
     }else{
         wrongCount++;
-        result.textContent="× 不正解！ 正解は「"+currentCharacter.name+"」";
+
+        result.textContent=
+            "× 不正解！ もう一度入力してください。";
+
+        document.getElementById("score").innerHTML=
+            "正解："+correctCount+
+            "<br>不正解："+wrongCount;
+
+        document.getElementById("answer").select();
     }
+}
 
-    document.getElementById("score").innerHTML=
-        "正解："+correctCount+" / "+questionCount+
-        "<br>不正解："+wrongCount;
+function finishQuiz(){
+    document.getElementById("quizScreen").style.display="none";
+    document.getElementById("finishScreen").style.display="block";
 
-    document.getElementById("hintButton").disabled=true;
-    document.getElementById("answerButton").disabled=true;
-    document.getElementById("nextButton").style.display="block";
+    document.getElementById("finalScore").innerHTML=
+        "10問終了！<br><br>"+
+        "正解："+correctCount+"問<br>"+
+        "不正解："+wrongCount+"回";
+}
+
+function backToStart(){
+    document.getElementById("finishScreen").style.display="none";
+    document.getElementById("startScreen").style.display="block";
 }
 
 document.getElementById("answer").addEventListener("keydown",event=>{
@@ -272,6 +488,5 @@ document.getElementById("answer").addEventListener("keydown",event=>{
 
 loadCharacters();
 </script>
-
 </body>
 </html>
