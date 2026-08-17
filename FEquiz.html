@@ -4,12 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>FE 成長率クイズ</title>
-
 <style>
-*{
-    box-sizing:border-box
-}
-
+*{box-sizing:border-box}
 body{
     margin:0;
     padding:20px;
@@ -17,7 +13,6 @@ body{
     background:#fdf4f4;
     color:#333;
 }
-
 .container{
     width:min(760px,100%);
     margin:0 auto;
@@ -26,18 +21,15 @@ body{
     border-radius:16px;
     box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
-
 h1{
     margin:0 0 20px;
     text-align:center;
     font-size:27px;
 }
-
 h2{
     margin:0 0 15px;
     font-size:20px;
 }
-
 button{
     border:0;
     border-radius:9px;
@@ -48,35 +40,23 @@ button{
     font-weight:bold;
     cursor:pointer;
 }
-
-button:hover{
-    opacity:.85;
-}
-
+button:hover{opacity:.85}
 button:disabled{
     background:#aaa;
     cursor:default;
     opacity:1;
 }
-
 #loading{
     text-align:center;
     padding:20px;
 }
-
-#startScreen,
-#quizScreen,
-#finishScreen{
-    display:none;
-}
-
+#startScreen,#quizScreen,#finishScreen{display:none}
 #gameSelection{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:8px;
     margin:15px 0 18px;
 }
-
 .game-label{
     display:flex;
     align-items:center;
@@ -86,21 +66,13 @@ button:disabled{
     background:#fafafa;
     cursor:pointer;
 }
-
-.game-label:hover{
-    background:#f0fdf4;
-}
-
-.game-label input{
-    margin:0 7px 0 0;
-}
-
+.game-label:hover{background:#f0fdf4}
+.game-label input{margin:0 7px 0 0}
 .select-buttons{
     display:flex;
     justify-content:center;
     gap:8px;
 }
-
 .course-area{
     display:flex;
     justify-content:center;
@@ -108,7 +80,6 @@ button:disabled{
     margin:15px 0 20px;
     flex-wrap:wrap;
 }
-
 .course-label{
     display:flex;
     align-items:center;
@@ -119,52 +90,36 @@ button:disabled{
     cursor:pointer;
     background:#fafafa;
 }
-
-.course-label:hover{
-    background:#f0fdf4;
-}
-
-.start-area{
-    text-align:center;
-    margin-top:15px;
-}
-
+.course-label:hover{background:#f0fdf4}
+.start-area{text-align:center;margin-top:15px}
 .start-button{
     min-width:180px;
     font-size:18px;
     padding:12px 20px;
 }
-
 .notice-link{
     display:block;
     margin-top:15px;
     color:#555;
     text-decoration:none;
 }
-
-.notice-link:hover{
-    text-decoration:underline;
-}
-
+.notice-link:hover{text-decoration:underline}
 #error{
     min-height:24px;
     margin-top:10px;
     color:#d33;
     font-weight:bold;
 }
-
 .progress{
     text-align:center;
     margin-bottom:12px;
     font-weight:bold;
 }
-
 .question{
     text-align:center;
     margin-bottom:12px;
     font-size:17px;
 }
-
 .info-row{
     display:flex;
     justify-content:center;
@@ -173,63 +128,44 @@ button:disabled{
     margin:10px 0 15px;
     font-size:17px;
 }
-
-.info-item{
-    white-space:nowrap;
-}
-
-.info-label{
-    color:#666;
-}
-
-.info-value{
-    font-weight:bold;
-}
-
+.info-item{white-space:nowrap}
+.info-label{color:#666}
+.info-value{font-weight:bold}
 .table-wrapper{
     width:100%;
     overflow-x:auto;
 }
-
 table{
     width:100%;
     border-collapse:collapse;
     table-layout:fixed;
 }
-
-th,
-td{
+th,td{
     border:1px solid #ddd;
     text-align:center;
     padding:10px 4px;
 }
-
 th{
     background:#f3f4f6;
     font-size:14px;
 }
-
 td{
     font-size:19px;
     font-weight:bold;
 }
-
 .hint-area{
     text-align:center;
     margin:15px 0;
 }
-
 .hint-count{
     margin-top:5px;
     color:#666;
     font-size:13px;
 }
-
 .answer-area{
     display:flex;
     gap:8px;
 }
-
 #answer{
     flex:1;
     min-width:0;
@@ -239,18 +175,13 @@ td{
     font-size:16px;
     outline:none;
 }
-
-#answer:focus{
-    border-color:#34d399;
-}
-
+#answer:focus{border-color:#34d399}
 .result{
     min-height:28px;
     margin:12px 0;
     text-align:center;
     font-weight:bold;
 }
-
 .status-bar{
     display:flex;
     justify-content:center;
@@ -259,1258 +190,587 @@ td{
     margin-top:12px;
     flex-wrap:wrap;
 }
-
 .status-item{
     padding:7px 12px;
     border-radius:8px;
     background:#f3f4f6;
     white-space:nowrap;
 }
-
-.give-up-button{
-    background:#f59eae;
-}
-
+.give-up-button{background:#f59eae}
 .next-area{
     display:none;
     justify-content:center;
     margin-top:12px;
 }
-
-.next-button{
-    background:#6b7280;
-}
-
-#finishScreen{
-    text-align:center;
-}
-
+.next-button{background:#6b7280}
+#finishScreen{text-align:center}
 .final-score{
     margin:25px 0;
     font-size:20px;
     line-height:2;
 }
-
 @media(max-width:600px){
-
-    body{
-        padding:10px;
-    }
-
-    .container{
-        padding:18px 12px;
-    }
-
-    #gameSelection{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .info-row{
-        gap:12px;
-        font-size:15px;
-    }
-
-    .answer-area{
-        flex-wrap:wrap;
-    }
-
+    body{padding:10px}
+    .container{padding:18px 12px}
+    #gameSelection{grid-template-columns:repeat(2,1fr)}
+    .info-row{gap:12px;font-size:15px}
+    .answer-area{flex-wrap:wrap}
     #answer{
         width:100%;
         flex-basis:100%;
     }
-
-    #answerButton,
-    #giveUpButton{
-        flex:1;
-    }
-
-    .status-bar{
-        gap:6px;
-        font-size:14px;
-    }
-
-    .status-item{
-        padding:6px 8px;
-    }
-
-    th{
-        font-size:12px;
-    }
-
-    td{
-        font-size:17px;
-    }
+    #answerButton,#giveUpButton{flex:1}
+    .status-bar{gap:6px;font-size:14px}
+    .status-item{padding:6px 8px}
+    th{font-size:12px}
+    td{font-size:17px}
 }
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
-<div id="loading">
-    データを読み込んでいます……
-</div>
-
+<div id="loading">データを読み込んでいます……</div>
 
 <div id="startScreen">
-
     <h1>FE 成長率クイズ</h1>
-
     <h2>出題する作品を選択</h2>
-
     <div class="select-buttons">
-
-        <button
-            type="button"
-            onclick="selectAll()"
-        >
-            すべて選択
-        </button>
-
-        <button
-            type="button"
-            onclick="selectNone()"
-        >
-            すべて解除
-        </button>
-
+        <button type="button" onclick="selectAll()">すべて選択</button>
+        <button type="button" onclick="selectNone()">すべて解除</button>
     </div>
-
-
     <div id="gameSelection"></div>
 
-
     <h2>出題コース</h2>
-
     <div class="course-area">
-
         <label class="course-label">
-
-            <input
-                type="radio"
-                name="course"
-                value="10"
-                checked
-            >
-
+            <input type="radio" name="course" value="10" checked>
             10問コース
-
         </label>
-
-
         <label class="course-label">
-
-            <input
-                type="radio"
-                name="course"
-                value="30"
-            >
-
+            <input type="radio" name="course" value="30">
             30問コース
-
         </label>
-
-
         <label class="course-label">
-
-            <input
-                type="radio"
-                name="course"
-                value="unlimited"
-            >
-
+            <input type="radio" name="course" value="unlimited">
             無制限
-
         </label>
-
     </div>
-
 
     <div class="start-area">
-
-        <button
-            class="start-button"
-            type="button"
-            onclick="startQuiz()"
-        >
-            開始
-        </button>
-
+        <button class="start-button" type="button" onclick="startQuiz()">開始</button>
         <div id="error"></div>
-
-        <a
-            class="notice-link"
-            href="notice.html"
-        >
-            注意事項・遊び方
-        </a>
-
+        <a class="notice-link" href="notice.html">注意事項・遊び方</a>
     </div>
-
 </div>
-
 
 <div id="quizScreen">
-
     <h1>FE 成長率クイズ</h1>
-
-
-    <div
-        id="progress"
-        class="progress"
-    >
-        第1問
-    </div>
-
-
-    <div class="question">
-        この成長率を持つキャラクターは誰？
-    </div>
-
+    <div id="progress" class="progress">第1問</div>
+    <div class="question">この成長率を持つキャラクターは誰？</div>
 
     <div class="info-row">
-
         <div class="info-item">
-
-            <span class="info-label">
-                作品：
-            </span>
-
-            <span
-                id="gameName"
-                class="info-value"
-            >
-                ？？？
-            </span>
-
+            <span class="info-label">作品：</span>
+            <span id="gameName" class="info-value">？？？</span>
         </div>
-
-
         <div class="info-item">
-
-            <span class="info-label">
-                初期クラス：
-            </span>
-
-            <span
-                id="className"
-                class="info-value"
-            >
-                ？？？
-            </span>
-
+            <span class="info-label">初期クラス：</span>
+            <span id="className" class="info-value">？？？</span>
         </div>
-
     </div>
-
 
     <div class="table-wrapper">
-
         <table>
-
             <thead>
-
-                <tr>
-
-                    <th>HP</th>
-                    <th>力</th>
-                    <th>魔力</th>
-                    <th>技</th>
-                    <th>速さ</th>
-                    <th>幸運</th>
-                    <th>守備</th>
-                    <th>魔防</th>
-
-                </tr>
-
+                <tr id="growthHeader"></tr>
             </thead>
-
-
             <tbody>
-
                 <tr id="growthRow"></tr>
-
             </tbody>
-
         </table>
-
     </div>
-
 
     <div class="hint-area">
-
-        <button
-            id="hintButton"
-            type="button"
-            onclick="useHint()"
-        >
-            ヒント
-        </button>
-
-
-        <div
-            id="hintCount"
-            class="hint-count"
-        >
-            ヒント使用回数：0
-        </div>
-
+        <button id="hintButton" type="button" onclick="useHint()">ヒント</button>
+        <div id="hintCount" class="hint-count">ヒント使用回数：0</div>
     </div>
-
 
     <div class="answer-area">
-
-        <input
-            id="answer"
-            type="text"
-            placeholder="キャラクター名を入力"
-            autocomplete="off"
-        >
-
-
-        <button
-            id="answerButton"
-            type="button"
-            onclick="checkAnswer()"
-        >
-            回答
-        </button>
-
-
-        <button
-            id="giveUpButton"
-            class="give-up-button"
-            type="button"
-            onclick="giveUp()"
-        >
-            ギブアップ
-        </button>
-
+        <input id="answer" type="text" placeholder="キャラクター名を入力" autocomplete="off">
+        <button id="answerButton" type="button" onclick="checkAnswer()">回答</button>
+        <button id="giveUpButton" class="give-up-button" type="button" onclick="giveUp()">ギブアップ</button>
     </div>
 
+    <div id="result" class="result"></div>
 
-    <div
-        id="result"
-        class="result"
-    ></div>
-
-
-    <div
-        id="nextArea"
-        class="next-area"
-    >
-
-        <button
-            id="nextButton"
-            class="next-button"
-            type="button"
-            onclick="nextQuestion()"
-        >
-            次の問題
-        </button>
-
+    <div id="nextArea" class="next-area">
+        <button id="nextButton" class="next-button" type="button" onclick="nextQuestion()">次の問題</button>
     </div>
-
 
     <div class="status-bar">
-
-        <div class="status-item">
-
-            正解：
-            <span id="correctCount">0</span>
-
-        </div>
-
-
-        <div class="status-item">
-
-            お手つき：
-            <span id="wrongCount">0</span>
-
-        </div>
-
+        <div class="status-item">正解：<span id="correctCount">0</span></div>
+        <div class="status-item">お手つき：<span id="wrongCount">0</span></div>
     </div>
-
 </div>
-
 
 <div id="finishScreen">
-
     <h1>クイズ終了！</h1>
-
-
-    <div
-        id="finalScore"
-        class="final-score"
-    ></div>
-
-
-    <button
-        type="button"
-        onclick="backToStart()"
-    >
-        もう一度挑戦
-    </button>
-
-
-    <a
-        class="notice-link"
-        href="notice.html"
-    >
-        注意事項・遊び方
-    </a>
-
+    <div id="finalScore" class="final-score"></div>
+    <button type="button" onclick="backToStart()">もう一度挑戦</button>
+    <a class="notice-link" href="notice.html">注意事項・遊び方</a>
 </div>
-
 </div>
-
 
 <script>
-
 let characters={};
-
 let quizCharacters=[];
-
 let currentCharacter=null;
-
-
 let questionNumber=0;
-
 let correctCount=0;
-
 let wrongCount=0;
-
-
-/*
- * 現在の問題で使ったヒント回数
- *
- * 1問につき最大2回
- */
 let hintCount=0;
-
-
-/*
- * クイズ全体で使ったヒント回数
- *
- * 問題が変わってもリセットしない
- */
 let totalHintCount=0;
-
-
 let questionLimit=10;
-
 let questionFinished=false;
 
+/*
+ * 作品ごとの成長率項目。
+ * JSONのgrowth配列を左から順番にこの項目へ対応させる。
+ * 実際の各作品の成長率の並びに合わせて、
+ * 下記の項目名を設定してください。
+ */
+const growthLabels={
+    "紋章":[
+        "HP","力","技","速さ","幸運","武器","守備","魔防"
+    ],
+    "聖戦":[
+        "HP","力","魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "トラキア":[
+        "HP","力","魔力","技","速さ","幸運","守備","体格","移動"
+    ],
+    "封印":[
+        "HP","力,魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "烈火":[
+        "HP","力,魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "聖魔":[
+        "HP","力,魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "蒼炎":[
+        "HP","力","魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "暁":[
+        "HP","力","魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "覚醒":[
+        "HP","力","魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "if":[
+        "HP","力","魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "新紋章":[
+        "HP","力","魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "新暗黒":[
+        "HP","力","魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "エコーズ":[
+        "HP","力,魔力","技","速さ","幸運","守備","魔防"
+    ],
+    "風花":[
+        "HP","力","魔力","技","速さ","幸運","守備","魔防","魅力"
+    ],
+    "エンゲージ":[
+        "HP","力","魔力","技","速さ","幸運","守備","魔防","体格"
+    ]
+};
 
 const games=[
-
-    "紋章",
-    "聖戦",
-    "トラキア",
-    "封印",
-    "烈火",
-    "聖魔",
-    "蒼炎",
-    "暁",
-    "覚醒",
-    "if",
-    "新紋章",
-    "新暗黒",
-    "エコーズ",
-    "風花",
-    "エンゲージ"
-
+    "紋章","聖戦","トラキア","封印","烈火",
+    "聖魔","蒼炎","暁","覚醒","if",
+    "新紋章","新暗黒","エコーズ","風花","エンゲージ"
 ];
 
-
 async function loadCharacters(){
-
     try{
-
-        const response=
-            await fetch("characters.json");
-
-
+        const response=await fetch("characters.json");
         if(!response.ok){
-
-            throw new Error(
-                "characters.jsonを読み込めません"
-            );
-
+            throw new Error("characters.jsonを読み込めません");
         }
 
-
-        characters=
-            await response.json();
-
+        characters=await response.json();
 
         if(
             !characters ||
             typeof characters!=="object" ||
             Array.isArray(characters)
         ){
-
-            throw new Error(
-                "JSONの形式が正しくありません"
-            );
-
+            throw new Error("JSONの形式が正しくありません");
         }
-
 
         createGameSelection();
 
-
-        document.getElementById(
-            "loading"
-        ).style.display="none";
-
-
-        document.getElementById(
-            "startScreen"
-        ).style.display="block";
-
-
+        document.getElementById("loading").style.display="none";
+        document.getElementById("startScreen").style.display="block";
     }catch(error){
-
         console.error(error);
-
-
-        document.getElementById(
-            "loading"
-        ).textContent=
+        document.getElementById("loading").textContent=
             "characters.jsonを読み込めませんでした。";
-
     }
-
 }
-
 
 function createGameSelection(){
-
-    const area=
-        document.getElementById(
-            "gameSelection"
-        );
-
-
+    const area=document.getElementById("gameSelection");
     area.innerHTML="";
 
-
     /*
-     * JSONに実際に存在する作品だけ表示
+     * JSONへの登録状況に関係なく15作品すべて表示する。
+     * キャラクターが登録されている作品だけ最初からチェックする。
      */
+    games.forEach(game=>{
+        const label=document.createElement("label");
+        label.className="game-label";
 
-    games
-        .filter(game=>Array.isArray(characters[game]))
-        .forEach(game=>{
+        const checkbox=document.createElement("input");
+        checkbox.type="checkbox";
+        checkbox.value=game;
+        checkbox.checked=
+            Array.isArray(characters[game]) &&
+            characters[game].length>0;
+        checkbox.className="game-checkbox";
 
-            const label=
-                document.createElement("label");
-
-            label.className="game-label";
-
-
-            const checkbox=
-                document.createElement("input");
-
-
-            checkbox.type="checkbox";
-
-            checkbox.value=game;
-
-            checkbox.checked=true;
-
-            checkbox.className="game-checkbox";
-
-
-            label.appendChild(checkbox);
-
-
-            label.appendChild(
-                document.createTextNode(game)
-            );
-
-
-            area.appendChild(label);
-
-        });
-
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(game));
+        area.appendChild(label);
+    });
 }
-
 
 function selectAll(){
-
-    document
-        .querySelectorAll(".game-checkbox")
-        .forEach(checkbox=>{
-
-            checkbox.checked=true;
-
-        });
-
+    document.querySelectorAll(".game-checkbox").forEach(checkbox=>{
+        checkbox.checked=true;
+    });
 }
-
 
 function selectNone(){
-
-    document
-        .querySelectorAll(".game-checkbox")
-        .forEach(checkbox=>{
-
-            checkbox.checked=false;
-
-        });
-
+    document.querySelectorAll(".game-checkbox").forEach(checkbox=>{
+        checkbox.checked=false;
+    });
 }
 
-
 function startQuiz(){
-
     const selectedGames=[
+        ...document.querySelectorAll(".game-checkbox:checked")
+    ].map(checkbox=>checkbox.value);
 
-        ...document.querySelectorAll(
-            ".game-checkbox:checked"
-        )
-
-    ].map(
-        checkbox=>checkbox.value
-    );
-
-
-    const error=
-        document.getElementById("error");
-
-
+    const error=document.getElementById("error");
     error.textContent="";
 
-
     if(selectedGames.length===0){
-
-        error.textContent=
-            "少なくとも1作品を選択してください。";
-
+        error.textContent="少なくとも1作品を選択してください。";
         return;
-
     }
 
-
-    const course=
-        document.querySelector(
-            'input[name="course"]:checked'
-        ).value;
-
+    const course=document.querySelector(
+        'input[name="course"]:checked'
+    ).value;
 
     if(course==="unlimited"){
-
         questionLimit=Infinity;
-
     }else{
-
         questionLimit=Number(course);
-
     }
-
 
     quizCharacters=[];
 
-
     selectedGames.forEach(game=>{
-
         if(Array.isArray(characters[game])){
-
             quizCharacters.push(
-
-                ...characters[game].map(
-                    character=>({
-
-                        ...character,
-
-                        game:game
-
-                    })
-                )
-
+                ...characters[game].map(character=>({
+                    ...character,
+                    game:game
+                }))
             );
-
         }
-
     });
 
-
     if(quizCharacters.length===0){
-
         error.textContent=
             "選択した作品にキャラクターデータがありません。";
-
         return;
-
     }
 
-
     /*
-     * 問題をシャッフル
-     *
-     * 同じ問題は出ない
+     * 選択した作品の中に、
+     * 成長項目の定義がない作品があれば開始できないようにする。
      */
+    const undefinedGame=selectedGames.find(
+        game=>!Array.isArray(growthLabels[game])
+    );
+
+    if(undefinedGame){
+        error.textContent=
+            "「"+undefinedGame+"」の成長項目が設定されていません。";
+        return;
+    }
 
     shuffle(quizCharacters);
 
-
     questionNumber=0;
-
     correctCount=0;
-
     wrongCount=0;
-
-
-    /*
-     * クイズ開始時だけ
-     * ヒント累計を0に戻す
-     */
-
     totalHintCount=0;
-
     hintCount=0;
 
-
-    document.getElementById(
-        "startScreen"
-    ).style.display="none";
-
-
-    document.getElementById(
-        "finishScreen"
-    ).style.display="none";
-
-
-    document.getElementById(
-        "quizScreen"
-    ).style.display="block";
-
+    document.getElementById("startScreen").style.display="none";
+    document.getElementById("finishScreen").style.display="none";
+    document.getElementById("quizScreen").style.display="block";
 
     updateStatus();
-
-
     nextQuestion();
-
 }
-
 
 function shuffle(array){
-
-    for(
-        let i=array.length-1;
-        i>0;
-        i--
-    ){
-
-        const j=
-            Math.floor(
-                Math.random()*(i+1)
-            );
-
-
-        [
-            array[i],
-            array[j]
-        ]=[
-            array[j],
-            array[i]
-        ];
-
+    for(let i=array.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [array[i],array[j]]=[array[j],array[i]];
     }
-
-
     return array;
-
 }
 
-
 function nextQuestion(){
-
     if(
         questionNumber>=questionLimit ||
         questionNumber>=quizCharacters.length
     ){
-
         finishQuiz();
-
         return;
-
     }
 
-
-    currentCharacter=
-        quizCharacters[questionNumber];
-
-
+    currentCharacter=quizCharacters[questionNumber];
     questionNumber++;
-
-
     questionFinished=false;
-
-
-    /*
-     * 現在の問題で使った回数だけ0に戻す
-     *
-     * totalHintCountはそのまま
-     */
-
     hintCount=0;
 
-
-    document.getElementById(
-        "progress"
-    ).textContent=
-
+    document.getElementById("progress").textContent=
         questionLimit===Infinity
+            ?"第"+questionNumber+"問"
+            :"第"+questionNumber+"問 / "+questionLimit+"問";
 
-            ? "第"+questionNumber+"問"
+    document.getElementById("gameName").textContent="？？？";
+    document.getElementById("className").textContent="？？？";
 
-            : "第"+questionNumber+
-              "問 / "+
-              questionLimit+
-              "問";
+    displayGrowth(currentCharacter);
 
+    document.getElementById("hintCount").textContent=
+        "ヒント使用回数："+totalHintCount;
 
-    document.getElementById(
-        "gameName"
-    ).textContent="？？？";
+    document.getElementById("result").textContent="";
+    document.getElementById("nextArea").style.display="none";
 
+    document.getElementById("hintButton").disabled=false;
+    document.getElementById("answerButton").disabled=false;
+    document.getElementById("giveUpButton").disabled=false;
 
-    document.getElementById(
-        "className"
-    ).textContent="？？？";
-
-
-    const row=
-        document.getElementById(
-            "growthRow"
-        );
-
-
-    row.innerHTML="";
-
-
-    currentCharacter.growth.forEach(value=>{
-
-        const td=
-            document.createElement("td");
-
-
-        td.textContent=
-            value+"%";
-
-
-        row.appendChild(td);
-
-    });
-
-
-    /*
-     * 問題が変わっても
-     * 累計ヒント回数は維持
-     */
-
-    document.getElementById(
-        "hintCount"
-    ).textContent=
-        "ヒント使用回数："+
-        totalHintCount;
-
-
-    document.getElementById(
-        "result"
-    ).textContent="";
-
-
-    document.getElementById(
-        "nextArea"
-    ).style.display="none";
-
-
-    document.getElementById(
-        "hintButton"
-    ).disabled=false;
-
-
-    document.getElementById(
-        "answerButton"
-    ).disabled=false;
-
-
-    document.getElementById(
-        "giveUpButton"
-    ).disabled=false;
-
-
-    const answer=
-        document.getElementById(
-            "answer"
-        );
-
-
+    const answer=document.getElementById("answer");
     answer.disabled=false;
-
     answer.value="";
-
     answer.focus();
 
-
     updateStatus();
-
 }
 
+/*
+ * 作品ごとの成長率項目とJSONの数値を対応させて表示する。
+ *
+ * growth[0] → growthLabels[game][0]
+ * growth[1] → growthLabels[game][1]
+ * growth[2] → growthLabels[game][2]
+ * ……という対応。
+ *
+ * JSONに存在する数値だけ表示するため、
+ * 作品によって項目数が違っていても対応できる。
+ */
+function displayGrowth(character){
+    const labels=growthLabels[character.game];
+    const growth=character.growth;
+
+    const header=document.getElementById("growthHeader");
+    const row=document.getElementById("growthRow");
+
+    header.innerHTML="";
+    row.innerHTML="";
+
+    if(!Array.isArray(labels)){
+        return;
+    }
+
+    growth.forEach((value,index)=>{
+        if(index>=labels.length)return;
+
+        const th=document.createElement("th");
+        th.textContent=labels[index];
+
+        const td=document.createElement("td");
+        td.textContent=value+"%";
+
+        header.appendChild(th);
+        row.appendChild(td);
+    });
+}
 
 function useHint(){
-
     if(questionFinished)return;
-
 
     /*
      * 1問につき最大2回
      */
-
     if(hintCount>=2)return;
 
-
-    /*
-     * 現在の問題のヒント回数
-     */
-
     hintCount++;
-
-
-    /*
-     * クイズ全体のヒント回数
-     */
-
     totalHintCount++;
-
 
     /*
      * 1回目 → 作品
      */
-
     if(hintCount===1){
-
-        document.getElementById(
-            "gameName"
-        ).textContent=
+        document.getElementById("gameName").textContent=
             currentCharacter.game;
-
     }
 
-
     /*
-     * 2回目 → クラス
+     * 2回目 → 初期クラス
      */
-
     if(hintCount===2){
-
-        document.getElementById(
-            "className"
-        ).textContent=
+        document.getElementById("className").textContent=
             currentCharacter.className;
 
-
-        document.getElementById(
-            "hintButton"
-        ).disabled=true;
-
+        document.getElementById("hintButton").disabled=true;
     }
 
-
     /*
-     * 表示するのは
-     * クイズ全体の累計
+     * 表示はクイズ全体の累計
      */
-
-    document.getElementById(
-        "hintCount"
-    ).textContent=
-        "ヒント使用回数："+
-        totalHintCount;
-
+    document.getElementById("hintCount").textContent=
+        "ヒント使用回数："+totalHintCount;
 }
-
 
 function normalizeKana(text){
-
     return text
-
         .trim()
-
         .normalize("NFKC")
-
         .replace(
             /[\u30A1-\u30F6]/g,
-
-            char=>
-                String.fromCharCode(
-                    char.charCodeAt(0)-0x60
-                )
+            char=>String.fromCharCode(
+                char.charCodeAt(0)-0x60
+            )
         );
-
 }
 
-
 function checkAnswer(){
-
     if(questionFinished)return;
 
-
-    const answer=
-        document.getElementById(
-            "answer"
-        );
-
-
-    const input=
-        answer.value.trim();
-
+    const answer=document.getElementById("answer");
+    const input=answer.value.trim();
 
     if(input==="")return;
 
-
-    const normalizedInput=
-        normalizeKana(input);
-
-
-    const normalizedAnswer=
-        normalizeKana(
-            currentCharacter.name
-        );
-
-
-    if(
-        normalizedInput===
-        normalizedAnswer
-    ){
-
-        correctAnswer();
-
-    }else{
-
-        wrongAnswer();
-
-    }
-
-}
-
-
-function correctAnswer(){
-
-    questionFinished=true;
-
-
-    correctCount++;
-
-
-    document.getElementById(
-        "result"
-    ).textContent=
-        "○ 正解！";
-
-
-    disableQuestionControls();
-
-
-    updateStatus();
-
-
-    /*
-     * 正解したら自動で次の問題
-     */
-
-    setTimeout(()=>{
-
-        nextQuestion();
-
-    },700);
-
-}
-
-
-function wrongAnswer(){
-
-    wrongCount++;
-
-
-    document.getElementById(
-        "result"
-    ).textContent=
-        "× 不正解！";
-
-
-    const answer=
-        document.getElementById(
-            "answer"
-        );
-
-
-    answer.value="";
-
-    answer.focus();
-
-
-    updateStatus();
-
-}
-
-
-function giveUp(){
-
-    if(questionFinished)return;
-
-
-    questionFinished=true;
-
-
-    document.getElementById(
-        "result"
-    ).textContent=
-        "正解は「"+
-        currentCharacter.name+
-        "」でした。";
-
-
-    disableQuestionControls();
-
-
-    /*
-     * ギブアップの場合は
-     * 次の問題ボタンを表示
-     */
-
-    document.getElementById(
-        "nextArea"
-    ).style.display="flex";
-
-}
-
-
-function disableQuestionControls(){
-
-    document.getElementById(
-        "answer"
-    ).disabled=true;
-
-
-    document.getElementById(
-        "answerButton"
-    ).disabled=true;
-
-
-    document.getElementById(
-        "hintButton"
-    ).disabled=true;
-
-
-    document.getElementById(
-        "giveUpButton"
-    ).disabled=true;
-
-}
-
-
-function updateStatus(){
-
-    document.getElementById(
-        "correctCount"
-    ).textContent=
-        correctCount;
-
-
-    document.getElementById(
-        "wrongCount"
-    ).textContent=
-        wrongCount;
-
-}
-
-
-function finishQuiz(){
-
-    document.getElementById(
-        "quizScreen"
-    ).style.display="none";
-
-
-    document.getElementById(
-        "finishScreen"
-    ).style.display="block";
-
-
-    const total=
-        questionNumber;
-
-
-    document.getElementById(
-        "finalScore"
-    ).innerHTML=
-
-        total+
-        "問終了！<br><br>"+
-
-        "正解：<strong>"+
-        correctCount+
-        "</strong>問<br>"+
-
-        "お手つき：<strong>"+
-        wrongCount+
-        "</strong>回<br>"+
-
-        "ヒント使用回数：<strong>"+
-        totalHintCount+
-        "</strong>回";
-
-}
-
-
-function backToStart(){
-
-    document.getElementById(
-        "finishScreen"
-    ).style.display="none";
-
-
-    document.getElementById(
-        "startScreen"
-    ).style.display="block";
-
-
-    document.getElementById(
-        "error"
-    ).textContent="";
-
-}
-
-
-/*
- * Enterキーで回答
- */
-
-document
-    .getElementById("answer")
-    .addEventListener(
-        "keydown",
-        event=>{
-
-            if(event.key==="Enter"){
-
-                checkAnswer();
-
-            }
-
-        }
+    const normalizedInput=normalizeKana(input);
+    const normalizedAnswer=normalizeKana(
+        currentCharacter.name
     );
 
+    if(normalizedInput===normalizedAnswer){
+        correctAnswer();
+    }else{
+        wrongAnswer();
+    }
+}
+
+function correctAnswer(){
+    questionFinished=true;
+    correctCount++;
+
+    document.getElementById("result").textContent="○ 正解！";
+
+    disableQuestionControls();
+    updateStatus();
+
+    setTimeout(()=>{
+        nextQuestion();
+    },700);
+}
+
+function wrongAnswer(){
+    wrongCount++;
+
+    document.getElementById("result").textContent="× 不正解！";
+
+    const answer=document.getElementById("answer");
+    answer.value="";
+    answer.focus();
+
+    updateStatus();
+}
+
+function giveUp(){
+    if(questionFinished)return;
+
+    questionFinished=true;
+
+    document.getElementById("result").textContent=
+        "正解は「"+currentCharacter.name+"」でした。";
+
+    disableQuestionControls();
+
+    document.getElementById("nextArea").style.display="flex";
+}
+
+function disableQuestionControls(){
+    document.getElementById("answer").disabled=true;
+    document.getElementById("answerButton").disabled=true;
+    document.getElementById("hintButton").disabled=true;
+    document.getElementById("giveUpButton").disabled=true;
+}
+
+function updateStatus(){
+    document.getElementById("correctCount").textContent=correctCount;
+    document.getElementById("wrongCount").textContent=wrongCount;
+}
+
+function finishQuiz(){
+    document.getElementById("quizScreen").style.display="none";
+    document.getElementById("finishScreen").style.display="block";
+
+    const total=questionNumber;
+
+    document.getElementById("finalScore").innerHTML=
+        total+"問終了！<br><br>"+
+        "正解：<strong>"+correctCount+
+        "</strong>問<br>"+
+        "お手つき：<strong>"+wrongCount+
+        "</strong>回<br>"+
+        "ヒント使用回数：<strong>"+totalHintCount+
+        "</strong>回";
+}
+
+function backToStart(){
+    document.getElementById("finishScreen").style.display="none";
+    document.getElementById("startScreen").style.display="block";
+    document.getElementById("error").textContent="";
+}
+
+document.getElementById("answer").addEventListener(
+    "keydown",
+    event=>{
+        if(event.key==="Enter"){
+            checkAnswer();
+        }
+    }
+);
 
 loadCharacters();
-
 </script>
-
 </body>
 </html>
