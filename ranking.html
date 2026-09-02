@@ -18,7 +18,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
-      background: radial-gradient(circle at top, #f5f7ff 0%, #eef1f7 45%, #e8ebf2 100%);
+      background: linear-gradient(135deg, #f5f7ff, #eef1f7);
       color: #1f2937;
     }
 
@@ -33,73 +33,72 @@
       padding: 32px 18px 60px;
     }
 
-    .panel {
-      background: rgba(255, 255, 255, 0.96);
-      border: 1px solid #e5e7eb;
-      border-radius: 24px;
-      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
-    }
-
     .header {
       text-align: center;
       margin-bottom: 24px;
     }
 
-    .header-title {
+    .header h1 {
       margin: 0;
       font-size: clamp(26px, 5vw, 38px);
       font-weight: 800;
-      letter-spacing: 0.03em;
       color: #111827;
+      letter-spacing: .03em;
     }
 
-    .header-subtitle {
-      margin: 10px 0 0;
+    .header p {
+      margin: 9px 0 0;
       color: #6b7280;
       font-size: 14px;
     }
 
-    .setup-panel {
+    .panel {
+      background: rgba(255,255,255,.97);
+      border: 1px solid #e5e7eb;
+      border-radius: 24px;
+      box-shadow: 0 12px 35px rgba(15,23,42,.08);
+    }
+
+    .setup {
       padding: 28px;
     }
 
     .section-title {
-      margin: 0 0 8px;
+      margin: 0 0 7px;
       font-size: 20px;
       font-weight: 800;
       color: #111827;
     }
 
     .section-description {
-      margin: 0 0 22px;
+      margin: 0 0 20px;
       color: #6b7280;
       font-size: 14px;
     }
 
     .game-actions {
       display: flex;
-      flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
     }
 
     .small-button {
+      padding: 8px 15px;
       border: 1px solid #d1d5db;
+      border-radius: 999px;
       background: #fff;
       color: #4b5563;
-      padding: 8px 14px;
-      border-radius: 999px;
-      transition: 0.18s;
+      transition: .18s;
     }
 
     .small-button:hover {
       background: #f3f4f6;
-      border-color: #9ca3af;
     }
 
     .game-list {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3,1fr);
       gap: 10px;
     }
 
@@ -119,42 +118,40 @@
       gap: 10px;
       min-height: 52px;
       padding: 12px 14px;
-      background: #f8fafc;
       border: 1px solid #e5e7eb;
       border-radius: 14px;
+      background: #f8fafc;
       cursor: pointer;
-      user-select: none;
-      transition: 0.18s;
+      transition: .18s;
     }
 
     .game-label:hover {
       background: #f1f5f9;
       border-color: #cbd5e1;
-      transform: translateY(-1px);
     }
 
     .game-item input:checked + .game-label {
       background: #eef2ff;
       border-color: #818cf8;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.12);
+      box-shadow: 0 4px 12px rgba(99,102,241,.12);
     }
 
-    .custom-check {
+    .check {
       width: 21px;
       height: 21px;
       flex: 0 0 21px;
-      border-radius: 7px;
       border: 2px solid #cbd5e1;
+      border-radius: 7px;
       background: #fff;
       position: relative;
     }
 
-    .game-item input:checked + .game-label .custom-check {
+    .game-item input:checked + .game-label .check {
       background: #6366f1;
       border-color: #6366f1;
     }
 
-    .game-item input:checked + .game-label .custom-check::after {
+    .game-item input:checked + .game-label .check::after {
       content: "";
       position: absolute;
       width: 6px;
@@ -167,8 +164,8 @@
     }
 
     .game-name {
-      font-weight: 700;
       font-size: 14px;
+      font-weight: 700;
     }
 
     .mode-section {
@@ -177,7 +174,7 @@
 
     .mode-list {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2,1fr);
       gap: 12px;
     }
 
@@ -199,18 +196,17 @@
       border-radius: 17px;
       background: #f8fafc;
       cursor: pointer;
-      transition: 0.18s;
+      transition: .18s;
     }
 
     .mode-label:hover {
-      border-color: #cbd5e1;
       background: #f1f5f9;
     }
 
     .mode-item input:checked + .mode-label {
       border-color: #818cf8;
       background: #eef2ff;
-      box-shadow: 0 5px 15px rgba(99, 102, 241, 0.12);
+      box-shadow: 0 5px 15px rgba(99,102,241,.12);
     }
 
     .mode-name {
@@ -231,24 +227,23 @@
       display: flex;
       justify-content: center;
       gap: 12px;
-      margin: 24px 0;
+      margin: 24px 0 12px;
     }
 
     .info-card {
-      flex: 1;
-      max-width: 220px;
-      padding: 15px;
+      width: 210px;
+      padding: 14px;
       text-align: center;
       background: #f8fafc;
-      border-radius: 16px;
       border: 1px solid #e5e7eb;
+      border-radius: 16px;
     }
 
     .info-label {
       display: block;
       color: #6b7280;
       font-size: 12px;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
 
     .info-value {
@@ -258,37 +253,38 @@
     }
 
     .match-count {
-      margin: -8px 0 20px;
+      min-height: 20px;
       text-align: center;
       color: #6b7280;
       font-size: 13px;
+      margin-bottom: 18px;
     }
 
     .start-button {
       width: 100%;
+      padding: 16px;
       border: 0;
       border-radius: 16px;
-      padding: 16px 20px;
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      background: linear-gradient(135deg,#6366f1,#4f46e5);
       color: #fff;
-      font-size: 17px;
       font-weight: 800;
-      box-shadow: 0 8px 18px rgba(79, 70, 229, 0.25);
-      transition: 0.18s;
+      font-size: 17px;
+      box-shadow: 0 8px 18px rgba(79,70,229,.25);
+      transition: .18s;
     }
 
     .start-button:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.3);
+      box-shadow: 0 12px 24px rgba(79,70,229,.3);
     }
 
     .start-button:disabled {
-      opacity: 0.45;
+      opacity: .45;
       cursor: not-allowed;
       box-shadow: none;
     }
 
-    .error-message {
+    .error {
       margin-top: 14px;
       padding: 12px 14px;
       border-radius: 12px;
@@ -298,7 +294,7 @@
       font-size: 14px;
     }
 
-    .compare-panel {
+    .compare {
       padding: 24px;
     }
 
@@ -309,7 +305,7 @@
 
     .compare-title {
       margin: 0;
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 800;
     }
 
@@ -324,32 +320,27 @@
       font-weight: 700;
     }
 
-    .battle-area {
+    .battle {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 90px minmax(0, 1fr);
+      grid-template-columns: minmax(0,1fr) 80px minmax(0,1fr);
       align-items: center;
-      gap: 14px;
+      gap: 15px;
     }
 
     .character-button {
       width: 100%;
+      padding: 14px;
       border: 1px solid #e5e7eb;
       border-radius: 22px;
-      padding: 14px;
       background: #fff;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-      transition: 0.2s;
+      box-shadow: 0 6px 18px rgba(15,23,42,.06);
+      transition: .2s;
     }
 
     .character-button:hover {
       transform: translateY(-4px);
       border-color: #818cf8;
-      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.14);
-      background: #fafaff;
-    }
-
-    .character-button:active {
-      transform: translateY(-1px) scale(0.99);
+      box-shadow: 0 14px 28px rgba(79,70,229,.14);
     }
 
     .character-image {
@@ -357,8 +348,8 @@
       width: 100%;
       height: 330px;
       object-fit: contain;
-      border-radius: 16px;
       background: #f8fafc;
+      border-radius: 16px;
       margin-bottom: 14px;
     }
 
@@ -369,41 +360,36 @@
     }
 
     .vs {
+      width: 70px;
+      height: 70px;
+      margin: auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 74px;
-      height: 74px;
-      margin: auto;
       border-radius: 50%;
       background: #111827;
       color: #fff;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 900;
-      letter-spacing: 0.08em;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.2);
+      box-shadow: 0 8px 18px rgba(15,23,42,.2);
     }
 
     .compare-footer {
-      margin-top: 20px;
       display: flex;
       justify-content: center;
+      margin-top: 20px;
     }
 
     .back-button {
+      padding: 9px 16px;
       border: 1px solid #d1d5db;
+      border-radius: 999px;
       background: #fff;
       color: #6b7280;
-      padding: 9px 16px;
-      border-radius: 999px;
       font-size: 13px;
     }
 
-    .back-button:hover {
-      background: #f9fafb;
-    }
-
-    .result-panel {
+    .result {
       padding: 28px;
     }
 
@@ -416,7 +402,7 @@
       margin: 0;
       font-size: 30px;
       font-weight: 900;
-      letter-spacing: 0.04em;
+      letter-spacing: .04em;
     }
 
     .result-subtitle {
@@ -427,43 +413,30 @@
 
     .top-ranking {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3,1fr);
       gap: 14px;
       align-items: end;
     }
 
     .rank-card {
-      position: relative;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 20px;
       padding: 14px;
       text-align: center;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(15,23,42,.06);
     }
 
     .rank-card.first {
       transform: translateY(-14px);
       border-color: #fbbf24;
-      box-shadow: 0 12px 26px rgba(245, 158, 11, 0.14);
+      box-shadow: 0 12px 26px rgba(245,158,11,.14);
     }
 
     .rank-number {
+      margin-bottom: 9px;
       font-size: 14px;
       font-weight: 900;
-      margin-bottom: 9px;
-    }
-
-    .rank-card.first .rank-number {
-      color: #d97706;
-    }
-
-    .rank-card.second .rank-number {
-      color: #64748b;
-    }
-
-    .rank-card.third .rank-number {
-      color: #a16207;
     }
 
     .rank-image {
@@ -483,9 +456,9 @@
 
     .rank-score {
       margin-top: 8px;
+      color: #4f46e5;
       font-size: 14px;
       font-weight: 800;
-      color: #4f46e5;
     }
 
     .lower-ranking {
@@ -495,24 +468,18 @@
     .lower-toggle {
       width: 100%;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      padding: 15px 18px;
       border: 1px solid #e5e7eb;
       border-radius: 15px;
-      padding: 15px 18px;
       background: #f8fafc;
       color: #374151;
       font-weight: 800;
-      transition: 0.18s;
-    }
-
-    .lower-toggle:hover {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
     }
 
     .arrow {
-      transition: transform 0.2s;
+      transition: transform .2s;
     }
 
     .lower-ranking.open .arrow {
@@ -522,9 +489,9 @@
     .lower-list {
       display: none;
       margin-top: 10px;
+      overflow: hidden;
       border: 1px solid #e5e7eb;
       border-radius: 15px;
-      overflow: hidden;
       background: #fff;
     }
 
@@ -534,7 +501,7 @@
 
     .lower-item {
       display: grid;
-      grid-template-columns: 55px 56px minmax(0, 1fr) 80px;
+      grid-template-columns: 55px 56px minmax(0,1fr) 80px;
       align-items: center;
       gap: 12px;
       padding: 10px 14px;
@@ -561,7 +528,6 @@
 
     .lower-name {
       font-weight: 800;
-      color: #374151;
     }
 
     .lower-score {
@@ -573,28 +539,21 @@
     .result-actions {
       display: flex;
       justify-content: center;
-      gap: 10px;
       margin-top: 26px;
     }
 
     .restart-button {
+      padding: 12px 24px;
       border: 0;
       border-radius: 999px;
-      padding: 12px 24px;
       background: #111827;
       color: #fff;
       font-weight: 800;
-      transition: 0.18s;
-    }
-
-    .restart-button:hover {
-      transform: translateY(-2px);
-      background: #1f2937;
     }
 
     .loading {
-      text-align: center;
       padding: 70px 20px;
+      text-align: center;
       color: #6b7280;
     }
 
@@ -605,7 +564,7 @@
       border: 4px solid #e5e7eb;
       border-top-color: #6366f1;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: spin .8s linear infinite;
     }
 
     @keyframes spin {
@@ -618,29 +577,28 @@
       display: none !important;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width:700px) {
       .app {
         padding: 18px 12px 40px;
       }
 
-      .setup-panel,
-      .compare-panel,
-      .result-panel {
+      .setup,
+      .compare,
+      .result {
         padding: 18px;
         border-radius: 20px;
       }
 
       .game-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2,1fr);
       }
 
       .mode-list {
         grid-template-columns: 1fr;
       }
 
-      .battle-area {
+      .battle {
         grid-template-columns: 1fr;
-        gap: 10px;
       }
 
       .vs {
@@ -668,33 +626,11 @@
       .rank-card.first .rank-image {
         height: 260px;
       }
-
-      .rank-image {
-        height: 190px;
-      }
-
-      .lower-item {
-        grid-template-columns: 42px 56px minmax(0, 1fr) 70px;
-        gap: 8px;
-        padding: 9px;
-      }
     }
 
-    @media (max-width: 430px) {
+    @media (max-width:430px) {
       .game-list {
         grid-template-columns: 1fr;
-      }
-
-      .selection-info {
-        gap: 8px;
-      }
-
-      .info-card {
-        padding: 12px 8px;
-      }
-
-      .info-value {
-        font-size: 20px;
       }
 
       .top-ranking {
@@ -705,22 +641,17 @@
         grid-column: auto;
       }
 
-      .rank-image,
-      .rank-card.first .rank-image {
-        height: 230px;
-      }
-
       .lower-item {
-        grid-template-columns: 38px 44px minmax(0, 1fr);
-      }
-
-      .lower-image {
-        width: 44px;
-        height: 44px;
+        grid-template-columns: 40px 48px minmax(0,1fr);
       }
 
       .lower-score {
         display: none;
+      }
+
+      .lower-image {
+        width: 46px;
+        height: 46px;
       }
     }
   </style>
@@ -728,11 +659,21 @@
 <body>
   <div class="app">
     <header class="header">
-      <h1 class="header-title">キャラクターランキング</h1>
+      <h1>キャラクターランキング</h1>
+      <p>高精度スコア型・間接比較ランキング</p>
     </header>
 
-    <section id="setupArea" class="panel setup-panel">
+    <section id="loadingArea" class="panel">
+      <div class="loading">
+        <div class="spinner"></div>
+        <div>キャラクターデータを読み込んでいます……</div>
+      </div>
+    </section>
+
+    <section id="setupArea" class="panel setup hidden">
       <h2 class="section-title">登場作品を選択</h2>
+      <p class="section-description">ランキングに参加させたい作品を選択してください。</p>
+
       <div class="game-actions">
         <button id="selectAllBtn" class="small-button">全選択</button>
         <button id="clearAllBtn" class="small-button">全解除</button>
@@ -742,12 +683,14 @@
 
       <div class="mode-section">
         <h2 class="section-title">比較方式</h2>
+        <p class="section-description">ランキングの作成方法を選択してください。</p>
+
         <div class="mode-list">
           <div class="mode-item">
             <input type="radio" id="modeIndirect" name="compareMode" value="indirect" checked>
             <label for="modeIndirect" class="mode-label">
-              <span class="mode-name">お手軽比較モード</span>
-              <span class="mode-description">比較的すぐ終わります、とりあえずこちらから</span>
+              <span class="mode-name">間接比較モード</span>
+              <span class="mode-description">少ない直接比較から勝敗関係を推定し、スコアが近いキャラを重点的に比較します。</span>
             </label>
           </div>
 
@@ -755,7 +698,7 @@
             <input type="radio" id="modeRoundRobin" name="compareMode" value="roundrobin">
             <label for="modeRoundRobin" class="mode-label">
               <span class="mode-name">総当たりモード</span>
-              <span class="mode-description">すべてのキャラを総当たりします。時間がすごくかかるよ</span>
+              <span class="mode-description">すべてのキャラ同士を1回ずつ直接比較します。</span>
             </label>
           </div>
         </div>
@@ -775,25 +718,25 @@
       <div id="matchCount" class="match-count"></div>
 
       <button id="startButton" class="start-button" disabled>ランキング開始</button>
-      <div id="setupError" class="error-message hidden"></div>
+      <div id="setupError" class="error hidden"></div>
     </section>
 
-    <section id="compareArea" class="panel compare-panel hidden">
+    <section id="compareArea" class="panel compare hidden">
       <div class="compare-header">
-        <h2 id="compareTitle" class="compare-title">どちらが好き？</h2>
-        <div id="progress" class="progress">1 / 1</div>
+        <h2 class="compare-title">どちらが好き？</h2>
+        <div id="progress" class="progress"></div>
       </div>
 
-      <div class="battle-area">
+      <div class="battle">
         <button id="leftBtn" class="character-button">
-          <img id="leftImg" class="character-image" src="" alt="">
+          <img id="leftImg" class="character-image" alt="">
           <div id="leftName" class="character-name"></div>
         </button>
 
         <div class="vs">VS</div>
 
         <button id="rightBtn" class="character-button">
-          <img id="rightImg" class="character-image" src="" alt="">
+          <img id="rightImg" class="character-image" alt="">
           <div id="rightName" class="character-name"></div>
         </button>
       </div>
@@ -803,10 +746,10 @@
       </div>
     </section>
 
-    <section id="resultArea" class="panel result-panel hidden">
+    <section id="resultArea" class="panel result hidden">
       <div class="result-header">
         <h2 class="result-title">RANKING</h2>
-        <p id="resultSubtitle" class="result-subtitle">ランキング結果</p>
+        <p id="resultSubtitle" class="result-subtitle"></p>
       </div>
 
       <div id="topRanking" class="top-ranking"></div>
@@ -823,13 +766,6 @@
         <button id="restartButton" class="restart-button">もう一度遊ぶ</button>
       </div>
     </section>
-
-    <section id="loadingArea" class="panel hidden">
-      <div class="loading">
-        <div class="spinner"></div>
-        <div>キャラクターデータを読み込んでいます……</div>
-      </div>
-    </section>
   </div>
 
   <script>
@@ -839,11 +775,21 @@
     const IMAGE_FOLDER = "FEimages/";
     const K = 32;
 
-    /* 間接比較モードの設定 */
-    const INDIRECT_INITIAL_MATCHES_PER_CHARACTER = 3;
-    const INDIRECT_CLOSE_SCORE = 70;
-    const INDIRECT_VERY_CLOSE_SCORE = 35;
-    const INDIRECT_MAX_EXTRA_MATCHES = 2;
+    /*
+      間接比較の設定
+
+      INITIAL_MATCHES:
+      最初に1キャラあたり何回程度直接比較するか。
+
+      CLOSE_SCORE:
+      スコア差がこの数値以下なら追加比較候補にする。
+
+      MAX_EXTRA_ROUNDS:
+      スコアが近いキャラを追加で比較する回数。
+    */
+    const INITIAL_MATCHES = 3;
+    const CLOSE_SCORE = 80;
+    const MAX_EXTRA_ROUNDS = 2;
 
     let gameData = {};
     let charData = [];
@@ -851,26 +797,23 @@
     let directWins = {};
     let directLosses = {};
     let directMatches = new Set();
-    let inferredWins = {};
     let currentRound = 0;
-    let totalRounds = 0;
+    let initialTarget = 0;
+    let extraRoundLimit = 0;
     let compareMode = "indirect";
 
+    const loadingArea = document.getElementById("loadingArea");
     const setupArea = document.getElementById("setupArea");
     const compareArea = document.getElementById("compareArea");
     const resultArea = document.getElementById("resultArea");
-    const loadingArea = document.getElementById("loadingArea");
 
     const gameList = document.getElementById("gameList");
     const selectedGameCount = document.getElementById("selectedGameCount");
     const selectedCharacterCount = document.getElementById("selectedCharacterCount");
     const matchCount = document.getElementById("matchCount");
     const startButton = document.getElementById("startButton");
-    const selectAllBtn = document.getElementById("selectAllBtn");
-    const clearAllBtn = document.getElementById("clearAllBtn");
     const setupError = document.getElementById("setupError");
 
-    const compareTitle = document.getElementById("compareTitle");
     const leftBtn = document.getElementById("leftBtn");
     const rightBtn = document.getElementById("rightBtn");
     const leftImg = document.getElementById("leftImg");
@@ -878,72 +821,73 @@
     const leftName = document.getElementById("leftName");
     const rightName = document.getElementById("rightName");
     const progress = document.getElementById("progress");
-    const changeSelectionBtn = document.getElementById("changeSelectionBtn");
 
     const topRanking = document.getElementById("topRanking");
     const lowerRanking = document.getElementById("lowerRanking");
     const lowerToggle = document.getElementById("lowerToggle");
     const lowerList = document.getElementById("lowerList");
-    const restartButton = document.getElementById("restartButton");
     const resultSubtitle = document.getElementById("resultSubtitle");
 
-    loadCharacters();
+    loadJSON();
 
-    async function loadCharacters() {
-      setupArea.classList.add("hidden");
-      loadingArea.classList.remove("hidden");
-
+    async function loadJSON() {
       try {
         const response = await fetch(JSON_FILE);
 
         if (!response.ok) {
-          throw new Error("JSONファイルの読み込みに失敗しました。");
+          throw new Error();
         }
 
         gameData = await response.json();
-        validateGameData();
-        createGameCheckboxes();
-        updateSelectionInfo();
+
+        validateJSON();
+        createGameList();
 
         loadingArea.classList.add("hidden");
         setupArea.classList.remove("hidden");
+
+        updateSelectionInfo();
       } catch (error) {
         loadingArea.classList.add("hidden");
         setupArea.classList.remove("hidden");
-
-        showError("キャラクターデータを読み込めませんでした。rankingCharacters.jsonがranking.htmlと同じフォルダにあるか確認してください。");
+        showError("rankingCharacters.jsonを読み込めませんでした。JSONの構文とファイルの場所を確認してください。");
       }
     }
 
-    function validateGameData() {
-      if (typeof gameData !== "object" || gameData === null || Array.isArray(gameData)) {
-        throw new Error("JSONの形式が正しくありません。");
+    function validateJSON() {
+      if (
+        typeof gameData !== "object" ||
+        gameData === null ||
+        Array.isArray(gameData)
+      ) {
+        throw new Error();
       }
 
       for (const [game, characters] of Object.entries(gameData)) {
         if (!Array.isArray(characters)) {
-          throw new Error(`${game}のデータが配列になっていません。`);
+          throw new Error();
         }
 
         for (const name of characters) {
-          if (typeof name !== "string" || name.trim() === "") {
-            throw new Error(`${game}に不正なキャラクター名があります。`);
+          if (typeof name !== "string" || !name.trim()) {
+            throw new Error();
           }
         }
       }
     }
 
-    function createGameCheckboxes() {
+    function createGameList() {
       gameList.innerHTML = "";
 
-      Object.keys(gameData).forEach((game, index) => {
-        const wrapper = document.createElement("div");
-        wrapper.className = "game-item";
+      Object.keys(gameData).forEach((game,index) => {
+        const item = document.createElement("div");
+        item.className = "game-item";
 
         const input = document.createElement("input");
         input.type = "checkbox";
         input.id = `game-${index}`;
         input.value = game;
+
         input.addEventListener("change", updateSelectionInfo);
 
         const label = document.createElement("label");
@@ -951,7 +895,7 @@
         label.htmlFor = input.id;
 
         const check = document.createElement("span");
-        check.className = "custom-check";
+        check.className = "check";
 
         const name = document.createElement("span");
         name.className = "game-name";
@@ -959,36 +903,41 @@
 
         label.appendChild(check);
         label.appendChild(name);
-        wrapper.appendChild(input);
-        wrapper.appendChild(label);
-        gameList.appendChild(wrapper);
+        item.appendChild(input);
+        item.appendChild(label);
+
+        gameList.appendChild(item);
       });
     }
 
     function getSelectedGames() {
-      return [...gameList.querySelectorAll('input[type="checkbox"]:checked')]
+      return [...gameList.querySelectorAll("input:checked")]
         .map(input => input.value);
     }
 
+    /*
+      作品をまたいで同じ名前があった場合、
+      Mapによって1キャラに統合する。
+    */
     function getSelectedCharacters() {
       const selectedGames = getSelectedGames();
-      const uniqueCharacters = new Map();
+      const characters = new Map();
 
-      for (const game of selectedGames) {
-        for (const name of gameData[game]) {
+      selectedGames.forEach(game => {
+        gameData[game].forEach(name => {
           const characterName = name.trim();
 
-          if (!uniqueCharacters.has(characterName)) {
-            uniqueCharacters.set(characterName, {
+          if (!characters.has(characterName)) {
+            characters.set(characterName,{
               id: characterName,
               name: characterName,
               img: IMAGE_FOLDER + characterName + ".png"
             });
           }
-        }
-      }
+        });
+      });
 
-      return [...uniqueCharacters.values()];
+      return [...characters.values()];
     }
 
     function updateSelectionInfo() {
@@ -998,55 +947,72 @@
       selectedGameCount.textContent = games.length;
       selectedCharacterCount.textContent = characters.length;
 
-      const mode = document.querySelector('input[name="compareMode"]:checked')?.value || "indirect";
+      const mode = document.querySelector(
+        'input[name="compareMode"]:checked'
+      )?.value || "indirect";
+
       compareMode = mode;
 
       if (characters.length < 2) {
         matchCount.textContent = "";
-      } else if (mode === "roundrobin") {
-        const matches = characters.length * (characters.length - 1) / 2;
-        matchCount.textContent = `総当たりの場合：${matches}試合`;
-      } else {
-        const matches = characters.length * INDIRECT_INITIAL_MATCHES_PER_CHARACTER / 2;
-        matchCount.textContent = `基本約${Math.ceil(matches)}試合＋スコアが近いキャラの追加比較`;
+        startButton.disabled = true;
+        return;
       }
 
-      startButton.disabled = characters.length < 2;
+      startButton.disabled = false;
+
+      if (mode === "roundrobin") {
+        const matches =
+          characters.length * (characters.length - 1) / 2;
+
+        matchCount.textContent =
+          `総当たり：全${matches}試合`;
+      } else {
+        const basic =
+          Math.ceil(characters.length * INITIAL_MATCHES / 2);
+
+        matchCount.textContent =
+          `間接比較：約${basic}試合から開始。スコアが近い場合は追加比較します。`;
+      }
     }
 
-    document.querySelectorAll('input[name="compareMode"]').forEach(input => {
-      input.addEventListener("change", updateSelectionInfo);
+    document.querySelectorAll(
+      'input[name="compareMode"]'
+    ).forEach(input => {
+      input.addEventListener("change",updateSelectionInfo);
     });
 
-    selectAllBtn.addEventListener("click", () => {
-      gameList.querySelectorAll('input[type="checkbox"]').forEach(input => {
+    document.getElementById("selectAllBtn").addEventListener("click",() => {
+      gameList.querySelectorAll("input").forEach(input => {
         input.checked = true;
       });
 
       updateSelectionInfo();
     });
 
-    clearAllBtn.addEventListener("click", () => {
-      gameList.querySelectorAll('input[type="checkbox"]').forEach(input => {
+    document.getElementById("clearAllBtn").addEventListener("click",() => {
+      gameList.querySelectorAll("input").forEach(input => {
         input.checked = false;
       });
 
       updateSelectionInfo();
     });
 
-    startButton.addEventListener("click", startRanking);
+    startButton.addEventListener("click",startRanking);
 
     function startRanking() {
       charData = getSelectedCharacters();
 
       if (charData.length < 2) {
-        showError("ランキングには2人以上のキャラクターが必要です。");
+        showError("2人以上のキャラクターを選択してください。");
         return;
       }
 
-      compareMode = document.querySelector('input[name="compareMode"]:checked').value;
+      compareMode =
+        document.querySelector(
+          'input[name="compareMode"]:checked'
+        ).value;
 
-      setupError.classList.add("hidden");
       initializeRanking();
 
       setupArea.classList.add("hidden");
@@ -1061,123 +1027,145 @@
       directWins = {};
       directLosses = {};
       directMatches = new Set();
-      inferredWins = {};
       currentRound = 0;
 
       charData.forEach(character => {
         score[character.id] = 1000;
         directWins[character.id] = [];
         directLosses[character.id] = [];
-        inferredWins[character.id] = [];
       });
 
-      if (compareMode === "roundrobin") {
-        totalRounds = charData.length * (charData.length - 1) / 2;
-      } else {
-        totalRounds = Math.ceil(charData.length * INDIRECT_INITIAL_MATCHES_PER_CHARACTER / 2);
-      }
+      initialTarget = Math.max(
+        charData.length,
+        Math.ceil(
+          charData.length * INITIAL_MATCHES / 2
+        )
+      );
 
-      compareTitle.textContent =
-        compareMode === "roundrobin"
-          ? "どちらが好き？"
-          : "どちらが好き？";
+      extraRoundLimit =
+        initialTarget +
+        charData.length * MAX_EXTRA_ROUNDS;
     }
 
-    function getPairKey(a, b) {
-      return [a, b].sort().join("\u0000");
+    function pairKey(a,b) {
+      return [a,b].sort().join("\u0000");
     }
 
-    function hasDirectMatch(a, b) {
-      return directMatches.has(getPairKey(a, b));
+    function alreadyCompared(a,b) {
+      return directMatches.has(pairKey(a,b));
     }
 
-    function addDirectResult(winner, loser) {
-      const expected = 1 / (1 + 10 ** ((score[loser] - score[winner]) / 400));
+    /*
+      直接勝敗だけをスコアに反映する。
+      ここが重要で、間接勝利を直接勝利として
+      Elo計算に二重反映しない。
+    */
+    function registerDirectWin(winner,loser) {
+      const expected =
+        1 / (
+          1 +
+          10 ** (
+            (score[loser] - score[winner]) / 400
+          )
+        );
 
       score[winner] += K * (1 - expected);
       score[loser] += K * (0 - expected);
 
-      if (!directWins[winner].includes(loser)) {
-        directWins[winner].push(loser);
-      }
+      directWins[winner].push(loser);
+      directLosses[loser].push(winner);
 
-      if (!directLosses[loser].includes(winner)) {
-        directLosses[loser].push(winner);
-      }
-
-      directMatches.add(getPairKey(winner, loser));
-
-      updateInferredResults();
+      directMatches.add(pairKey(winner,loser));
     }
 
-    function updateInferredResults() {
-      charData.forEach(character => {
-        inferredWins[character.id] = [];
-      });
+    /*
+      A > B
+      B > C
+      ↓
+      A > C
 
-      for (const character of charData) {
-        const start = character.id;
-        const visited = new Set([start]);
-        const queue = [...directWins[start]];
-
-        while (queue.length > 0) {
-          const current = queue.shift();
-
-          if (visited.has(current)) {
-            continue;
-          }
-
-          visited.add(current);
-          inferredWins[start].push(current);
-
-          for (const next of directWins[current]) {
-            if (!visited.has(next)) {
-              queue.push(next);
-            }
-          }
-        }
-      }
+      ただし、これは「推定」であり、
+      AとCを直接比較したことにはしない。
+    */
+    function canInferWinner(a,b) {
+      return reaches(a,b);
     }
 
-    function chooseRoundRobinPair() {
-      const candidates = [];
+    function reaches(start,target) {
+      const visited = new Set([start]);
+      const queue = [start];
 
-      for (let i = 0; i < charData.length; i++) {
-        for (let j = i + 1; j < charData.length; j++) {
-          const a = charData[i].id;
-          const b = charData[j].id;
+      while (queue.length > 0) {
+        const current = queue.shift();
 
-          if (!hasDirectMatch(a, b)) {
-            candidates.push([charData[i], charData[j]]);
+        for (const next of directWins[current]) {
+          if (next === target) {
+            return true;
+          }
+
+          if (!visited.has(next)) {
+            visited.add(next);
+            queue.push(next);
           }
         }
       }
 
-      if (candidates.length === 0) {
-        return null;
-      }
-
-      return candidates[Math.floor(Math.random() * candidates.length)];
+      return false;
     }
 
+    /*
+      間接比較用の候補選択。
+
+      優先順位：
+      1. まだ比較したことがない
+      2. スコアが近い
+      3. まだ比較回数が少ないキャラを優先
+    */
     function chooseIndirectPair() {
       const candidates = [];
+
+      const matchCount = {};
+
+      charData.forEach(character => {
+        matchCount[character.id] = 0;
+      });
+
+      directMatches.forEach(key => {
+        const [a,b] = key.split("\u0000");
+
+        if (matchCount[a] !== undefined) {
+          matchCount[a]++;
+        }
+
+        if (matchCount[b] !== undefined) {
+          matchCount[b]++;
+        }
+      });
 
       for (let i = 0; i < charData.length; i++) {
         for (let j = i + 1; j < charData.length; j++) {
           const a = charData[i];
           const b = charData[j];
 
-          if (hasDirectMatch(a.id, b.id)) {
+          if (alreadyCompared(a.id,b.id)) {
             continue;
           }
 
-          const difference = Math.abs(score[a.id] - score[b.id]);
+          const difference =
+            Math.abs(score[a.id] - score[b.id]);
+
+          const inferred =
+            canInferWinner(a.id,b.id) ||
+            canInferWinner(b.id,a.id);
 
           candidates.push({
-            a: a,
-            b: b,
-            difference: difference
+            a,
+            b,
+            difference,
+            inferred,
+            count:
+              matchCount[a.id] +
+              matchCount[b.id]
           });
         }
       }
@@ -1186,33 +1174,86 @@
         return null;
       }
 
-      candidates.sort((a, b) => a.difference - b.difference);
+      /*
+        初期段階では比較回数を均等化する。
+      */
+      if (currentRound < initialTarget) {
+        const minCount =
+          Math.min(
+            ...charData.map(c => matchCount[c.id])
+          );
 
-      const veryClose = candidates.filter(
-        pair => pair.difference <= INDIRECT_VERY_CLOSE_SCORE
-      );
+        const balanced =
+          candidates.filter(pair =>
+            matchCount[pair.a.id] === minCount ||
+            matchCount[pair.b.id] === minCount
+          );
 
-      if (veryClose.length > 0) {
-        return randomFrom(veryClose.slice(0, 8));
+        if (balanced.length > 0) {
+          return randomFrom(
+            balanced.sort(
+              (a,b) =>
+                a.difference - b.difference
+            ).slice(0,10)
+          );
+        }
       }
 
-      const close = candidates.filter(
-        pair => pair.difference <= INDIRECT_CLOSE_SCORE
-      );
+      /*
+        初期比較後は、
+        スコア差が小さい組み合わせを優先。
+      */
+      candidates.sort((a,b) => {
+        const scoreA =
+          a.difference +
+          a.count * 8 +
+          (a.inferred ? 25 : 0);
 
-      if (close.length > 0) {
-        return randomFrom(close.slice(0, 10));
+        const scoreB =
+          b.difference +
+          b.count * 8 +
+          (b.inferred ? 25 : 0);
+
+        return scoreA - scoreB;
+      });
+
+      return randomFrom(
+        candidates.slice(
+          0,
+          Math.min(10,candidates.length)
+        )
+      );
+    }
+
+    function chooseRoundRobinPair() {
+      const candidates = [];
+
+      for (let i = 0; i < charData.length; i++) {
+        for (let j = i + 1; j < charData.length; j++) {
+          const a = charData[i];
+          const b = charData[j];
+
+          if (!alreadyCompared(a.id,b.id)) {
+            candidates.push([a,b]);
+          }
+        }
       }
 
-      return randomFrom(candidates.slice(0, 10));
+      if (candidates.length === 0) {
+        return null;
+      }
+
+      return randomFrom(candidates);
     }
 
     function randomFrom(array) {
-      return array[Math.floor(Math.random() * array.length)];
+      return array[
+        Math.floor(Math.random() * array.length)
+      ];
     }
 
     function nextMatch() {
-      let pair = null;
+      let pair;
 
       if (compareMode === "roundrobin") {
         pair = chooseRoundRobinPair();
@@ -1225,33 +1266,54 @@
         return;
       }
 
-      const [left, right] = pair;
+      const a = pair.a || pair[0];
+      const b = pair.b || pair[1];
 
-      leftName.textContent = left.name;
-      rightName.textContent = right.name;
+      leftName.textContent = a.name;
+      rightName.textContent = b.name;
 
-      setCharacterImage(leftImg, left);
-      setCharacterImage(rightImg, right);
+      setImage(leftImg,a);
+      setImage(rightImg,b);
 
-      leftBtn.onclick = () => vote(left.id, right.id);
-      rightBtn.onclick = () => vote(right.id, left.id);
+      leftBtn.onclick = () =>
+        vote(a.id,b.id);
 
-      progress.textContent = `${currentRound + 1} / ${getProgressTotal()}`;
+      rightBtn.onclick = () =>
+        vote(b.id,a.id);
+
+      if (compareMode === "roundrobin") {
+        const total =
+          charData.length *
+          (charData.length - 1) / 2;
+
+        progress.textContent =
+          `${currentRound + 1} / ${total}`;
+      } else {
+        progress.textContent =
+          `${currentRound + 1}試合`;
+      }
     }
 
-    function getProgressTotal() {
-      if (compareMode === "roundrobin") {
-        return charData.length * (charData.length - 1) / 2;
+    function vote(winner,loser) {
+      /*
+        同じ組み合わせを二重処理しない。
+      */
+      if (alreadyCompared(winner,loser)) {
+        return;
       }
 
-      return "?";
-    }
-
-    function vote(winner, loser) {
-      addDirectResult(winner, loser);
+      registerDirectWin(winner,loser);
       currentRound++;
 
       if (compareMode === "roundrobin") {
+        if (currentRound >=
+          charData.length *
+          (charData.length - 1) / 2
+        ) {
+          finish();
+          return;
+        }
+
         nextMatch();
         return;
       }
@@ -1265,68 +1327,95 @@
     }
 
     function shouldFinishIndirect() {
-      const remainingPairs = [];
+      /*
+        全組み合わせが終わっていれば終了。
+      */
+      let remaining = 0;
 
       for (let i = 0; i < charData.length; i++) {
         for (let j = i + 1; j < charData.length; j++) {
-          const a = charData[i].id;
-          const b = charData[j].id;
-
-          if (!hasDirectMatch(a, b)) {
-            remainingPairs.push([a, b]);
+          if (
+            !alreadyCompared(
+              charData[i].id,
+              charData[j].id
+            )
+          ) {
+            remaining++;
           }
         }
       }
 
-      if (remainingPairs.length === 0) {
+      if (remaining === 0) {
         return true;
       }
 
-      const targetRounds = Math.max(
-        charData.length,
-        Math.ceil(charData.length * INDIRECT_INITIAL_MATCHES_PER_CHARACTER / 2)
-      );
-
-      if (currentRound < targetRounds) {
+      /*
+        最低限の初期比較が終わるまでは継続。
+      */
+      if (currentRound < initialTarget) {
         return false;
       }
 
-      const closePairs = remainingPairs.filter(([a, b]) => {
-        const difference = Math.abs(score[a] - score[b]);
-        return difference <= INDIRECT_CLOSE_SCORE;
-      });
+      /*
+        スコアが近い未比較ペアがある場合、
+        追加比較する。
+      */
+      let closePairs = 0;
 
-      if (closePairs.length === 0) {
+      for (let i = 0; i < charData.length; i++) {
+        for (let j = i + 1; j < charData.length; j++) {
+          const a = charData[i];
+          const b = charData[j];
+
+          if (alreadyCompared(a.id,b.id)) {
+            continue;
+          }
+
+          const difference =
+            Math.abs(score[a.id] - score[b.id]);
+
+          if (difference <= CLOSE_SCORE) {
+            closePairs++;
+          }
+        }
+      }
+
+      /*
+        追加比較上限に到達したら終了。
+      */
+      if (currentRound >= extraRoundLimit) {
         return true;
       }
 
-      const extraRounds = currentRound - targetRounds;
+      /*
+        近いキャラがもういなければ終了。
+      */
+      if (closePairs === 0) {
+        return true;
+      }
 
-      return extraRounds >= INDIRECT_MAX_EXTRA_MATCHES * charData.length;
+      return false;
     }
 
     function finish() {
       compareArea.classList.add("hidden");
       resultArea.classList.remove("hidden");
 
-      const ranking = Object.entries(score)
-        .map(([id, value]) => {
-          const character = charData.find(item => item.id === id);
-
-          return {
-            id: id,
+      const ranking =
+        charData
+          .map(character => ({
+            id: character.id,
             name: character.name,
             img: character.img,
-            score: value
-          };
-        })
-        .sort((a, b) => b.score - a.score);
+            score: score[character.id]
+          }))
+          .sort((a,b) => b.score - a.score);
 
       resultSubtitle.textContent =
         `${charData.length}キャラ・${currentRound}試合`;
 
-      renderTopRanking(ranking.slice(0, 5));
-      renderLowerRanking(ranking.slice(5));
+      renderTop(ranking.slice(0,5));
+      renderLower(ranking.slice(5));
 
       lowerRanking.classList.remove("open");
 
@@ -1336,37 +1425,54 @@
       });
     }
 
-    function renderTopRanking(ranking) {
+    function renderTop(ranking) {
       topRanking.innerHTML = "";
 
-      ranking.forEach((character, index) => {
-        const card = document.createElement("div");
+      ranking.forEach((character,index) => {
+        const card =
+          document.createElement("div");
+
         card.className = "rank-card";
 
         if (index === 0) {
           card.classList.add("first");
-        } else if (index === 1) {
-          card.classList.add("second");
-        } else if (index === 2) {
-          card.classList.add("third");
         }
 
-        const rank = document.createElement("div");
-        rank.className = "rank-number";
-        rank.textContent = getRankLabel(index + 1);
+        const rank =
+          document.createElement("div");
 
-        const img = document.createElement("img");
+        rank.className = "rank-number";
+
+        if (index === 0) {
+          rank.textContent = "🥇 1位";
+        } else if (index === 1) {
+          rank.textContent = "🥈 2位";
+        } else if (index === 2) {
+          rank.textContent = "🥉 3位";
+        } else {
+          rank.textContent = `${index + 1}位`;
+        }
+
+        const img =
+          document.createElement("img");
+
         img.className = "rank-image";
         img.alt = character.name;
-        setImageSource(img, character);
 
-        const name = document.createElement("div");
+        setImage(img,character);
+
+        const name =
+          document.createElement("div");
+
         name.className = "rank-name";
         name.textContent = character.name;
 
-        const scoreElement = document.createElement("div");
+        const scoreElement =
+          document.createElement("div");
+
         scoreElement.className = "rank-score";
-        scoreElement.textContent = `スコア ${character.score.toFixed(0)}`;
+        scoreElement.textContent =
+          `スコア ${character.score.toFixed(0)}`;
 
         card.appendChild(rank);
         card.appendChild(img);
@@ -1377,7 +1483,7 @@
       });
     }
 
-    function renderLowerRanking(ranking) {
+    function renderLower(ranking) {
       lowerList.innerHTML = "";
 
       if (ranking.length === 0) {
@@ -1387,26 +1493,38 @@
 
       lowerRanking.classList.remove("hidden");
 
-      ranking.forEach((character, index) => {
-        const item = document.createElement("div");
+      ranking.forEach((character,index) => {
+        const item =
+          document.createElement("div");
+
         item.className = "lower-item";
 
-        const rank = document.createElement("div");
+        const rank =
+          document.createElement("div");
+
         rank.className = "lower-rank";
         rank.textContent = `${index + 6}位`;
 
-        const img = document.createElement("img");
+        const img =
+          document.createElement("img");
+
         img.className = "lower-image";
         img.alt = character.name;
-        setImageSource(img, character);
 
-        const name = document.createElement("div");
+        setImage(img,character);
+
+        const name =
+          document.createElement("div");
+
         name.className = "lower-name";
         name.textContent = character.name;
 
-        const scoreElement = document.createElement("div");
+        const scoreElement =
+          document.createElement("div");
+
         scoreElement.className = "lower-score";
-        scoreElement.textContent = character.score.toFixed(0);
+        scoreElement.textContent =
+          character.score.toFixed(0);
 
         item.appendChild(rank);
         item.appendChild(img);
@@ -1417,12 +1535,7 @@
       });
     }
 
-    function setCharacterImage(img, character) {
-      img.alt = character.name;
-      setImageSource(img, character);
-    }
-
-    function setImageSource(img, character) {
+    function setImage(img,character) {
       img.src = character.img;
 
       img.onerror = () => {
@@ -1431,73 +1544,60 @@
       };
     }
 
-    function getRankLabel(rank) {
-      if (rank === 1) {
-        return "?? 1位";
-      }
-
-      if (rank === 2) {
-        return "?? 2位";
-      }
-
-      if (rank === 3) {
-        return "?? 3位";
-      }
-
-      return `${rank}位`;
-    }
-
-    lowerToggle.addEventListener("click", () => {
-      lowerRanking.classList.toggle("open");
-    });
-
-    changeSelectionBtn.addEventListener("click", () => {
-      compareArea.classList.add("hidden");
-      resultArea.classList.add("hidden");
-      setupArea.classList.remove("hidden");
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    });
-
-    restartButton.addEventListener("click", () => {
-      resultArea.classList.add("hidden");
-      setupArea.classList.remove("hidden");
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    });
-
-    function showError(message) {
-      setupError.innerHTML = message;
-      setupError.classList.remove("hidden");
-    }
-
     function createPlaceholder(name) {
-      const safeName = escapeHtml(name);
       const svg = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
+        <svg xmlns="http://www.w3.org/2000/svg" width="400" height="500">
           <rect width="400" height="500" fill="#f8fafc"/>
-          <text x="200" y="240" text-anchor="middle" font-size="28" fill="#9ca3af" font-family="sans-serif">${safeName}</text>
+          <text x="200" y="240" text-anchor="middle" font-size="28" fill="#9ca3af" font-family="sans-serif">${escapeHTML(name)}</text>
           <text x="200" y="280" text-anchor="middle" font-size="16" fill="#cbd5e1" font-family="sans-serif">画像なし</text>
         </svg>
       `;
 
-      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+      return "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(svg);
     }
 
-    function escapeHtml(text) {
+    function escapeHTML(text) {
       return text
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
+
+    function showError(message) {
+      setupError.textContent = message;
+      setupError.classList.remove("hidden");
+    }
+
+    lowerToggle.addEventListener("click",() => {
+      lowerRanking.classList.toggle("open");
+    });
+
+    document.getElementById(
+      "changeSelectionBtn"
+    ).addEventListener("click",() => {
+      compareArea.classList.add("hidden");
+      setupArea.classList.remove("hidden");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+
+    document.getElementById(
+      "restartButton"
+    ).addEventListener("click",() => {
+      resultArea.classList.add("hidden");
+      setupArea.classList.remove("hidden");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
   </script>
 </body>
 </html>
