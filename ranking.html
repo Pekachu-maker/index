@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>キャラクターランキング</title>
+  <title>女神王ランキング</title>
   <style>
     * {
       box-sizing: border-box;
@@ -659,8 +659,7 @@
 <body>
   <div class="app">
     <header class="header">
-      <h1>キャラクターランキング</h1>
-      <p>高精度スコア型・間接比較ランキング</p>
+      <h1>FE 女神王ランキング</h1>
     </header>
 
     <section id="loadingArea" class="panel">
@@ -672,8 +671,6 @@
 
     <section id="setupArea" class="panel setup hidden">
       <h2 class="section-title">登場作品を選択</h2>
-      <p class="section-description">ランキングに参加させたい作品を選択してください。</p>
-
       <div class="game-actions">
         <button id="selectAllBtn" class="small-button">全選択</button>
         <button id="clearAllBtn" class="small-button">全解除</button>
@@ -683,14 +680,12 @@
 
       <div class="mode-section">
         <h2 class="section-title">比較方式</h2>
-        <p class="section-description">ランキングの作成方法を選択してください。</p>
-
         <div class="mode-list">
           <div class="mode-item">
             <input type="radio" id="modeIndirect" name="compareMode" value="indirect" checked>
             <label for="modeIndirect" class="mode-label">
-              <span class="mode-name">間接比較モード</span>
-              <span class="mode-description">少ない直接比較から勝敗関係を推定し、スコアが近いキャラを重点的に比較します。</span>
+              <span class="mode-name">お手軽比較モード</span>
+              <span class="mode-description">少ない直接比較から勝敗関係を推定します。</span>
             </label>
           </div>
 
